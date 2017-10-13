@@ -1,6 +1,6 @@
 @import org.webjars.play.WebJarsUtil
 
-@(title: String, isLoginPage: Boolean = false)(content: Html)(implicit webJarsUtil: WebJarsUtil)
+@(title: String)(content: Html)(implicit webJarsUtil: WebJarsUtil)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,11 +48,7 @@
     @Html(webJarsUtil.script("lodash.min.js"))
     <script src="@routes.Assets.versioned("javascripts/polyfills.js")"></script>
   </head>
-  @if(isLoginPage) {
-  <body class="login-layout light-login">
-  } else {
   <body class="no-skin">
-  }
     @content
 
     <!-- basic scripts -->
@@ -65,7 +61,7 @@
     <script src="@routes.Assets.versioned("/javascripts/jquery-1.11.3.min.js")"></script>
     <![endif]-->
     <script type="text/javascript">
-    if('ontouchstart' in document.documentElement) document.write("<script src='assets/javascripts/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+    if('ontouchstart' in document.documentElement) document.write("<script src='public/javascripts/jquery.mobile.custom.min.js'>"+"<"+"/script>");
     </script>
     <script src="@routes.Assets.versioned("/javascripts/bootstrap.min.js")"></script>
   
