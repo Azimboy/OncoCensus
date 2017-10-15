@@ -43,31 +43,23 @@
 		<script src="@routes.Assets.versioned("/javascripts/html5shiv.min.js")"></script>
 		<script src="@routes.Assets.versioned("/javascripts/respond.min.js")"></script>
     <![endif]-->
-    @Html(webJarsUtil.script("knockout.js"))
-    <script src="@routes.Assets.versioned("lib/knockout.mapping-latest.js")"></script>
-    @Html(webJarsUtil.script("lodash.min.js"))
-    <script src="@routes.Assets.versioned("javascripts/polyfills.js")"></script>
-  </head>
-  <body class="no-skin">
-    @content
 
     <!-- basic scripts -->
-  
     <!--[if !IE]> -->
     <script src="@routes.Assets.versioned("/javascripts/jquery-2.1.4.min.js")"></script>
-    <!-- <![endif]-->
-  
-    <!--[if IE]>
+      <!-- <![endif]-->
+
+      <!--[if IE]>
     <script src="@routes.Assets.versioned("/javascripts/jquery-1.11.3.min.js")"></script>
     <![endif]-->
     <script type="text/javascript">
     if('ontouchstart' in document.documentElement) document.write("<script src='public/javascripts/jquery.mobile.custom.min.js'>"+"<"+"/script>");
     </script>
     <script src="@routes.Assets.versioned("/javascripts/bootstrap.min.js")"></script>
-  
-    <!-- page specific plugin scripts -->
-  
-    <!--[if lte IE 8]>
+
+      <!-- page specific plugin scripts -->
+
+      <!--[if lte IE 8]>
     <script src="@routes.Assets.versioned("/javascripts/excanvas.min.js")"></script>
     <![endif]-->
     <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
@@ -78,5 +70,13 @@
       <!-- ace scripts -->
     <script src="@routes.Assets.versioned("/javascripts/ace-elements.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/ace.min.js")"></script>
+
+    @Html(webJarsUtil.script("knockout.js"))
+    <script src="@routes.Assets.versioned("lib/knockout.mapping-latest.js")"></script>
+    @Html(webJarsUtil.script("lodash.min.js"))
+    <script src="@routes.Assets.versioned("javascripts/polyfills.js")"></script>
+  </head>
+  <body class="no-skin">
+    @content
 </body>
 </html>
