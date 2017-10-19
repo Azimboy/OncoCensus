@@ -3,18 +3,20 @@ $ ->
   Glob = window.Glob || {}
 
   MenuName =
-    App: 'app' # Personal Mobile Banking App
-    Myspend: 'myspend'
-    Socialapp: 'socialapp'
-    Lendpers: 'lendpers'
-    Econditions: 'econditions'
-    Student: 'student'
+    Indicator: 'indicator'
+    Reception: 'reception'
 
-  defaultMenuName = MenuName.App
+  defaultMenuName = MenuName.Indicator
 
   vm = ko.mapping.fromJS
     menuName: defaultMenuName
 
-  console.log(vm.menuName())
+  vm.MenuName = MenuName
+
+  vm.setMenuName = (menuName) ->
+    vm.menuName(menuName)
+
+  vm.loadMenuIframe = (menuName) -> ko.computed ->
+    vm.menuName(menuName)
 
   ko.applyBindings {vm}

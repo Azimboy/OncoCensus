@@ -21,4 +21,10 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     Ok(home.login())
   }
 
+  def redirectTo(menuName: String) = Action {
+    menuName match {
+      case "indicator" => Redirect(controllers.routes.IndicatorController.index())
+      case _ => Ok("Not implemented yet")
+    }
+  }
 }
