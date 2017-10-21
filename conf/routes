@@ -8,7 +8,8 @@ GET     /                           @controllers.HomeController.index
 GET     /login                      @controllers.HomeController.login
 GET     /redirect/:menuName         @controllers.HomeController.redirectTo(menuName)
 
-GET     /stats                      @controllers.IndicatorController.index
+GET     /indicator                  @controllers.IndicatorController.index
+GET     /reception                  @controllers.ReceptionController.index
 
 # An example controller showing how to use dependency injection
 GET     /count                      @controllers.CountController.count

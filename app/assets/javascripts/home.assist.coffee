@@ -2,21 +2,29 @@ $ ->
   my.initAjax()
   Glob = window.Glob || {}
 
-  MenuName =
-    Indicator: 'indicator'
-    Reception: 'reception'
+  Links =
+    indicator: 'indicator'
+    reception: 'reception'
 
-  defaultMenuName = MenuName.Indicator
+  Pages =
+    'indicator':
+      name: 'Ko\'rsatkichlar'
+      title: 'Xonqa'
+      description: 'tuman bo\'yicha umumiy kasallik ko\'rsatkichlari'
+    'reception':
+      name: 'Qabul'
+      title: 'Be\'morlar'
+      description: 'kasallik kartalari va bemorlar to\'g\'risida batafsil ma\'lumotlar'
 
   vm = ko.mapping.fromJS
-    menuName: defaultMenuName
+    selectedLink: Links.indicator
+    selectedPage: Pages[Links.indicator]
 
-  vm.MenuName = MenuName
+  vm.Links = Links
 
-  vm.setMenuName = (menuName) ->
-    vm.menuName(menuName)
-
-  vm.loadMenuIframe = (menuName) -> ko.computed ->
-    vm.menuName(menuName)
+  vm.clickLink = (link) -> ->
+    vm.selectedLink(link)
+    vm.selectedPage = Pages[link]
+    console.log(vm.selectedPage.title)
 
   ko.applyBindings {vm}

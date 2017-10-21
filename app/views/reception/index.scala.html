@@ -1,0 +1,40 @@
+@import views.html.reception
+@import org.webjars.play.WebJarsUtil
+
+@()(implicit webJarsUtil: WebJarsUtil)
+
+@reception.main("OncoCensus"){
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="row">
+        <div class="col-md-5">
+          <h3 class="row header smaller lighter purple">
+            <span class="col-sm-6"> Be'morlar </span><!-- /.col -->
+
+            <span class="col-sm-6">
+              <label class="pull-right inline">
+                <small class="muted smaller-90">Border:</small>
+
+                <input id="id-button-borders" checked="" type="checkbox" class="ace ace-switch ace-switch-5" />
+                <span class="lbl middle"></span>
+              </label>
+            </span><!-- /.col -->
+          </h3><!-- /.row -->
+          <table id="simple-table" class="table table-bordered table-hover">
+            <tbody>
+              <tr><td>1</td></tr>
+              <tr><td>2</td></tr>
+              <tr><td>2</td></tr>
+              <tr><td>2</td></tr>
+              <tr><td>2</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-7">
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+}
