@@ -29,56 +29,6 @@
 
       <div class="navbar-buttons navbar-header pull-right" role="navigation">
         <ul class="nav ace-nav">
-          <li class="grey dropdown-modal">
-            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-              <i class="ace-icon fa fa-tasks"></i>
-              <span class="badge badge-grey">2</span>
-            </a>
-
-            <ul class="dropdown-menu-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
-              <li class="dropdown-header">
-                <i class="ace-icon fa fa-check"></i>
-                2
-              </li>
-
-              <li class="dropdown-content">
-                <ul class="dropdown-menu dropdown-navbar">
-                  <li>
-                    <a href="#">
-                      <div class="clearfix">
-                        <span class="pull-left">Software Update</span>
-                        <span class="pull-right">65%</span>
-                      </div>
-
-                      <div class="progress progress-mini">
-                        <div style="width:65%" class="progress-bar"></div>
-                      </div>
-                    </a>
-                  </li>
-
-                  <li>
-                    <a href="#">
-                      <div class="clearfix">
-                        <span class="pull-left">Hardware Upgrade</span>
-                        <span class="pull-right">35%</span>
-                      </div>
-
-                      <div class="progress progress-mini">
-                        <div style="width:35%" class="progress-bar progress-bar-danger"></div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-
-              <li class="dropdown-footer">
-                <a href="#">
-                  See tasks with details
-                  <i class="ace-icon fa fa-arrow-right"></i>
-                </a>
-              </li>
-            </ul>
-          </li>
 
           <li class="purple dropdown-modal">
             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -176,7 +126,7 @@
 
               <li class="dropdown-footer">
                 <a href="inbox.html">
-                  See all messages
+                  Hamma habarlarni ko'rish
                   <i class="ace-icon fa fa-arrow-right"></i>
                 </a>
               </li>
@@ -198,14 +148,14 @@
               <li>
                 <a href="#">
                   <i class="ace-icon fa fa-cog"></i>
-                  Settings
+                  Sozlash
                 </a>
               </li>
 
               <li>
                 <a href="profile.html">
                   <i class="ace-icon fa fa-user"></i>
-                  Profile
+                  Foydalanuvchi profili
                 </a>
               </li>
 
@@ -214,7 +164,7 @@
               <li>
                 <a href="#">
                   <i class="ace-icon fa fa-power-off"></i>
-                  Logout
+                  Tizimdan chiqish
                 </a>
               </li>
             </ul>
@@ -283,7 +233,7 @@
           <b class="arrow"></b>
         </li>
 
-        <li class="">
+        <li class="" data-bind="click: vm.clickLink(vm.Links.patients)">
           <a href="#">
             <i class="menu-icon fa fa-users"></i>
             <span class="menu-text">
@@ -361,7 +311,7 @@
           <ul class="breadcrumb">
             <li>
               <i class="ace-icon fa fa-pie-chart"></i>
-              <a href="#" data-bind="text: vm.selectedPage.name"></a>
+              <a href="#" data-bind="text: vm.selectedName"></a>
             </li>
           </ul><!-- /.breadcrumb -->
 
@@ -378,10 +328,10 @@
         <div class="page-content">
           <div class="page-header">
             <h1>
-              <span data-bind="text: vm.selectedPage.title"></span>
+              <span data-bind="text: vm.selectedTitle"></span>
               <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
-                <span data-bind="text: vm.selectedPage.description"></span>
+                <span data-bind="text: vm.selectedDesc"></span>
               </small>
             </h1>
           </div><!-- /.page-header -->

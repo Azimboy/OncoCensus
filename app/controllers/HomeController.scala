@@ -25,6 +25,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     menuName match {
       case "indicator" => Redirect(controllers.routes.IndicatorController.index())
       case "reception" => Redirect(controllers.routes.ReceptionController.index())
+      case "patients" => Redirect(controllers.routes.PatientsController.index())
       case _ => Ok("Not implemented yet")
     }
   }

@@ -10,6 +10,7 @@ GET     /redirect/:menuName         @controllers.HomeController.redirectTo(menuN
 
 GET     /indicator                  @controllers.IndicatorController.index
 GET     /reception                  @controllers.ReceptionController.index
+GET     /patients                   @controllers.PatientsController.index
 
 # An example controller showing how to use dependency injection
 GET     /count                      @controllers.CountController.count
