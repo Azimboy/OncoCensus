@@ -6,21 +6,25 @@ $ ->
     indicator: 'indicator'
     reception: 'reception'
     patients: 'patients'
+    statistics: 'statistics'
 
   Names =
     indicator: 'Ko\'rsatkichlar'
     reception: 'Qabul'
     patients: 'Bemorlar'
+    statistics: 'Statistika'
 
   Titles =
     indicator: 'Xonqa'
     reception: 'Qabul jurnali'
     patients: 'Bemorlar'
+    statistics: 'Statistika'
 
   Descriptions =
     indicator: 'tuman bo\'yicha umumiy kasallik ko\'rsatkichlari'
     reception: 'bemorlar ko\'rigi va ko\'rsatmalar'
     patients: 'kasallik kartalari va bemorlar to\'g\'risidagi batafsil ma\'lumotlar'
+    statistics: 'umumiy hisobotlar'
 
   vm = ko.mapping.fromJS
     selectedLink: Links.indicator
@@ -46,5 +50,9 @@ $ ->
         vm.selectedName(Names.patients)
         vm.selectedTitle(Titles.patients)
         vm.selectedDesc(Descriptions.patients)
+      when 'statistics'
+        vm.selectedName(Names.statistics)
+        vm.selectedTitle(Titles.statistics)
+        vm.selectedDesc(Descriptions.statistics)
 
   ko.applyBindings {vm}
