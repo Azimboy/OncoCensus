@@ -364,17 +364,6 @@
                     }
                 }
 
-                $('input.typeahead').typeahead({
-                    hint: true,
-                    highlight: true,
-                    minLength: 1
-                }, {
-                    name: 'states',
-                    displayKey: 'value',
-                    source: substringMatcher(ace.vars['US_STATES']),
-                    limit: 10
-                });
-
 
                 ///////////////
 

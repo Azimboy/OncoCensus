@@ -12,6 +12,7 @@ GET     /indicator                  @controllers.IndicatorController.index
 GET     /reception                  @controllers.ReceptionController.index
 GET     /patients                   @controllers.PatientsController.index
 GET     /statistics                 @controllers.StatisticsController.index
+GET     /users                      @controllers.SettingsController.index
 
 # An example controller showing how to use dependency injection
 GET     /count                      @controllers.CountController.count

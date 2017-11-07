@@ -27,6 +27,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
       case "reception" => Redirect(controllers.routes.ReceptionController.index())
       case "patients" => Redirect(controllers.routes.PatientsController.index())
       case "statistics" => Redirect(controllers.routes.StatisticsController.index())
+      case "settings" => Redirect(controllers.routes.SettingsController.index())
       case _ => Ok("Not implemented yet")
     }
   }
