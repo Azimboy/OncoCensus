@@ -5,15 +5,15 @@ import javax.inject.{Inject, Named}
 import akka.pattern.{ask, pipe}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.util.Timeout
-import models.UserAccountsProtocol.{AddUserAccount, UserAccount}
+import models.UserAccountProtocol.{AddUserAccount, UserAccount}
 import models.actor_managers.EncryptionManager.EncryptUserAccount
 import models.daos.UserAccountsDao
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.Future
 
-class UserAccountsManager @Inject() (@Named("encryption-manager") encryptionManager: ActorRef,
-                                     val userAccountsDao: UserAccountsDao)
+class UserAccountManager @Inject()(@Named("encryption-manager") encryptionManager: ActorRef,
+                                   val userAccountsDao: UserAccountsDao)
 	extends Actor
 		with ActorLogging {
 

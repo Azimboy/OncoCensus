@@ -3,7 +3,7 @@ package models.daos
 import java.util.Date
 import javax.inject.{Inject, Singleton}
 
-import models.UserAccountsProtocol._
+import models.UserAccountProtocol._
 import com.google.inject.ImplementedBy
 //import com.typesafe.scalalogging.LazyLogging
 import models.utils.Date2SqlDate

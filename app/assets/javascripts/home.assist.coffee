@@ -40,7 +40,6 @@ $ ->
 
   vm.clickLink = (link) -> ->
     vm.selectedLink(link)
-    console.log(link)
     switch link
       when 'indicator'
         vm.selectedName(Names.indicator)
@@ -58,7 +57,7 @@ $ ->
         vm.selectedName(Names.statistics)
         vm.selectedTitle(Titles.statistics)
         vm.selectedDesc(Descriptions.statistics)
-      when 'statistics'
+      when 'settings'
         vm.selectedName(Names.settings)
         vm.selectedTitle(Titles.settings)
         vm.selectedDesc(Descriptions.settings)

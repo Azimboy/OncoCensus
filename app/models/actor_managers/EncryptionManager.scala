@@ -10,7 +10,7 @@ import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.common.io.BaseEncoding
-import models.UserAccountsProtocol.UserAccount
+import models.UserAccountProtocol.UserAccount
 import play.api.Configuration
 import play.api.libs.json._
 
@@ -33,7 +33,7 @@ class EncryptionManager @Inject() (configuration: Configuration)
 	extends Actor with Stash with ActorLogging
 {
 
-	val config = configuration.get[Configuration]("app-server")
+	val config = configuration.get[Configuration]("web-server")
 	val keystorePath = config.get[String]("encr-manager.keystore-path")
 
 	import EncryptionManager._

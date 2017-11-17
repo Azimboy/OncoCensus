@@ -3,8 +3,9 @@ package models
 import java.util.Date
 
 import org.joda.time.{DateTime, Hours}
+import play.api.libs.json.Json
 
-object UserAccountsProtocol {
+object UserAccountProtocol {
 
 	private val UserUnlocksInHours = 12
 
@@ -33,6 +34,7 @@ object UserAccountsProtocol {
 			case None => false
 		}
 	}
+	implicit val userAccountFormatter = Json.format[UserAccount]
 
 	case class AddUserAccount(userAccount: UserAccount)
 
