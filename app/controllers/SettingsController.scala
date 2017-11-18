@@ -1,12 +1,14 @@
 package controllers
 
+import java.util.Date
 import javax.inject.Inject
 
 import akka.actor.ActorSystem
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import models.UserAccountProtocol.{AddUserAccount, UserAccount}
+import controllers.SettingsController._
+import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
 import models.utils.CieloConfigUtil._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -17,11 +19,24 @@ import views.html.settings
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
 
+object SettingsController {
+	case class UserAccountWeb(
+	  login: String,
+	  firstName: Option[String] = None,
+	  lastName: Option[String] = None,
+	  middleName: Option[String] = None,
+	  roleCodes: Option[String] = None,
+	  email: Option[String] = None,
+	  phoneNumber: Option[String] = None,
+	)
+	implicit val userAccountWebFormat = Json.format[UserAccountWeb]
+}
+
 class SettingsController @Inject()(val controllerComponents: ControllerComponents,
                                    val configuration: Configuration,
                                    implicit val webJarsUtil: WebJarsUtil,
                                    implicit val actorSystem: ActorSystem
-																	 )(implicit val ec: ExecutionContext)
+																	)(implicit val ec: ExecutionContext)
 	extends BaseController with LazyLogging {
 
 	implicit val defaultTimeout = Timeout(60.seconds)
@@ -33,14 +48,28 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 		Ok(settings.index())
 	}
 
-	def getUsers = Action {
-		Ok(settings.index())
+	def getUsers = Action.async { implicit request =>
+		(userAccountManager ? GetAllUserAccounts).mapTo[Seq[UserAccount]].map { users =>
+			Ok(Json.toJson(users))
+		}
 	}
 
-	def addUserManager() = Action.async(parse.json[UserAccount]) { implicit request =>
-		val user = request.body
+	def addUserManager() = Action.async(parse.json[UserAccountWeb]) { implicit request =>
+		val userAccountWeb = request.body
 
-		(userAccountManager ? AddUserAccount(user)).mapTo[Int].map { id =>
+		val newUserAccount = UserAccount(
+			login = userAccountWeb.login,
+			passwordHash = "123",
+			createdAt = Some(new Date),
+			firstName = userAccountWeb.firstName,
+			lastName = userAccountWeb.lastName,
+			middleName = userAccountWeb.middleName,
+			roleCodes = userAccountWeb.roleCodes,
+			email = userAccountWeb.email,
+			phoneNumber = userAccountWeb.phoneNumber
+		)
+
+		(userAccountManager ? AddUserAccount(newUserAccount)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
 			logger.error("Add user error", error)

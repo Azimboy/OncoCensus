@@ -11,15 +11,16 @@ object UserAccountProtocol {
 
 	case class UserAccount(
 		id: Option[Int] = None,
+		createdAt: Option[Date] = None,
 		login: String,
 		passwordHash: String,
 		firstName: Option[String] = None,
 		lastName: Option[String] = None,
+		middleName: Option[String] = None,
 		roleCodes: Option[String] = None,
-		createdAt: Option[Date] = None,
-		updatedAt: Option[Date] = None,
 		email: Option[String] = None,
 		phoneNumber: Option[String] = None,
+		updatedAt: Option[Date] = None,
 		expiresAt: Option[Date] = None,
 		failedAttemptsCount: Int = 0,
 		blockedAt: Option[Date] = None
@@ -34,8 +35,8 @@ object UserAccountProtocol {
 			case None => false
 		}
 	}
-	implicit val userAccountFormatter = Json.format[UserAccount]
+	implicit val userAccountFormat = Json.format[UserAccount]
 
 	case class AddUserAccount(userAccount: UserAccount)
-
+	case object GetAllUserAccounts
 }

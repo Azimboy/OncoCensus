@@ -23,9 +23,10 @@ $ ->
     login: ''
     firstName: ''
     lastName: ''
+    middleName: ''
     email: ''
     phoneNumber: ''
-    roleCodes: ['super.user']
+    roleCodes: 'super.user'
 
   vm = ko.mapping.fromJS
     users: []
@@ -83,101 +84,18 @@ $ ->
     console.log(vm.selected.user)
     $addUserModal.modal('show')
 
-  #  softTrim = (str) ->
-#    if typeof(str) is "boolean"
-#      str
-#    else
-#      s = $.trim(str)
-#      if s
-#        s
+  vm.formatDate = (millis, format = 'MMM DD YYYY') ->
+    if millis
+      moment(millis).format(format)
 
-#  trimFields = (user) ->
-#    for field in userProperties
-#      user[field] = softTrim(user[field])
-#    user
-
-  #  vm.editManager = () ->
-#    userObj = ko.mapping.toJS(vm.selected.user)
-#
-#    userObj = fullfillCodes(userObj)
-#    userObj = trimFields(userObj)
-#
-#    if isUserValid(userObj)
-#      isManager = userObj.managedAppCodesArr.length > 0
-#      if !isManager or confirm("You've selected one or more Managed Apps.\n\nIt means that the user will be a User Manager," +
-#              " which will be able to create/edit user accounts for the selected Apps.\n\nAre you sure you want to do it?")
-#        vm.isLoading(yes)
-#        $.ajax
-#          url: apiUrl.userManager + "/#{userObj.id}"
-#          data: JSON.stringify(userObj)
-#          type: 'PUT'
-#          dataType: "json"
-#          contentType: 'application/json'
-#        .fail handleError
-#        .done () ->
-#          vm.isLoading(no)
-#          userObj.updatedAt = +new Date
-#          if userObj.isInternal && !selectedManagerFromRow.isInternal
-#            vm.managers.remove(selectedManagerFromRow)
-#          else if !userObj.isInternal && selectedManagerFromRow.isInternal
-#            vm.managers.unshift userObj
-#            vm.internalUsers.remove(selectedManagerFromRow)
-#          else
-#            vm.managers.replace selectedManagerFromRow, userObj
-#            vm.internalUsers.replace selectedManagerFromRow, userObj
-#
-#          toastr.success('Successfully saved')
-#          $editUserModal.modal('hide')
-#
-#  vm.changePassword = () ->
-#    userObj = ko.mapping.toJS(vm.selected.user)
-#    password = $.trim(userObj.password)
-#
-#    if !password
-#      toastr.error("Please enter password")
-#    else if password.indexOf(" ") isnt -1
-#      toastr.error('Password should not contain spaces')
-#    else
-#      $.ajax
-#        url: apiUrl.changePassword + "/#{userObj.id}"
-#        data: JSON.stringify(password: password)
-#        type: 'POST'
-#        dataType: "json"
-#        contentType: 'application/json'
-#      .fail handleError
-#      .done () ->
-#        toastr.success('Password has been changed successfully')
-#        $changePasswordModal.modal('hide')
-#        userObj.password = undefined
-#        userObj.updatedAt = +new Date
-#        vm.managers.replace selectedManagerFromRow, userObj
-#        vm.internalUsers.replace selectedManagerFromRow, userObj
-#
-#  vm.deleteManager = (manager) ->
-#    if confirm('Do you want to delete?')
-#      $.ajax
-#        url: apiUrl.userManager + "/#{manager.id}"
-#        type: 'DELETE'
-#        dataType: "json"
-#      .fail handleError
-#      .done () ->
-#        vm.managers.remove(manager)
-#        vm.internalUsers.remove(manager)
-#        toastr.success('Successfully deleted')
-
-#  vm.onClickEditManagerButton = (user) ->
-#    selectedManagerFromRow = user
-#    ko.mapping.fromJS(user, {}, vm.selected.user)
-#    $editUserModal.modal('show')
-#
-#  vm.onClickChangePasswordButton = (user) ->
-#    selectedManagerFromRow = user
-#    ko.mapping.fromJS(user, {}, vm.selected.user)
-#    $changePasswordModal.modal('show')
-#
-#  vm.openDeletedUsersModal = ->
-#    loadDeletedUsers(vm.selected.clientCode())
-#    $deletedUsersModal.modal('show')
+  prettifyUsers = (rawUsers) ->
+    for user in rawUsers
+      user.roleCodesArr = []
+      if user.roleCodes
+        user.roleCodesArr = user.roleCodes.split(',')
+#      for field in userProperties
+#        user[field] ?= undefined
+    rawUsers
 
   loadAllUsers = ->
     $.get(apiUrl.users)

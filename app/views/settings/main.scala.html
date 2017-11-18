@@ -32,6 +32,7 @@
     <!--[if lte IE 9]>
 		<link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-ie.min.css")" />
     <![endif]-->
+    @Html(webJarsUtil.css("build/toastr.min.css"))
 
     <!-- inline styles related to this page -->
 
@@ -88,7 +89,7 @@
     <script src="@routes.Assets.versioned("lib/knockout.mapping-latest.js")"></script>
     @Html(webJarsUtil.script("lodash.min.js"))
     <script src="@routes.Assets.versioned("javascripts/common.assist.js")"></script>
-    @Html(webJarsUtil.css("build/toastr.min.css"))
+    @Html(webJarsUtil.script("min/moment.min.js"))
   </head>
   <body style="background-color: white!important;">
     @content

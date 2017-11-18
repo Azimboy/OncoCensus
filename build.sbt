@@ -64,8 +64,9 @@ val webJars: Seq[ModuleID] = Seq(
 	"org.webjars" % "materializecss" % "0.100.2",
 	"org.webjars" % "knockout" % "3.3.0",
 	"org.webjars" % "lodash" % "3.10.1",
-	"org.webjars" % "toastr" % "2.1.2"
-//	"org.webjars" % "material-design-icons" % "2.2.0"
+	"org.webjars" % "toastr" % "2.1.2",
+	"org.webjars" % "momentjs" % "2.8.1"
+	//	"org.webjars" % "material-design-icons" % "2.2.0"
 )
 
 libraryDependencies ++= play ++ akka ++ database ++ webJars ++ loggingLibs ++

@@ -16,24 +16,25 @@ trait UserAccountsComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import dbConfig.profile.api._
 
-  class UserAccounts(tag: Tag) extends Table[UserAccount](tag, "UserAccounts") with Date2SqlDate {
+  class UserAccounts(tag: Tag) extends Table[UserAccount](tag, "user_accounts") with Date2SqlDate {
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+    def createdAt = column[Date]("created_at")
     def loginEncr = column[String]("login_encr")
     def passwordHashEncr = column[String]("password_hash_encr")
     def firstNameEncr = column[String]("first_name_encr")
     def lastNameEncr = column[String]("last_name_encr")
+    def middleNameEncr = column[String]("middle_name_encr")
     def roleCodesEncr = column[String]("role_codes_encr")
-    def createdAt = column[Date]("created_at")
-    def updatedAt = column[Date]("updated_at")
     def emailEncr = column[String]("email_encr")
     def phoneNumberEncr = column[String]("phone_number_encr")
+    def updatedAt = column[Date]("updated_at")
     def expiresAt = column[Date]("expires_at")
     def failedAttemptsCount = column[Int]("failed_attempts_count")
     def blockedAt = column[Option[Date]]("blocked_at")
 
-    def * = (id.?, loginEncr, passwordHashEncr, firstNameEncr.?, lastNameEncr.?, roleCodesEncr.?,
-      createdAt.?, updatedAt.?, emailEncr.?, phoneNumberEncr.?, expiresAt.?, failedAttemptsCount, blockedAt) <> (UserAccount.tupled, UserAccount.unapply)
+    def * = (id.?, createdAt.?, loginEncr, passwordHashEncr, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, roleCodesEncr.?,
+       emailEncr.?, phoneNumberEncr.?, updatedAt.?, expiresAt.?, failedAttemptsCount, blockedAt) <> (UserAccount.tupled, UserAccount.unapply)
 
   }
 }
@@ -42,13 +43,13 @@ trait UserAccountsComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
 trait UserAccountsDao {
   def findById(id: Int): Future[Option[UserAccount]]
   def create(userAccount: UserAccount): Future[Int]
+  def findAll: Future[Seq[UserAccount]]
   def updateUserAccount(userAccount: UserAccount): Future[Int]
   def updateUserPasswordHashEncr(userId: Int, passwordHashEncr: String): Future[Int]
   def updateUserPasswordHashEncrAndExpiresDate(userId: Int, passwordHashEncr: String, expiresAt: Date): Future[Int]
   def checkLoginUser(loginEncr: String, passwordHashEncr: String): Future[Option[UserAccount]]
   def checkPasswordWithCurrent(userId: Int, passwordHashEncr: String): Future[Option[UserAccount]]
   def updateUserAccountBlockStatusByLogin(loginEncr: String, blockedAt: Option[Date]): Future[Int]
-
 }
 
 @Singleton
@@ -73,6 +74,12 @@ class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigP
       (userAccounts returning userAccounts.map(_.id)
         into ((r,id) => id)
         ) += userAccount
+    }
+  }
+
+  override def findAll() = {
+    db.run {
+      userAccounts.result
     }
   }
 

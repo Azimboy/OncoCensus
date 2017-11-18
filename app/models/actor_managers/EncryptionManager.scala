@@ -27,6 +27,7 @@ object EncryptionManager {
 	case class DecryptTexts(texts: Seq[String])
 	case class DecryptBytes(bytes: Array[Byte])
 	case class DecryptUserAccount(userAccount: UserAccount)
+	case class DecryptUserAccounts(userAccounts: Seq[UserAccount])
 }
 
 class EncryptionManager @Inject() (configuration: Configuration)
@@ -102,6 +103,9 @@ class EncryptionManager @Inject() (configuration: Configuration)
 		case DecryptUserAccount(userAccount) =>
 			sender() ! decryptUserAccount(userAccount)
 
+		case DecryptUserAccounts(userAccounts) =>
+			sender() ! decryptUserAccounts(userAccounts)
+
 	}
 
 	private def openKeystore(keystorePassword: String, keyPassword: String): Unit = {
@@ -157,6 +161,7 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			roleCodes = userAccount.roleCodes.map(encryptText),
 			firstName = userAccount.firstName.map(encryptText),
 			lastName = userAccount.lastName.map(encryptText),
+			middleName = userAccount.middleName.map(encryptText),
 			email = userAccount.email.map(encryptText),
 			phoneNumber = userAccount.phoneNumber.map(encryptText)
 		)
@@ -169,9 +174,14 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			roleCodes = userAccount.roleCodes.map(decryptText),
 			firstName = userAccount.firstName.map(decryptText),
 			lastName = userAccount.lastName.map(decryptText),
+			middleName = userAccount.middleName.map(decryptText),
 			email = userAccount.email.map(decryptText),
 			phoneNumber = userAccount.phoneNumber.map(decryptText)
 		)
+	}
+
+	def decryptUserAccounts(accounts: Seq[UserAccount]) = {
+		accounts.map(decryptUserAccount)
 	}
 
 }
