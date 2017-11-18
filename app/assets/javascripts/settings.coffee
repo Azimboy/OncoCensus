@@ -46,9 +46,9 @@ $ ->
   isUserValid = (user) ->
     warningText =
       if notvalid(user.login)
-        'Please enter Login'
+        'Login maydonini to\'ldiring'
       else if notvalid(user.firstName)
-        'Please enter First Name'
+        'Ism maydonini to\'ldiring'
       else if notvalid(user.lastName)
         'Please enter Last Name'
       else if user.login.indexOf(' ') isnt -1
@@ -59,7 +59,7 @@ $ ->
         'Please enter valid phone number'
 
     if warningText
-      alert(warningText)
+      toastr.error(warningText)
       no
     else
       yes
@@ -67,9 +67,7 @@ $ ->
   vm.addNewManager = ->
     userObj = ko.mapping.toJS(vm.selected.user)
 
-    if !userObj.email
-      alert('Email manzilini kiriting')
-    else if isUserValid(userObj)
+    if isUserValid(userObj)
       vm.isLoading(yes)
       $.ajax
         url: apiUrl.user
