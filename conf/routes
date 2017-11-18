@@ -4,23 +4,20 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           @controllers.HomeController.index
-GET     /login                      @controllers.HomeController.login
-GET     /redirect/:menuName         @controllers.HomeController.redirectTo(menuName)
+GET     /                                                   @controllers.HomeController.index
+GET     /login                                              @controllers.HomeController.login
+GET     /redirect/:menuName                                 @controllers.HomeController.redirectTo(menuName)
 
-GET     /indicator                  @controllers.IndicatorController.index
-GET     /reception                  @controllers.ReceptionController.index
-GET     /patients                   @controllers.PatientsController.index
-GET     /statistics                 @controllers.StatisticsController.index
+GET     /indicator                                          @controllers.IndicatorController.index
+GET     /reception                                          @controllers.ReceptionController.index
+GET     /patients                                           @controllers.PatientsController.index
+GET     /statistics                                         @controllers.StatisticsController.index
 
-GET     /settings                   @controllers.SettingsController.index
-GET     /settings/users             @controllers.SettingsController.getUsers
-POST    /settings/user              @controllers.SettingsController.addUserManager
-
-# An example controller showing how to use dependency injection
-#GET     /count                      @controllers.CountController.count
-# An example controller showing how to write asynchronous code
-#GET     /message                    @controllers.AsyncController.message
+GET     /settings                                           @controllers.SettingsController.index
+GET     /settings/regions                                   @controllers.SettingsController.getRegions
+GET     /settings/districts/:regionId                       @controllers.SettingsController.getDistrictsByRegionId(regionId: Int)
+GET     /settings/users                                     @controllers.SettingsController.getUsers
+POST    /settings/user                                      @controllers.SettingsController.addUserManager
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               @controllers.Assets.versioned(path="/public", file: Asset)

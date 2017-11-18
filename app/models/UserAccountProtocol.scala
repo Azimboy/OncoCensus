@@ -39,4 +39,7 @@ object UserAccountProtocol {
 
 	case class AddUserAccount(userAccount: UserAccount)
 	case object GetAllUserAccounts
+
+	case object GetAllRegions
+	case class GetDistrictsByRegionId(regionId: Int)
 }

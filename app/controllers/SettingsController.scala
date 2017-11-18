@@ -8,7 +8,8 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
-import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
+import models.AppProtocol.{District, Region}
+import models.UserAccountProtocol.{AddUserAccount, GetAllRegions, GetAllUserAccounts, GetDistrictsByRegionId, UserAccount}
 import models.utils.CieloConfigUtil._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -51,6 +52,18 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 	def getUsers = Action.async { implicit request =>
 		(userAccountManager ? GetAllUserAccounts).mapTo[Seq[UserAccount]].map { users =>
 			Ok(Json.toJson(users))
+		}
+	}
+
+	def getRegions() = Action.async { implicit request =>
+		(userAccountManager ? GetAllRegions).mapTo[Seq[Region]].map { regions =>
+			Ok(Json.toJson(regions))
+		}
+	}
+
+	def getDistrictsByRegionId(regionId: Int) = Action.async { implicit request =>
+		(userAccountManager ? GetDistrictsByRegionId(regionId)).mapTo[Seq[District]].map { districts =>
+			Ok(Json.toJson(districts))
 		}
 	}
 

@@ -3,9 +3,8 @@ package models.daos
 import java.util.Date
 import javax.inject.{Inject, Singleton}
 
-import models.UserAccountProtocol._
 import com.google.inject.ImplementedBy
-//import com.typesafe.scalalogging.LazyLogging
+import models.UserAccountProtocol._
 import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile

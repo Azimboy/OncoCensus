@@ -5,6 +5,8 @@ $ ->
   apiUrl =
     user: '/settings/user'
     users: '/settings/users'
+    regions: '/settings/regions'
+    districts: '/settings/districts'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -30,8 +32,12 @@ $ ->
 
   vm = ko.mapping.fromJS
     users: []
+    regions: []
+    districts: []
     selected:
       user: defaultUser
+      regionId: ''
+      districtId: ''
     isLoading: no
 
   notvalid = (str) ->
@@ -103,7 +109,20 @@ $ ->
     .done (users) ->
       vm.users prettifyUsers(users)
 
+  loadAllRegions = ->
+    $.get(apiUrl.regions)
+    .fail handleError
+    .done (regions) ->
+      vm.regions regions
+
+  vm.selected.regionId.subscribe = (regionId) ->
+    $.get("#{apiUrl.districts}/#{regionId}")
+    .fail handleError
+    .done (districts) ->
+      vm.districts districts
+
   loadAllUsers()
+  loadAllRegions()
 
   Glob.vm = vm
 
