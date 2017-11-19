@@ -8,8 +8,8 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
-import models.AppProtocol.{District, Region}
-import models.UserAccountProtocol.{AddUserAccount, GetAllRegions, GetAllUserAccounts, GetDistrictsByRegionId, UserAccount}
+import models.AppProtocol.{District, GetAllRegions, GetDistrictsByRegionId, Region}
+import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
 import models.utils.CieloConfigUtil._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration

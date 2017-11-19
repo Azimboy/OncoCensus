@@ -5,8 +5,8 @@ import javax.inject.{Inject, Named}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.AppProtocol.{District, Region}
-import models.UserAccountProtocol.{AddUserAccount, GetAllRegions, GetAllUserAccounts, GetDistrictsByRegionId, UserAccount}
+import models.AppProtocol.{District, GetAllRegions, GetDistrictsByRegionId, Region}
+import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
 import models.actor_managers.EncryptionManager.{DecryptUserAccounts, EncryptUserAccount}
 import models.daos.{DistrictsDao, RegionsDao, UserAccountsDao}
 

@@ -17,6 +17,7 @@ object UserAccountProtocol {
 		firstName: Option[String] = None,
 		lastName: Option[String] = None,
 		middleName: Option[String] = None,
+		departmentId: Option[Int] = None,
 		roleCodes: Option[String] = None,
 		email: Option[String] = None,
 		phoneNumber: Option[String] = None,
@@ -40,6 +41,4 @@ object UserAccountProtocol {
 	case class AddUserAccount(userAccount: UserAccount)
 	case object GetAllUserAccounts
 
-	case object GetAllRegions
-	case class GetDistrictsByRegionId(regionId: Int)
 }

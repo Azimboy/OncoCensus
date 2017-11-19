@@ -11,11 +11,13 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.Future
 
-trait UserAccountsComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
+trait UserAccountsComponent extends DepartmentsComponent
+  { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import dbConfig.profile.api._
 
   class UserAccounts(tag: Tag) extends Table[UserAccount](tag, "user_accounts") with Date2SqlDate {
+    val departments = TableQuery[Departments]
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def createdAt = column[Date]("created_at")
@@ -24,6 +26,7 @@ trait UserAccountsComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
     def firstNameEncr = column[String]("first_name_encr")
     def lastNameEncr = column[String]("last_name_encr")
     def middleNameEncr = column[String]("middle_name_encr")
+    def departmentId = column[Int]("department_id")
     def roleCodesEncr = column[String]("role_codes_encr")
     def emailEncr = column[String]("email_encr")
     def phoneNumberEncr = column[String]("phone_number_encr")
@@ -32,9 +35,10 @@ trait UserAccountsComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
     def failedAttemptsCount = column[Int]("failed_attempts_count")
     def blockedAt = column[Option[Date]]("blocked_at")
 
-    def * = (id.?, createdAt.?, loginEncr, passwordHashEncr, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, roleCodesEncr.?,
+    def * = (id.?, createdAt.?, loginEncr, passwordHashEncr, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, departmentId.?, roleCodesEncr.?,
        emailEncr.?, phoneNumberEncr.?, updatedAt.?, expiresAt.?, failedAttemptsCount, blockedAt) <> (UserAccount.tupled, UserAccount.unapply)
 
+    def department = foreignKey("user_accounts_fk_department_id", departmentId, departments)(_.id)
   }
 }
 
@@ -71,7 +75,7 @@ class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigP
   override def create(userAccount: UserAccount) = {
     db.run {
       (userAccounts returning userAccounts.map(_.id)
-        into ((r,id) => id)
+        into ((r, id) => id)
         ) += userAccount
     }
   }

@@ -20,12 +20,12 @@ trait DistrictsComponent extends RegionsComponent
 
 		def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 		def name = column[String]("name")
-		def regionId = column[Int]("region-id")
+		def regionId = column[Int]("region_id")
 
 		def * = (id.?, name, regionId) <>
 			(District.tupled, District.unapply _)
 
-		def region = foreignKey("districtsFkRegionId", regionId, regions)(_.id)
+		def region = foreignKey("districts_fk_region_id", regionId, regions)(_.id)
 	}
 }
 
