@@ -1,14 +1,14 @@
 package controllers
 
 import java.util.Date
-import javax.inject.Inject
+import javax.inject.{Inject, Named, Singleton}
 
-import akka.actor.ActorSystem
+import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
-import models.AppProtocol.{District, GetAllRegions, GetDistrictsByRegionId, Region}
+import models.AppProtocol.{AddDepartment, Department, DepartmentsReport, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region}
 import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
 import models.utils.CieloConfigUtil._
 import org.webjars.play.WebJarsUtil
@@ -30,11 +30,21 @@ object SettingsController {
 	  email: Option[String] = None,
 	  phoneNumber: Option[String] = None,
 	)
+
+	case class DepartmentWeb(
+		districtId: Int,
+		name: String
+	)
+
 	implicit val userAccountWebFormat = Json.format[UserAccountWeb]
+	implicit val departmentWebFormat = Json.format[DepartmentWeb]
 }
 
+@Singleton
 class SettingsController @Inject()(val controllerComponents: ControllerComponents,
                                    val configuration: Configuration,
+                                   @Named("user-account-manager") val userAccountManager: ActorRef,
+                                   @Named("department-manager") val departmentManager: ActorRef,
                                    implicit val webJarsUtil: WebJarsUtil,
                                    implicit val actorSystem: ActorSystem
 																	)(implicit val ec: ExecutionContext)
@@ -43,7 +53,7 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 	implicit val defaultTimeout = Timeout(60.seconds)
 
 	implicit val currentConfig = getWebServerConfig(configuration)
-	val userAccountManager = getActorSelFromConfig("actor-path.user-account-manager")
+//	val userAccountManager = getActorSelFromConfig("actor-path.user-account-manager")
 
 	def index = Action {
 		Ok(settings.index())
@@ -90,4 +100,21 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 		}
 	}
 
+	def getDepartments = Action.async { implicit request =>
+		(departmentManager ? GetDepartmentsReport).mapTo[Seq[DepartmentsReport]].map { reports =>
+			Ok(Json.toJson(reports))
+		}.recover { case error =>
+			logger.error("Deps", error)
+			InternalServerError
+		}
+	}
+
+	def addDepartment = Action.async(parse.json[Department]) { implicit request =>
+		(departmentManager ? AddDepartment(request.body)).mapTo[Int].map { id =>
+			Ok(Json.toJson(id))
+		}.recover { case error =>
+			logger.error("Add department error", error)
+			InternalServerError
+		}
+	}
 }

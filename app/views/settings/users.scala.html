@@ -1,9 +1,20 @@
 @()
-<button class="btn btn-success" data-bind="click: vm.onClickAddUserButton">Yangi foydanaluvchi yaratish</button>
-<br>
-<div class="table-responsive">
-    <!-- ko template: {name: 'users-table-template', data: {users: vm.users, vm: vm}} -->
-    <!-- /ko -->
+<div class="pull-right tableTools-container">
+  <div class="dt-buttons btn-overlap btn-group">
+    <a data-bind="click: vm.onClickAddUserButton" class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold" aria-controls="dynamic-table" data-original-title title>
+      <span>
+        <i class="fa fa-plus"></i>
+        <span>Yangi foydalanuvchi qo'shish</span>
+      </span>
+    </a>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div>
+  <!-- ko template: {name: 'users-table-template', data: {users: vm.users, vm: vm}} -->
+  <!-- /ko -->
 </div>
 
 <script type="text/html" id="users-table-template">
@@ -33,7 +44,7 @@
         </th>
         <th>Email</th>
         <th>Telefon (Mobil)<br>raqam</th>
-        <th class="column-action">Amallar</th>
+        <th class="column-action"></th>
       </tr>
     </thead>
 
@@ -86,7 +97,7 @@
           <div class="pull-left">&nbsp; &nbsp;</div>
           <button type="button" class="pull-left btn btn-danger" data-dismiss="modal">Bekor qilish</button> &nbsp;
           <div class="pull-left">&nbsp; &nbsp;</div>
-          <div class="pull-left busy-loader" data-bl-selector=".add-user, .app-select" data-bl-url="admin/super-manager/user-manager"></div>
+          <div class="pull-left busy-loader" data-bl-selector=".add-user, .app-select" data-bl-url="settings/user"></div>
         </div>
         <br>
         <br>

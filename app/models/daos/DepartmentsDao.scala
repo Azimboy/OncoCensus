@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import models.AppProtocol.Department
+import models.AppProtocol.{Department, DepartmentsReport}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
@@ -31,8 +31,9 @@ trait DepartmentsComponent extends DistrictsComponent
 
 @ImplementedBy(classOf[DepartmentsDaoImpl])
 trait DepartmentsDao {
-	def findById(id: Int): Future[Option[Department]]
 	def create(department: Department): Future[Int]
+	def findById(id: Int): Future[Option[Department]]
+	def findAll: Future[Seq[DepartmentsReport]]
 	def getDepartmentsByDistrictId(districtId: Int): Future[Seq[Department]]
 }
 
@@ -44,14 +45,11 @@ class DepartmentsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfi
 		with LazyLogging {
 
 	import dbConfig.profile.api._
+	import scala.concurrent.ExecutionContext.Implicits.global
 
+	val regions = TableQuery[Regions]
+	val districts = TableQuery[Districts]
 	val departments = TableQuery[Departments]
-
-	override def findById(id: Int) = {
-		db.run {
-			departments.filter(_.id === id).result.headOption
-		}
-	}
 
 	override def create(department: Department) = {
 		db.run {
@@ -59,6 +57,26 @@ class DepartmentsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfi
 				into ((r, id) => id)
 				) += department
 		}
+	}
+
+	override def findById(id: Int) = {
+		db.run {
+			departments.filter(_.id === id).result.headOption
+		}
+	}
+
+	override def findAll: Future[Seq[DepartmentsReport]] = {
+		val joinWithDistrictsQ = departments.join(districts).on(_.districtId === _.id)
+		val joinWithRegionsQ = joinWithDistrictsQ.join(regions).on(_._2.regionId === _.id)
+
+		db.run(joinWithRegionsQ.result).map(_.map { case ((department, district), region) =>
+			DepartmentsReport(
+				id = department.id,
+				regionName = region.name,
+				districtName = district.name,
+				departmentName = department.name
+			)
+		})
 	}
 
 	override def getDepartmentsByDistrictId(districtId: Int): Future[Seq[Department]] = {

@@ -1,0 +1,122 @@
+@()
+<div class="pull-right tableTools-container">
+  <div class="dt-buttons btn-overlap btn-group">
+    <a data-bind="click: vm.onClickAddDepartmentButton" class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold" aria-controls="dynamic-table" data-original-title title>
+      <span>
+        <i class="fa fa-plus"></i>
+        <span>Yangi tibbiy bo'lim qo'shish</span>
+      </span>
+    </a>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div>
+    <!-- ko template: {name: 'departments-table-template', data: {departments: vm.departments, vm: vm}} -->
+    <!-- /ko -->
+</div>
+
+<script type="text/html" id="departments-table-template">
+  <table class="table table-bordered table-hover">
+    <thead>
+      <tr>
+        <th width="4%">#</th>
+        <th width="18%">Viloyat</th>
+        <th width="18%">Tuman</th>
+        <th width="50%">Tibbiy bo'lim nomi</th>
+        <th width="10%"></th>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: $data.departments">
+      <tr>
+        <td data-bind="text: $data.id"></td>
+        <td data-bind="text: $data.regionName"></td>
+        <td data-bind="text: $data.districtName"></td>
+        <td data-bind="text: $data.departmentName"></td>
+        <td class="nowrap column-action">
+          <button type="button" class="btn btn-white btn-warning btn-bold btn-sm" title="Tahrirlash">
+            <span class="fa fa-edit bigger-120 orange"></span>
+          </button>
+          <button type="button" class="btn btn-white btn-danger btn-bold btn-sm" title="O'chirish">
+            <span class="fa fa-trash-o bigger-120 red"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</script>
+
+<div id="add-department-modal" class="modal fade" role="dialog" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Yangi tibbiy bo'lim yaratish</h4>
+      </div>
+
+      <div class="modal-body">
+        <div data-bind="template: {name: 'department-form-fields-template', data: vm.selected.department}" class="form-condensed row"></div>
+        <div class="col-xs-offset-4 col-xs-6">
+          <button type="submit" class="pull-left btn btn-primary add-department" data-bind="click: vm.addNewDepartment, disable: vm.isLoading">Qo'shish</button>
+          <div class="pull-left">&nbsp; &nbsp;</div>
+          <button type="button" class="pull-left btn btn-danger" data-dismiss="modal">Bekor qilish</button> &nbsp;
+          <div class="pull-left">&nbsp; &nbsp;</div>
+          <div class="pull-left busy-loader" data-bl-selector=".add-department, .app-select" data-bl-url="settings/department"></div>
+        </div>
+        <br>
+        <br>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+<div id="edit-user-modal" class="modal fade" role="dialog" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Foydalanuvchini tahrirlash</h4>
+      </div>
+
+      <div class="modal-body">
+        <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}" class="form-condensed row"></div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary" data-bind="click: vm.editManager, disable: vm.isLoading">Saqlash</button> &nbsp;
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Bekor qilish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+<script type="text/html" id="department-form-fields-template">
+  <form class="form-horizontal">
+    <div class="form-group col-xs-12">
+      <label class="col-xs-3 control-label no-padding-right" for="inputLogin">Viloyat</label>
+      <div class="col-xs-6">
+        <select class="form-control" autocomplete="off" name="region" id="region"
+          data-bind="options: $root.vm.regions, optionsText: 'name', optionsValue: 'id', value: $data.regionId, optionsCaption: 'Viloyat'">
+        </select>
+      </div>
+    </div>
+    <div class="hr hr-15 hr-dotted"></div>
+    <div class="clearfix"></div>
+
+    <div class="form-group col-xs-12">
+      <label class="col-xs-3 control-label no-padding-right" for="input2">Tuman</label>
+      <div class="col-xs-6">
+        <select class="form-control" autocomplete="off" name="district" id="district"
+        data-bind="options: $root.vm.districts, optionsText: 'name', optionsValue: 'id', value: $data.districtId, optionsCaption: 'Tuman'">
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group col-xs-12">
+      <label class="col-xs-3 control-label no-padding-right" for="input3">Tibbiy bo'lib nomi</label>
+      <div class="col-xs-6">
+        <input type="text" class="form-control" id="input3" data-bind="value: $data.name" name="name">
+      </div>
+    </div>
+  </form>
+</script>

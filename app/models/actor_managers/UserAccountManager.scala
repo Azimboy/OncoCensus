@@ -1,6 +1,6 @@
 package models.actor_managers
 
-import javax.inject.{Inject, Named}
+import javax.inject.{Inject, Named, Singleton}
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
@@ -10,17 +10,18 @@ import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccou
 import models.actor_managers.EncryptionManager.{DecryptUserAccounts, EncryptUserAccount}
 import models.daos.{DistrictsDao, RegionsDao, UserAccountsDao}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
 
+@Singleton
 class UserAccountManager @Inject()(@Named("encryption-manager") encryptionManager: ActorRef,
                                    val userAccountsDao: UserAccountsDao,
                                    val regionsDao: RegionsDao,
                                    val districtsDao: DistrictsDao)
+                                  (implicit val ec: ExecutionContext)
 	extends Actor
 		with ActorLogging {
 
-	implicit val executionContext = context.dispatcher
 	implicit val defaultTimeout = Timeout(60.seconds)
 
 	override def receive: Receive = {

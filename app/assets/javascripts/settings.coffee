@@ -7,6 +7,8 @@ $ ->
     users: '/settings/users'
     regions: '/settings/regions'
     districts: '/settings/districts'
+    departments: '/settings/departments'
+    department: '/settings/department'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -21,6 +23,14 @@ $ ->
   $editUserModal = $('#edit-user-modal')
   $changePasswordModal = $('#change-password-modal')
 
+  $addDepartmentModal = $('#add-department-modal')
+  $editDepartmentModal = $('#edit-department-modal')
+
+  defaultDepartment =
+    regionId: ''
+    districtId: ''
+    name: ''
+
   defaultUser =
     login: ''
     firstName: ''
@@ -34,10 +44,10 @@ $ ->
     users: []
     regions: []
     districts: []
+    departments: []
     selected:
       user: defaultUser
-      regionId: ''
-      districtId: ''
+      department: defaultDepartment
     isLoading: no
 
   notvalid = (str) ->
@@ -85,8 +95,11 @@ $ ->
 
   vm.onClickAddUserButton = ->
     ko.mapping.fromJS(defaultUser, {}, vm.selected.user)
-    console.log(vm.selected.user)
     $addUserModal.modal('show')
+
+  vm.onClickAddDepartmentButton = ->
+    ko.mapping.fromJS(defaultDepartment, {}, vm.selected.department)
+    $addDepartmentModal.modal('show')
 
   vm.formatDate = (millis, format = 'MMM DD YYYY') ->
     if millis
@@ -113,14 +126,55 @@ $ ->
     .done (regions) ->
       vm.regions regions
 
-  vm.selected.regionId.subscribe = (regionId) ->
-    $.get("#{apiUrl.districts}/#{regionId}")
+  loadAllDepartments = ->
+    $.get(apiUrl.departments)
     .fail handleError
-    .done (districts) ->
-      vm.districts districts
+    .done (departments) ->
+      vm.departments departments
+
+  vm.selected.department.regionId.subscribe (regionId) ->
+    if regionId
+      $.get("#{apiUrl.districts}/#{regionId}")
+      .fail handleError
+      .done (districts) ->
+        vm.districts districts
+
+  isDepartmentValid = (department) ->
+    warningText =
+      if !department.regionId
+        'Viloyatni tanlang'
+      else if !department.districtId
+        'Tumanni tanlang'
+      else if !my.hasText(department.name)
+        'Tibbiy bo\'lim nomini kiriting'
+
+    if warningText
+      toastr.error(warningText)
+      no
+    else
+      yes
+
+  vm.addNewDepartment = ->
+    depObj = ko.mapping.toJS(vm.selected.department)
+
+    if isDepartmentValid(depObj)
+      vm.isLoading(yes)
+      $.ajax
+        url: apiUrl.department
+        data: JSON.stringify(depObj)
+        type: 'POST'
+        dataType: "json"
+        contentType: 'application/json'
+      .fail handleError
+      .done (id) ->
+        vm.isLoading(no)
+        alert('Tibbiy bo\'lim muvaffaqiyatli yaratildi')
+        loadAllDepartments()
+        $addDepartmentModal.modal('hide')
 
   loadAllUsers()
   loadAllRegions()
+  loadAllDepartments()
 
   Glob.vm = vm
 

@@ -10,6 +10,7 @@ import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.common.io.BaseEncoding
+import models.AppProtocol.Department
 import models.UserAccountProtocol.UserAccount
 import play.api.Configuration
 import play.api.libs.json._
@@ -22,12 +23,14 @@ object EncryptionManager {
 	case class EncryptTexts(texts: Seq[String])
 	case class EncryptBytes(bytes: Array[Byte])
 	case class EncryptUserAccount(userAccount: UserAccount)
+	case class EncryptDepartment(userAccount: Department)
 
 	case class DecryptText(text: String)
 	case class DecryptTexts(texts: Seq[String])
 	case class DecryptBytes(bytes: Array[Byte])
 	case class DecryptUserAccount(userAccount: UserAccount)
 	case class DecryptUserAccounts(userAccounts: Seq[UserAccount])
+	case class DecryptDepartments(departments: Seq[Department])
 }
 
 class EncryptionManager @Inject() (configuration: Configuration)
@@ -91,6 +94,9 @@ class EncryptionManager @Inject() (configuration: Configuration)
 		case EncryptUserAccount(userAccount) =>
 			sender() ! encryptUserAccount(userAccount)
 
+		case EncryptDepartment(department) =>
+			sender() ! encryptDepartment(department)
+
 		case DecryptText(text) =>
 			sender() ! decryptText(text)
 
@@ -105,6 +111,9 @@ class EncryptionManager @Inject() (configuration: Configuration)
 
 		case DecryptUserAccounts(userAccounts) =>
 			sender() ! decryptUserAccounts(userAccounts)
+
+		case DecryptDepartments(departments) =>
+			sender() ! decryptDepartments(departments)
 
 	}
 
@@ -184,4 +193,13 @@ class EncryptionManager @Inject() (configuration: Configuration)
 		accounts.map(decryptUserAccount)
 	}
 
+	def encryptDepartment(department: Department): Department = {
+		department.copy(
+			name = encryptText(department.name)
+		)
+	}
+
+	def decryptDepartments(departments: Seq[Department]) = {
+		departments.map(department => department.copy(name = decryptText(department.name)))
+	}
 }
