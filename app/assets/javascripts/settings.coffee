@@ -97,10 +97,6 @@ $ ->
     ko.mapping.fromJS(defaultUser, {}, vm.selected.user)
     $addUserModal.modal('show')
 
-  vm.onClickAddDepartmentButton = ->
-    ko.mapping.fromJS(defaultDepartment, {}, vm.selected.department)
-    $addDepartmentModal.modal('show')
-
   vm.formatDate = (millis, format = 'MMM DD YYYY') ->
     if millis
       moment(millis).format(format)
@@ -133,7 +129,7 @@ $ ->
       vm.departments departments
 
   vm.selected.department.regionId.subscribe (regionId) ->
-    if regionId
+    if regionId and !vm.selected.districtId
       $.get("#{apiUrl.districts}/#{regionId}")
       .fail handleError
       .done (districts) ->
@@ -154,7 +150,11 @@ $ ->
     else
       yes
 
-  vm.addNewDepartment = ->
+  vm.onClickAddDepartmentButton = ->
+    ko.mapping.fromJS(defaultDepartment, {}, vm.selected.department)
+    $addDepartmentModal.modal('show')
+
+  vm.createDepartment = ->
     depObj = ko.mapping.toJS(vm.selected.department)
 
     if isDepartmentValid(depObj)
@@ -168,9 +168,43 @@ $ ->
       .fail handleError
       .done (id) ->
         vm.isLoading(no)
-        alert('Tibbiy bo\'lim muvaffaqiyatli yaratildi')
+        toastr.success('Tibbiy bo\'lim muvaffaqiyatli yaratildi')
         loadAllDepartments()
         $addDepartmentModal.modal('hide')
+
+  vm.onClickEditDepartmentButton = (department) ->
+    console.log(department)
+    ko.mapping.fromJS(department, {}, vm.selected.department)
+    $editDepartmentModal.modal('show')
+
+  vm.updateDepartment = () ->
+    depObj = ko.mapping.toJS(vm.selected.department)
+
+    if isDepartmentValid(depObj)
+      vm.isLoading(yes)
+      $.ajax
+        url: apiUrl.department + "/#{depObj.id}"
+        data: JSON.stringify(depObj)
+        type: 'PUT'
+        dataType: "json"
+        contentType: 'application/json'
+      .fail handleError
+      .done () ->
+        vm.isLoading(no)
+        toastr.success('Muvaffaqiyatli saqlandi')
+        loadAllDepartments()
+        $editDepartmentModal.modal('hide')
+
+  vm.deleteDepartment = (department) ->
+    if confirm('Bu tibbiy bo\'limni o\'chirishni xohlaysizmi?')
+      $.ajax
+        url: apiUrl.department + "/#{department.id}"
+        type: 'DELETE'
+        dataType: "json"
+      .fail handleError
+      .done () ->
+        vm.departments.remove(department)
+        toastr.success('Muvaffaqiyatli o\'chirildi')
 
   loadAllUsers()
   loadAllRegions()

@@ -8,7 +8,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
-import models.AppProtocol.{AddDepartment, Department, DepartmentsReport, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region}
+import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, DepartmentsReport, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region, UpdateDepartment}
 import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
 import models.utils.CieloConfigUtil._
 import org.webjars.play.WebJarsUtil
@@ -109,11 +109,29 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 		}
 	}
 
-	def addDepartment = Action.async(parse.json[Department]) { implicit request =>
-		(departmentManager ? AddDepartment(request.body)).mapTo[Int].map { id =>
+	def createDepartment = Action.async(parse.json[Department]) { implicit request =>
+		(departmentManager ? CreateDepartment(request.body)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
-			logger.error("Add department error", error)
+			logger.error("Create department error", error)
+			InternalServerError
+		}
+	}
+
+	def updateDepartment(id: Int) = Action.async(parse.json[Department]) { implicit request =>
+		(departmentManager ? UpdateDepartment(request.body)).mapTo[Int].map { id =>
+			Ok(Json.toJson(id))
+		}.recover { case error =>
+			logger.error("Update department error", error)
+			InternalServerError
+		}
+	}
+
+	def deleteDepartment(id: Int) = Action.async { implicit request =>
+		(departmentManager ? DeleteDepartment(id)).mapTo[Int].map { id =>
+			Ok(Json.toJson(id))
+		}.recover { case error =>
+			logger.error("Update department error", error)
 			InternalServerError
 		}
 	}

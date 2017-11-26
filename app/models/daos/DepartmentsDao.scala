@@ -32,6 +32,8 @@ trait DepartmentsComponent extends DistrictsComponent
 @ImplementedBy(classOf[DepartmentsDaoImpl])
 trait DepartmentsDao {
 	def create(department: Department): Future[Int]
+	def update(department: Department): Future[Int]
+	def delete(id: Int): Future[Int]
 	def findById(id: Int): Future[Option[Department]]
 	def findAll: Future[Seq[DepartmentsReport]]
 	def getDepartmentsByDistrictId(districtId: Int): Future[Seq[Department]]
@@ -59,6 +61,18 @@ class DepartmentsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfi
 		}
 	}
 
+	override def update(department: Department): Future[Int] = {
+		db.run {
+			departments.filter(_.id === department.id).update(department)
+		}
+	}
+
+	override def delete(id: Int): Future[Int] = {
+		db.run {
+			departments.filter(_.id === id).delete
+		}
+	}
+
 	override def findById(id: Int) = {
 		db.run {
 			departments.filter(_.id === id).result.headOption
@@ -72,11 +86,13 @@ class DepartmentsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfi
 		db.run(joinWithRegionsQ.result).map(_.map { case ((department, district), region) =>
 			DepartmentsReport(
 				id = department.id,
+				name = department.name,
 				regionName = region.name,
+				regionId = region.id.get,
 				districtName = district.name,
-				departmentName = department.name
+				districtId = district.id.get
 			)
-		})
+		}.sortBy(_.id))
 	}
 
 	override def getDepartmentsByDistrictId(districtId: Int): Future[Seq[Department]] = {

@@ -32,14 +32,18 @@ object AppProtocol {
 	case class GetDepartmentsByDistrictId(districtId: Int)
 
 	case object GetDepartmentsReport
-	case class AddDepartment(department: Department)
+	case class CreateDepartment(department: Department)
+	case class UpdateDepartment(department: Department)
+	case class DeleteDepartment(departmentId: Int)
 
 	case class DepartmentsReport(
     id: Option[Int],
-    createdAt: Option[Date] = None,
-    regionName: String,
-    districtName: String,
-    departmentName: String
+    name: String,
+		createdAt: Option[Date] = None,
+		regionName: String,
+		regionId: Int,
+		districtName: String,
+		districtId: Int
 	)
 
 	implicit val departmentsReportFormat = Json.format[DepartmentsReport]

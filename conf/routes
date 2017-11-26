@@ -16,10 +16,14 @@ GET     /statistics                                         @controllers.Statist
 GET     /settings                                           @controllers.SettingsController.index
 GET     /settings/regions                                   @controllers.SettingsController.getRegions
 GET     /settings/districts/:regionId                       @controllers.SettingsController.getDistrictsByRegionId(regionId: Int)
+
+GET     /settings/departments                               @controllers.SettingsController.getDepartments
+POST    /settings/department                                @controllers.SettingsController.createDepartment
+PUT     /settings/department/:id                            @controllers.SettingsController.updateDepartment(id: Int)
+DELETE  /settings/department/:id                            @controllers.SettingsController.deleteDepartment(id: Int)
+
 GET     /settings/users                                     @controllers.SettingsController.getUsers
 POST    /settings/user                                      @controllers.SettingsController.addUserManager
-GET     /settings/departments                               @controllers.SettingsController.getDepartments
-POST    /settings/department                                @controllers.SettingsController.addDepartment
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               @controllers.Assets.versioned(path="/public", file: Asset)
