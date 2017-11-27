@@ -26,6 +26,7 @@ object SettingsController {
 	  firstName: Option[String] = None,
 	  lastName: Option[String] = None,
 	  middleName: Option[String] = None,
+	  departmentId: Option[Int] = None,
 	  roleCodes: Option[String] = None,
 	  email: Option[String] = None,
 	  phoneNumber: Option[String] = None,
@@ -77,7 +78,7 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 		}
 	}
 
-	def addUserManager() = Action.async(parse.json[UserAccountWeb]) { implicit request =>
+	def createUser = Action.async(parse.json[UserAccountWeb]) { implicit request =>
 		val userAccountWeb = request.body
 
 		val newUserAccount = UserAccount(
@@ -87,6 +88,31 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 			firstName = userAccountWeb.firstName,
 			lastName = userAccountWeb.lastName,
 			middleName = userAccountWeb.middleName,
+			departmentId = userAccountWeb.departmentId,
+			roleCodes = userAccountWeb.roleCodes,
+			email = userAccountWeb.email,
+			phoneNumber = userAccountWeb.phoneNumber
+		)
+
+		(userAccountManager ? AddUserAccount(newUserAccount)).mapTo[Int].map { id =>
+			Ok(Json.toJson(id))
+		}.recover { case error =>
+			logger.error("Add user error", error)
+			InternalServerError
+		}
+	}
+// TODO fix User update
+	def updateUser(id: Int) = Action.async(parse.json[UserAccountWeb]) { implicit request =>
+		val userAccountWeb = request.body
+
+		val newUserAccount = UserAccount(
+			login = userAccountWeb.login,
+			passwordHash = "123",
+			createdAt = Some(new Date),
+			firstName = userAccountWeb.firstName,
+			lastName = userAccountWeb.lastName,
+			middleName = userAccountWeb.middleName,
+			departmentId = userAccountWeb.departmentId,
 			roleCodes = userAccountWeb.roleCodes,
 			email = userAccountWeb.email,
 			phoneNumber = userAccountWeb.phoneNumber

@@ -62,20 +62,12 @@
         <td><div class="email-txt" data-bind="text: $data.email"></div></td>
         <td><span data-bind="text: $data.phoneNumber"></span></td>
         <td class="nowrap column-action">
-        <p>
-        <button type="button" class="btn btn-info btn-xs" title="Tahrirlash">
-        <span class="glyphicon glyphicon-pencil"></span>
-        </button>&nbsp;
-        <button type="button" class="btn btn-danger btn-xs" title="O'chirish">
-        <span class="glyphicon glyphicon-remove"></span>
-        </button>&nbsp;
-        <button type="button" class="btn btn-primary btn-xs" title="Parolni o'zgartirish">
-        &nbsp;<strong>P</strong>&nbsp;
-        </button>&nbsp;
-        <button type="button" class="btn btn-warning btn-xs" title="Foydalanuvchini ochish">
-        &nbsp;<strong>U</strong>&nbsp;
-        </button>
-        </p>
+          <button type="button" data-bind="click: $root.vm.onClickEditUserButton" class="btn btn-white btn-warning btn-bold btn-sm" title="Tahrirlash">
+            <span class="fa fa-edit bigger-120 orange"></span>
+          </button>
+          <button type="button" data-bind="click: $root.vm.deleteUser" class="btn btn-white btn-danger btn-bold btn-sm" title="O'chirish">
+            <span class="fa fa-trash-o bigger-120 red"></span>
+          </button>
         </td>
       </tr>
     </tbody>
@@ -93,7 +85,7 @@
       <div class="modal-body">
         <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}" class="form-condensed row"></div>
         <div class="col-xs-offset-4 col-xs-6">
-          <button type="submit" class="pull-left btn btn-primary add-user" data-bind="click: vm.addNewManager, disable: vm.isLoading">Qo'shish</button>
+          <button type="submit" class="pull-left btn btn-primary add-user" data-bind="click: vm.createUser, disable: vm.isLoading">Qo'shish</button>
           <div class="pull-left">&nbsp; &nbsp;</div>
           <button type="button" class="pull-left btn btn-danger" data-dismiss="modal">Bekor qilish</button> &nbsp;
           <div class="pull-left">&nbsp; &nbsp;</div>
@@ -156,36 +148,19 @@
     <div class="form-group col-xs-12">
       <label class="col-xs-3 control-label no-padding-right" for="input4">Otasining ismi</label>
       <div class="col-xs-6">
-        <input type="text" class="form-control" id="input4" data-bind="value: $data.lastName" name="middlename1">
+        <input type="text" class="form-control" id="input4" data-bind="value: $data.middleName" name="middlename1">
         <input type="text" class="hidden" name="middlename1">
       </div>
     </div>
+
     <div class="hr hr-15 hr-dotted"></div>
 
-    <!--
-          <div class="form-group col-xs-12">
-            <label class="col-xs-3 control-label no-padding-right" for="input5">Viloyat</label>
-            <div class="col-xs-6">
-              <select class="form-control" autocomplete="off" name="priority" id="priority"
-              data-bind="options: vm.issuePriorities, optionsText: 'description', optionsValue: 'priority', value: vm.selectedPriority, optionsCaption: 'Priority'">
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group col-xs-12">
-            <label class="col-xs-3 control-label no-padding-right" for="input6">Tuman</label>
-            <div class="col-xs-6">
-              <select class="form-control" autocomplete="off" name="priority" id="priority"
-              data-bind="options: vm.issuePriorities, optionsText: 'description', optionsValue: 'priority', value: vm.selectedPriority, optionsCaption: 'Priority'">
-              </select>
-            </div>
-          </div>
-          -->
-
     <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="input7">Tibbiy muassasa</label>
+      <label class="col-xs-3 control-label no-padding-right" for="input7">Tibbiy bo'lim</label>
       <div class="col-xs-6">
-        <input type="text" class="form-control" id="input7" data-bind="value: $data.department">
+        <select class="form-control" autocomplete="off" name="department" id="department"
+          data-bind="options: $root.vm.departments, optionsText: 'name', optionsValue: 'id', value: $data.departmentId, optionsCaption: 'Tibbiy bo\'lim'">
+        </select>
       </div>
     </div>
 

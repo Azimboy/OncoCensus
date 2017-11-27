@@ -36,6 +36,7 @@ $ ->
     firstName: ''
     lastName: ''
     middleName: ''
+    departmentId: ''
     email: ''
     phoneNumber: ''
     roleCodes: 'super.user'
@@ -60,13 +61,17 @@ $ ->
       else if notvalid(user.firstName)
         'Ism maydonini to\'ldiring'
       else if notvalid(user.lastName)
-        'Please enter Last Name'
+        'Familiya maydonini to\'ldiring'
+      else if notvalid(user.middleName)
+        'Otasining ismi maydonini to\'ldiring'
+      else if !user.departmentId
+        'Tibbiy bo\'lim maydonini to\'ldiring'
       else if user.login.indexOf(' ') isnt -1
-        'Login should not contain spaces'
+        'Login da bo\'sh joylar mavjud bo\'lmasligi kerak'
       else if user.email and !my.isValidEmail(user.email)
-        'Please enter valid email address'
+        'Haqiqiy email manzilini kiriting'
       else if user.phoneNumber and !my.isValidPhone(user.phoneNumber)
-        'Please enter valid phone number'
+        'Haqiqiy telefon raqamni kiriting'
 
     if warningText
       toastr.error(warningText)
@@ -74,7 +79,11 @@ $ ->
     else
       yes
 
-  vm.addNewManager = ->
+  vm.onClickAddUserButton = ->
+    ko.mapping.fromJS(defaultUser, {}, vm.selected.user)
+    $addUserModal.modal('show')
+
+  vm.createUser = ->
     userObj = ko.mapping.toJS(vm.selected.user)
 
     if isUserValid(userObj)
@@ -90,12 +99,31 @@ $ ->
         vm.isLoading(no)
         userObj.id = id
         userObj.createdAt = +new Date
-        alert('User account was successfully created and email with temporary password was sent')
+        toastr.success('Yangi foydalanuvchi muvaffaqiyatli yaratildi')
+        loadAllUsers()
         $addUserModal.modal('hide')
 
-  vm.onClickAddUserButton = ->
-    ko.mapping.fromJS(defaultUser, {}, vm.selected.user)
-    $addUserModal.modal('show')
+  vm.onClickEditUserButton = (user) ->
+    ko.mapping.fromJS(user, {}, vm.selected.user)
+    $editUserModal.modal('show')
+
+  vm.updateUser = () ->
+    userObj = ko.mapping.toJS(vm.selected.user)
+
+    if isUserValid(userObj)
+      vm.isLoading(yes)
+      $.ajax
+        url: apiUrl.user + "/#{userObj.id}"
+        data: JSON.stringify(userObj)
+        type: 'PUT'
+        dataType: "json"
+        contentType: 'application/json'
+      .fail handleError
+      .done () ->
+        vm.isLoading(no)
+        toastr.success('Muvaffaqiyatli saqlandi')
+        loadAllUsers()
+        $editUserModal.modal('hide')
 
   vm.formatDate = (millis, format = 'MMM DD YYYY') ->
     if millis
@@ -155,13 +183,13 @@ $ ->
     $addDepartmentModal.modal('show')
 
   vm.createDepartment = ->
-    depObj = ko.mapping.toJS(vm.selected.department)
+    userObj = ko.mapping.toJS(vm.selected.department)
 
-    if isDepartmentValid(depObj)
+    if isDepartmentValid(userObj)
       vm.isLoading(yes)
       $.ajax
         url: apiUrl.department
-        data: JSON.stringify(depObj)
+        data: JSON.stringify(userObj)
         type: 'POST'
         dataType: "json"
         contentType: 'application/json'
