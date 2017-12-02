@@ -19,8 +19,11 @@ object AppProtocol {
 
 	case class Department(
     id: Option[Int] = None,
+    createdAt: Option[Date] = None,
     name: String,
-    districtId: Int
+    districtId: Int,
+    region: Option[Region] = None,
+    district: Option[District] = None
   )
 
 	implicit val regionFormat = Json.format[Region]
@@ -36,15 +39,4 @@ object AppProtocol {
 	case class UpdateDepartment(department: Department)
 	case class DeleteDepartment(departmentId: Int)
 
-	case class DepartmentsReport(
-    id: Option[Int],
-    name: String,
-		createdAt: Option[Date] = None,
-		regionName: String,
-		regionId: Int,
-		districtName: String,
-		districtId: Int
-	)
-
-	implicit val departmentsReportFormat = Json.format[DepartmentsReport]
 }

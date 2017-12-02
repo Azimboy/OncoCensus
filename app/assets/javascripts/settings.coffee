@@ -134,6 +134,8 @@ $ ->
       user.roleCodesArr = []
       if user.roleCodes
         user.roleCodesArr = user.roleCodes.split(',')
+      if user.department
+        user.departmentName = user.department.name
 #      for field in userProperties
 #        user[field] ?= undefined
     rawUsers
@@ -154,6 +156,13 @@ $ ->
     $.get(apiUrl.departments)
     .fail handleError
     .done (departments) ->
+      for department in departments
+        if department.region
+          department.regionId = department.region.id
+          department.regionName = department.region.name
+        if department.district
+          department.districtId = department.district.id
+          department.districtName = department.district.name
       vm.departments departments
 
   vm.selected.department.regionId.subscribe (regionId) ->

@@ -9,7 +9,7 @@ import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait UserAccountsComponent extends DepartmentsComponent
   { self: HasDatabaseConfigProvider[JdbcProfile] =>
@@ -36,7 +36,17 @@ trait UserAccountsComponent extends DepartmentsComponent
     def blockedAt = column[Option[Date]]("blocked_at")
 
     def * = (id.?, createdAt.?, loginEncr, passwordHashEncr, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, departmentId.?, roleCodesEncr.?,
-       emailEncr.?, phoneNumberEncr.?, updatedAt.?, expiresAt.?, failedAttemptsCount, blockedAt) <> (UserAccount.tupled, UserAccount.unapply)
+       emailEncr.?, phoneNumberEncr.?, updatedAt.?, expiresAt.?, failedAttemptsCount, blockedAt).shaped <>
+      (t => {
+        val fields =
+          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None)
+        (UserAccount.apply _).tupled(fields)
+      },
+        (i: UserAccount) =>
+          UserAccount.unapply(i).map { t =>
+            (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15)
+          }
+      )
 
     def department = foreignKey("user_accounts_fk_department_id", departmentId, departments)(_.id)
   }
@@ -57,6 +67,7 @@ trait UserAccountsDao {
 
 @Singleton
 class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+                                (implicit val ec: ExecutionContext)
   extends UserAccountsDao
   with UserAccountsComponent
   with HasDatabaseConfigProvider[JdbcProfile]
@@ -65,6 +76,7 @@ class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigP
   import dbConfig.profile.api._
 
   val userAccounts = TableQuery[UserAccounts]
+  val departments = TableQuery[Departments]
 
   override def findById(id: Int) = {
     db.run {
@@ -80,10 +92,12 @@ class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigP
     }
   }
 
-  override def findAll() = {
+  override def findAll(): Future[Seq[UserAccount]] = {
     db.run {
-      userAccounts.result
-    }
+      userAccounts.join(departments).on(_.departmentId === _.id).result
+    }.map(_.map { case (userAccount, department) =>
+      userAccount.copy(department = Some(department))
+    })
   }
 
   override def updateUserAccount(userAccount: UserAccount): Future[Int] = {

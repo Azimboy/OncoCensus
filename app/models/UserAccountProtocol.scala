@@ -2,6 +2,7 @@ package models
 
 import java.util.Date
 
+import models.AppProtocol.Department
 import org.joda.time.{DateTime, Hours}
 import play.api.libs.json.Json
 
@@ -24,7 +25,8 @@ object UserAccountProtocol {
 		updatedAt: Option[Date] = None,
 		expiresAt: Option[Date] = None,
 		failedAttemptsCount: Int = 0,
-		blockedAt: Option[Date] = None
+		blockedAt: Option[Date] = None,
+		department: Option[Department] = None
 	) {
 
 		def isBlocked = blockedAt match {

@@ -8,7 +8,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
-import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, DepartmentsReport, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region, UpdateDepartment}
+import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region, UpdateDepartment}
 import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
 import models.utils.CieloConfigUtil._
 import org.webjars.play.WebJarsUtil
@@ -127,7 +127,7 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 	}
 
 	def getDepartments = Action.async { implicit request =>
-		(departmentManager ? GetDepartmentsReport).mapTo[Seq[DepartmentsReport]].map { reports =>
+		(departmentManager ? GetDepartmentsReport).mapTo[Seq[Department]].map { reports =>
 			Ok(Json.toJson(reports))
 		}.recover { case error =>
 			logger.error("Deps", error)

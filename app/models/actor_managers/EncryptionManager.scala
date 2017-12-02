@@ -185,7 +185,8 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			lastName = userAccount.lastName.map(decryptText),
 			middleName = userAccount.middleName.map(decryptText),
 			email = userAccount.email.map(decryptText),
-			phoneNumber = userAccount.phoneNumber.map(decryptText)
+			phoneNumber = userAccount.phoneNumber.map(decryptText),
+			department = userAccount.department.map(dep => dep.copy(name = decryptText(dep.name)))
 		)
 	}
 

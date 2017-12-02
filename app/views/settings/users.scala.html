@@ -42,6 +42,7 @@
         <th>Otasining ismi<span class="nowrap">&nbsp;<span class="glyphicon glyphicon-sort sort-arrow"
         title="Otasining ismi bo'yicha saralash"></span></span>
         </th>
+        <th>Tibbiy bo'lim</th>
         <th>Email</th>
         <th>Telefon (Mobil)<br>raqam</th>
         <th class="column-action"></th>
@@ -59,7 +60,8 @@
         <td><span data-bind="text: $data.firstName"></span></td>
         <td><span data-bind="text: $data.lastName"></span></td>
         <td><span data-bind="text: $data.middleName"></span></td>
-        <td><div class="email-txt" data-bind="text: $data.email"></div></td>
+        <td><div data-bind="text: $data.departmentName"></div></td>
+        <td><div data-bind="text: $data.email"></div></td>
         <td><span data-bind="text: $data.phoneNumber"></span></td>
         <td class="nowrap column-action">
           <button type="button" data-bind="click: $root.vm.onClickEditUserButton" class="btn btn-white btn-warning btn-bold btn-sm" title="Tahrirlash">

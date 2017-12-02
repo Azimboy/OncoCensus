@@ -13,6 +13,7 @@ CREATE TABLE "districts" (
 
 CREATE TABLE "departments" (
   "id" SERIAL PRIMARY KEY,
+  "created_at" TIMESTAMP NOT NULL,
   "name_encr" VARCHAR NOT NULL,
   "district_id" INTEGER NOT NULL CONSTRAINT "departments_fk_district_id" REFERENCES "districts" ON UPDATE CASCADE ON DELETE CASCADE
 );

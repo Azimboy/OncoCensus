@@ -1,11 +1,12 @@
 package models.actor_managers
 
+import java.util.Date
 import javax.inject.{Inject, Named}
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, DepartmentsReport, GetDepartmentsReport, UpdateDepartment}
+import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
 import models.actor_managers.EncryptionManager.{DecryptText, EncryptDepartment}
 import models.daos.DepartmentsDao
 
@@ -34,9 +35,9 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 			deleteDepartment(id).pipeTo(sender())
 	}
 
-	def getAllDepartments: Future[Seq[DepartmentsReport]] = {
-		departmentsDao.findAll.flatMap { departmentsReport =>
-			Future.sequence( departmentsReport.map { report =>
+	def getAllDepartments: Future[Seq[Department]] = {
+		departmentsDao.findAll.flatMap { departments =>
+			Future.sequence( departments.map { report =>
 				(encryptionManager ? DecryptText(report.name)).mapTo[String].map { decrDepName =>
 					report.copy(name = decrDepName)
 				}
@@ -46,7 +47,7 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 
 	def addDepartment(department: Department): Future[Int] = {
 		for {
-			encrDepartment <- (encryptionManager ? EncryptDepartment(department)).mapTo[Department]
+			encrDepartment <- (encryptionManager ? EncryptDepartment(department.copy(createdAt = Some(new Date)))).mapTo[Department]
 			changes <- departmentsDao.create(encrDepartment)
 		} yield changes
 	}
