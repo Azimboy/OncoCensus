@@ -15,9 +15,7 @@ import scala.concurrent.duration.DurationInt
 
 @Singleton
 class UserAccountManager @Inject()(@Named("encryption-manager") encryptionManager: ActorRef,
-                                   val userAccountsDao: UserAccountsDao,
-                                   val regionsDao: RegionsDao,
-                                   val districtsDao: DistrictsDao)
+                                   val userAccountsDao: UserAccountsDao)
                                   (implicit val ec: ExecutionContext)
 	extends Actor
 		with ActorLogging {
@@ -30,12 +28,6 @@ class UserAccountManager @Inject()(@Named("encryption-manager") encryptionManage
 
 		case GetAllUserAccounts =>
 			getAllUserAccounts().pipeTo(sender())
-
-		case GetAllRegions =>
-			getAllRegions().pipeTo(sender())
-
-		case GetDistrictsByRegionId(regionId) =>
-			getDistrictsByRegionId(regionId).pipeTo(sender())
 	}
 
 	def addUserAccount(newUserAccount: UserAccount): Future[Int] = {
@@ -52,11 +44,4 @@ class UserAccountManager @Inject()(@Named("encryption-manager") encryptionManage
 		} yield decrUserAccounts
 	}
 
-	def getAllRegions(): Future[Seq[Region]] = {
-		regionsDao.getAllRegions()
-	}
-
-	def getDistrictsByRegionId(regionId: Int): Future[Seq[District]] = {
-		districtsDao.getDistrictsByRegionId(regionId)
-	}
 }

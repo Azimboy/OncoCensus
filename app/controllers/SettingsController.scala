@@ -29,7 +29,7 @@ object SettingsController {
 	  departmentId: Option[Int] = None,
 	  roleCodes: Option[String] = None,
 	  email: Option[String] = None,
-	  phoneNumber: Option[String] = None,
+	  phoneNumber: Option[String] = None
 	)
 
 	case class DepartmentWeb(
@@ -63,18 +63,6 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 	def getUsers = Action.async { implicit request =>
 		(userAccountManager ? GetAllUserAccounts).mapTo[Seq[UserAccount]].map { users =>
 			Ok(Json.toJson(users))
-		}
-	}
-
-	def getRegions() = Action.async { implicit request =>
-		(userAccountManager ? GetAllRegions).mapTo[Seq[Region]].map { regions =>
-			Ok(Json.toJson(regions))
-		}
-	}
-
-	def getDistrictsByRegionId(regionId: Int) = Action.async { implicit request =>
-		(userAccountManager ? GetDistrictsByRegionId(regionId)).mapTo[Seq[District]].map { districts =>
-			Ok(Json.toJson(districts))
 		}
 	}
 

@@ -6,14 +6,16 @@ import javax.inject.{Inject, Named}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
+import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region, UpdateDepartment}
 import models.actor_managers.EncryptionManager.{DecryptText, EncryptDepartment}
-import models.daos.DepartmentsDao
+import models.daos.{DepartmentsDao, DistrictsDao, RegionsDao}
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
 
 class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionManager: ActorRef,
+                                  val regionsDao: RegionsDao,
+                                  val districtsDao: DistrictsDao,
                                   val departmentsDao: DepartmentsDao)
                                  (implicit val ec: ExecutionContext)
 	extends Actor
@@ -22,6 +24,12 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 	implicit val defaultTimeout = Timeout(60.seconds)
 
 	override def receive: Receive = {
+		case GetAllRegions =>
+			getAllRegions().pipeTo(sender())
+
+		case GetDistrictsByRegionId(regionId) =>
+			getDistrictsByRegionId(regionId).pipeTo(sender())
+
 		case GetDepartmentsReport =>
 			getAllDepartments.pipeTo(sender())
 
@@ -33,6 +41,14 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 
 		case DeleteDepartment(id) =>
 			deleteDepartment(id).pipeTo(sender())
+	}
+
+	def getAllRegions(): Future[Seq[Region]] = {
+		regionsDao.getAllRegions()
+	}
+
+	def getDistrictsByRegionId(regionId: Int): Future[Seq[District]] = {
+		districtsDao.getDistrictsByRegionId(regionId)
 	}
 
 	def getAllDepartments: Future[Seq[Department]] = {
@@ -62,4 +78,5 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 	def deleteDepartment(id: Int): Future[Int] = {
 		departmentsDao.delete(id)
 	}
+
 }

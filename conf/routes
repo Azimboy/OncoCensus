@@ -8,15 +8,17 @@ GET     /                                                   @controllers.HomeCon
 GET     /login                                              @controllers.HomeController.login
 GET     /redirect/:menuName                                 @controllers.HomeController.redirectTo(menuName)
 
+GET     /home/regions                                       @controllers.HomeController.getRegions
+GET     /home/districts/:regionId                           @controllers.HomeController.getDistrictsByRegionId(regionId: Int)
+
 GET     /indicator                                          @controllers.IndicatorController.index
 GET     /reception                                          @controllers.ReceptionController.index
+
 GET     /patients                                           @controllers.PatientsController.index
+
 GET     /statistics                                         @controllers.StatisticsController.index
 
 GET     /settings                                           @controllers.SettingsController.index
-GET     /settings/regions                                   @controllers.SettingsController.getRegions
-GET     /settings/districts/:regionId                       @controllers.SettingsController.getDistrictsByRegionId(regionId: Int)
-
 GET     /settings/departments                               @controllers.SettingsController.getDepartments
 POST    /settings/department                                @controllers.SettingsController.createDepartment
 PUT     /settings/department/:id                            @controllers.SettingsController.updateDepartment(id: Int)

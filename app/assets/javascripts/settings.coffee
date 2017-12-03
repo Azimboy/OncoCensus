@@ -5,8 +5,8 @@ $ ->
   apiUrl =
     user: '/settings/user'
     users: '/settings/users'
-    regions: '/settings/regions'
-    districts: '/settings/districts'
+    regions: '/home/regions'
+    districts: '/home/districts'
     departments: '/settings/departments'
     department: '/settings/department'
 
