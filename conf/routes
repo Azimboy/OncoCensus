@@ -14,7 +14,9 @@ GET     /home/districts/:regionId                           @controllers.HomeCon
 GET     /indicator                                          @controllers.IndicatorController.index
 GET     /reception                                          @controllers.ReceptionController.index
 
-GET     /patients                                           @controllers.PatientsController.index
+GET     /card-index                                         @controllers.CardIndexController.index
+GET     /card-index/patients                                @controllers.CardIndexController.getPatients
+POST    /card-index/patient                                 @controllers.CardIndexController.createPatient
 
 GET     /statistics                                         @controllers.StatisticsController.index
 

@@ -1,9 +1,11 @@
-@import views.html.reception
+@import views.html.card_index
 @import org.webjars.play.WebJarsUtil
 
 @()(implicit webJarsUtil: WebJarsUtil)
 
-@reception.main("OncoCensus"){
+@card_index.main("OncoCensus"){
+  <script src="@routes.Assets.versioned("javascripts/card_index.js")"></script>
+
   <div class="row">
     <div class="col-xs-12">
       <div class="row">
@@ -21,7 +23,7 @@
                   <i class="ace-icon fa fa-refresh"></i>
                 </a>
 
-                <a href="#">
+                <a href="#" data-bind="click: vm.onClickAddPatientButton">
                   <i class="ace-icon fa fa-plus"></i>
                 </a>
               </div>
@@ -29,33 +31,7 @@
 
             <div class="widget-body">
               <div class="widget-main padding-6 no-padding-left no-padding-right">
-                <input class="input-sm form-control" width="100%" type="text">
-                <div style="margin-top: 5px; margin-bottom: 5px" >
-                  <a href="#" class="blue">
-                    <span class="fa fa-search"></span>
-                    Kengaytirilgan qidiruv
-                  </a>
-                </div>
-                <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
-                      <td width="90%">Ronnie Coleman <br> 38 yosh, CR 1234567</td>
-                    </tr>
-                    <tr>
-                      <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
-                      <td width="90%">Ronnie Coleman <br> 38 yosh, CR 1234567</td>
-                    </tr>
-                    <tr>
-                      <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
-                      <td width="90%">Ronnie Coleman <br> 38 yosh, CR 1234567</td>
-                    </tr>
-                    <tr>
-                      <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
-                      <td width="90%">Ronnie Coleman <br> 38 yosh, CR 1234567</td>
-                    </tr>
-                  </tbody>
-                </table>
+                @card_index.patients()
               </div>
             </div>
           </div>
@@ -155,7 +131,6 @@
                         </div>
                       </td>
                     </tr>
-
                   </tbody>
                 </table>
               </div>

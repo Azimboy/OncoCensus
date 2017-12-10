@@ -5,28 +5,28 @@ $ ->
   Links =
     indicator: 'indicator'
     reception: 'reception'
-    patients: 'patients'
+    cardIndex: 'cardIndex'
     statistics: 'statistics'
     settings: 'settings'
 
   Names =
     indicator: 'Ko\'rsatkichlar'
     reception: 'Qabul'
-    patients: 'Bemorlar'
+    cardIndex: 'Bemorlar'
     statistics: 'Statistika'
     settings: 'Sozlash'
 
   Titles =
     indicator: 'Xonqa'
     reception: 'Qabul jurnali'
-    patients: 'Bemorlar'
+    cardIndex: 'Bemorlar'
     statistics: 'Statistika'
     settings: 'Sozlash'
 
   Descriptions =
     indicator: 'tuman bo\'yicha umumiy kasallik ko\'rsatkichlari'
     reception: 'bemorlar ko\'rigi va ko\'rsatmalar'
-    patients: 'kasallik kartalari va bemorlar to\'g\'risidagi batafsil ma\'lumotlar'
+    cardIndex: 'kasallik kartalari va bemorlar to\'g\'risidagi batafsil ma\'lumotlar'
     statistics: 'umumiy hisobotlar'
     settings: '...'
 
@@ -49,10 +49,10 @@ $ ->
         vm.selectedName(Names.reception)
         vm.selectedTitle(Titles.reception)
         vm.selectedDesc(Descriptions.reception)
-      when 'patients'
-        vm.selectedName(Names.patients)
-        vm.selectedTitle(Titles.patients)
-        vm.selectedDesc(Descriptions.patients)
+      when 'cardIndex'
+        vm.selectedName(Names.cardIndex)
+        vm.selectedTitle(Titles.cardIndex)
+        vm.selectedDesc(Descriptions.cardIndex)
       when 'statistics'
         vm.selectedName(Names.statistics)
         vm.selectedTitle(Titles.statistics)

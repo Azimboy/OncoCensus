@@ -7,17 +7,17 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import models.PatientProtocol.{AddPatient, Gender, Patient, PatientData}
+import models.PatientProtocol.{AddPatient, Gender, GetAllPatients, Patient, PatientData}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc._
-import views.html.patients
+import views.html.card_index
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
 
-object PatientsController {
+object CardIndexController {
   case class PatientWeb(
     firstName: Option[String],
     lastName: Option[String],
@@ -40,19 +40,28 @@ object PatientsController {
 }
 
 @Singleton
-class PatientsController @Inject()(val controllerComponents: ControllerComponents,
-                                   val configuration: Configuration,
-                                   @Named("patient-manager") val patientManager: ActorRef,
-                                   implicit val webJarsUtil: WebJarsUtil)
-                                  (implicit val ec: ExecutionContext)
+class CardIndexController @Inject()(val controllerComponents: ControllerComponents,
+                                    val configuration: Configuration,
+                                    @Named("patient-manager") val patientManager: ActorRef,
+                                    implicit val webJarsUtil: WebJarsUtil)
+                                   (implicit val ec: ExecutionContext)
   extends BaseController with LazyLogging {
 
   implicit val defaultTimeout = Timeout(60.seconds)
 
-  import PatientsController._
+  import CardIndexController._
 
   def index = Action {
-    Ok(patients.index())
+    Ok(card_index.index())
+  }
+
+  def getPatients = Action.async { implicit request =>
+    (patientManager ? GetAllPatients).mapTo[Seq[Patient]].map { patients =>
+      Ok(Json.toJson(patients))
+    }.recover { case error =>
+      logger.error("Patients", error)
+      InternalServerError
+    }
   }
 
   def createPatient = Action.async(parse.json[PatientWeb]) { implicit request =>
