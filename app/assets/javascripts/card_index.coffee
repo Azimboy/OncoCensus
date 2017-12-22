@@ -17,7 +17,7 @@ $ ->
     else
       alert('Something went wrong! Please try again.')
 
-  birthDate = moment("00:00", 'hh:mm A').format('DD-MM-YYYY hh:mm A')
+  birthDate = moment("00:00", 'hh:mm A').format('DD.MM.YYYY hh:mm A')
 
   initDatePicker = (selector, defaultDate, format) ->
     $el = $(selector)
@@ -36,6 +36,8 @@ $ ->
   $editPatientModal = $('#edit-patient-modal')
 
   defaultPatient =
+    id: ''
+    createdAt: ''
     firstName: ''
     lastName: ''
     middleName: ''
@@ -45,13 +47,18 @@ $ ->
     districtId: ''
     email: ''
     phoneNumber: ''
-    passportNo: ''
-    province: ''
-    street: ''
-    home: ''
-    work: ''
-    position: ''
-    bloodGroup: ''
+    district:
+      id: ''
+      name: ''
+      regionId: ''
+    patientDataJson:
+      passportNo: ''
+      province: ''
+      street: ''
+      home: ''
+      work: ''
+      position: ''
+      bloodGroup: ''
 
   vm = ko.mapping.fromJS
     patients: []
@@ -60,6 +67,10 @@ $ ->
     selected:
       patient: defaultPatient
     isLoading: no
+
+  vm.formatDate = (millis, format = 'YYYY-MM-DD') ->
+    if millis
+      moment(millis).format(format)
 
   notvalid = (str) ->
     !$.trim(str)
@@ -104,10 +115,14 @@ $ ->
       .done (id) ->
         vm.isLoading(no)
         patientObj.id = id
-        patientObj.createdAt = +new Date
         toastr.success('Yangi foydalanuvchi muvaffaqiyatli yaratildi')
-        loadAllUsers()
+        loadAllPatients()
         $addPatientModal.modal('hide')
+
+  vm.onPatientSelected = (patient) ->
+    ko.mapping.fromJS(patient, {}, vm.selected.patient)
+    vm.selected.patient.createdAt(vm.formatDate(vm.selected.patient.createdAt()))
+    vm.selected.patient.birthDate(vm.formatDate(vm.selected.patient.birthDate()))
 
 #  vm.onClickEditUserButton = (user) ->
 #    ko.mapping.fromJS(user, {}, vm.selected.user)
@@ -130,10 +145,6 @@ $ ->
   #        toastr.success('Muvaffaqiyatli saqlandi')
   #        loadAllUsers()
   #        $editUserModal.modal('hide')
-
-  vm.formatDate = (millis, format = 'MMM DD YYYY') ->
-    if millis
-      moment(millis).format(format)
 
   loadAllPatients = ->
     $.get(apiUrl.patients)

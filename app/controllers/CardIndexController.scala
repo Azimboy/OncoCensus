@@ -27,13 +27,7 @@ object CardIndexController {
     districtId: Int,
     email: Option[String],
     phoneNumber: Option[String],
-    passportNo: Option[String],
-    province: Option[String],
-    street: Option[String],
-    home: Option[String],
-    work: Option[String],
-    position: Option[String],
-    bloodGroup: Option[String]
+    patientDataJson: PatientData
   )
 
   implicit val patientWebFormat = Json.format[PatientWeb]
@@ -67,15 +61,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   def createPatient = Action.async(parse.json[PatientWeb]) { implicit request =>
     val patientWeb = request.body
 
-    val patientDataJs = Json.toJson(PatientData(
-      passportNo = patientWeb.passportNo,
-      province = patientWeb.province,
-      street = patientWeb.street,
-      home = patientWeb.home,
-      work = patientWeb.work,
-      position = patientWeb.position,
-      bloodGroup = patientWeb.bloodGroup
-    ))
+    val patientDataJs = Json.toJson(patientWeb.patientDataJson)
 
     val newPatient = Patient(
       createdAt = Some(new Date),
@@ -83,7 +69,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       lastName = patientWeb.lastName,
       middleName = patientWeb.middleName,
       gender = Some(Gender.withShortName(patientWeb.gender)),
-      birthDate = patientWeb.birthDate,
+      birthDate = Some(new Date),
       districtId = Some(patientWeb.districtId),
       email = patientWeb.email,
       phoneNumber = patientWeb.phoneNumber,

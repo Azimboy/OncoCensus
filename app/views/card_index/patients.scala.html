@@ -14,7 +14,7 @@
 <script type="text/html" id="patient-table-template">
   <table class="table table-hover">
     <tbody data-bind="foreach: $data.patients">
-      <tr>
+      <tr data-bind="click: $parent.vm.onPatientSelected, css: {'bg-info': $parent.vm.selected.patient.id() == $data.id}">
         <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
         <td width="90%">
           <span data-bind="text: $data.lastName"></span>&nbsp;<span data-bind="text: $data.firstName"></span><br>
@@ -71,6 +71,7 @@
 <script type="text/html" id="patient-form-fields-template">
   <form action="">
     <div class="col-xs-6">
+      <img height="150" class="thumbnail inline no-margin-bottom center-block" alt="Avatar" src="assets/images/avatars/avatar2.png"/>
       <input type="file">
     </div>
     <div class="col-xs-6">
@@ -133,15 +134,15 @@
       <div class="row">
         <div class="col-xs-5">
           <label for="province">Mahalla</label>
-          <input type="text" class="form-control" id="province" data-bind="value: $data.province" name="province">
+          <input type="text" class="form-control" id="province" data-bind="value: $data.patientDataJson.province" name="province">
         </div>
         <div class="col-xs-5">
           <label for="street">Ko'cha</label>
-          <input type="text" class="form-control" id="street" data-bind="value: $data.street" name="street">
+          <input type="text" class="form-control" id="street" data-bind="value: $data.patientDataJson.street" name="street">
         </div>
         <div class="col-xs-2">
           <label for="home">Uy</label>
-          <input type="text" class="form-control" id="home" data-bind="value: $data.home" name="home">
+          <input type="text" class="form-control" id="home" data-bind="value: $data.patientDataJson.home" name="home">
         </div>
       </div>
     </div>
@@ -149,11 +150,11 @@
       <div class="row">
         <div class="col-xs-6">
           <label for="work">Ish (O'qish) joyi</label>
-          <input type="text" class="form-control" id="work" data-bind="value: $data.work" name="work">
+          <input type="text" class="form-control" id="work" data-bind="value: $data.patientDataJson.work" name="work">
         </div>
         <div class="col-xs-6">
           <label for="position">Lavozimi</label>
-          <input type="text" class="form-control" id="position" data-bind="value: $data.position" name="position">
+          <input type="text" class="form-control" id="position" data-bind="value: $data.patientDataJson.position" name="position">
         </div>
       </div>
     </div>

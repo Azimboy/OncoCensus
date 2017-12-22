@@ -6,8 +6,8 @@
 @card_index.main("OncoCensus"){
   <script src="@routes.Assets.versioned("javascripts/card_index.js")"></script>
 
-  <div class="row">
-    <div class="col-xs-12">
+  <div class="row" style="margin-left: 0px; margin-right: 0px">
+    <div class="col-xs-12" style="padding-left: 0px; padding-right: 0px">
       <div class="row">
         <div class="col-md-4 widget-container-col" id="widget-container-col-1">
           <div class="widget-box transparent" id="widget-box-12">
@@ -39,7 +39,7 @@
         <div class="col-md-8 widget-container-col" id="widget-container-col-2">
           <div class="widget-box transparent" id="widget-box-12">
             <div class="widget-header">
-              <h4 class="widget-title lighter">Ambulator tibbiy karta </h4>
+              <h4 class="widget-title lighter">Ambulator tibbiy varaqa</h4>
 
               <div class="widget-toolbar no-border">
                 <a href="#" data-action="settings">
@@ -60,23 +60,74 @@
               </div>
             </div>
 
-            <div class="widget-body">
+            <div class="widget-body" data-bind="visible: vm.selected.patient.id">
               <div class="widget-main padding-6 no-padding-left no-padding-right">
-                <h5 class="blue"><span class="fa fa-male"></span> RAHMONOV ISMAIL | Karta №: 783</h5>
+                <h5 class="blue">
+                  <span data-bind="css: {'fa fa-male': vm.selected.patient.gender() == 'man', 'fa fa-female': vm.selected.patient.gender() == 'woman'}"></span>
+                  <span data-bind="text: vm.selected.patient.lastName" class="text-capitalize"></span>
+                  <span data-bind="text: vm.selected.patient.firstName" class="text-capitalize"></span>
+                    &nbsp;|&nbsp; Karta №: <span data-bind="text: vm.selected.patient.id"></span>
+                </h5>
                 <hr style="margin-top: 0px; margin-bottom: 15px">
                 <div class="row">
                   <div class="col-sm-3">
                     <img height="150" class="thumbnail inline no-margin-bottom center-block" alt="Avatar" src="assets/images/avatars/avatar2.png"/>
                   </div>
                   <div class="col-sm-9">
-                    <span><b>Tug'ulgan sanasi :</b> 02.10.1950, 67 yoshda</span><br>
-                    <span><b>Passport Seriyasi :</b> AB 4441158</span><br>
-                    <span><b>Telefon :</b> +998907268629</span><br>
-                    <span><b>Yashash manzili :</b> Xorazm viloyati Xonqa tumani Navxos qishlog'i Znaxos mahallasi</span><br>
-                    <span><b>Ish joyi va lavozimi :</b> Nafaqaxo'r</span><br>
-                    <span><b>Nazoratga olingan sana :</b> 17.05.2017</span><br>
-                    <span><b>Dispanserizatsiya uchun bog'langan :</b> XVOD</span><br>
-                    <span><b>Muhim belgilari :</b> MKB-10 SH C-61</span> <span><b>Qon guruhi :</b> IV(+)</span>
+                    <div class="profile-user-info profile-user-info-striped">
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Nazoratga olingan sana :</div>
+                        <div class="profile-info-value">
+                          <span data-bind="text: vm.selected.patient.createdAt"></span>
+                        </div>
+                      </div>
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Tug'ulgan sanasi :</div>
+                        <div class="profile-info-value">
+                          <span data-bind="text: vm.selected.patient.birthDate"></span>
+                        </div>
+                      </div>
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Passport Seriyasi :</div>
+                        <div class="profile-info-value">
+                          <span data-bind="text: vm.selected.patient.patientDataJson.passportNo"></span>
+                        </div>
+                      </div>
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Yashash manzili :</div>
+                        <div class="profile-info-value">
+                          <span data-bind="text: vm.selected.patient.district.name"></span> tumani
+                          <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi
+                          <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi
+                          <span data-bind="text: vm.selected.patient.patientDataJson.home"></span>
+                        </div>
+                      </div>
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Telefon :</div>
+                        <div class="profile-info-value">
+                          <span data-bind="text: vm.selected.patient.phoneNumber"></span>
+                        </div>
+                      </div>
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Ish joyi va lavozimi :</div>
+                        <div class="profile-info-value">
+                          <span data-bind="text: vm.selected.patient.patientDataJson.work"></span>
+                          <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
+                        </div>
+                      </div>
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Muhim belgilari :</div>
+                        <div class="profile-info-value">
+                          <span>MKB-10 SH C-61</span>
+                        </div>
+                      </div>
+                      <div class="profile-info-row">
+                        <div class="profile-info-name">Qon guruhi :</div>
+                        <div class="profile-info-value">
+                          <span>IV(+)</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>
