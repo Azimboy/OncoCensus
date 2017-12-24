@@ -17,6 +17,7 @@ GET     /reception                                          @controllers.Recepti
 GET     /card-index                                         @controllers.CardIndexController.index
 GET     /card-index/patients                                @controllers.CardIndexController.getPatients
 POST    /card-index/patient                                 @controllers.CardIndexController.createPatient
+GET     /card-index/client-groups                           @controllers.CardIndexController.getClientGroups
 
 GET     /statistics                                         @controllers.StatisticsController.index
 

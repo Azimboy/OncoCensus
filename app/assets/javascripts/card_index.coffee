@@ -7,6 +7,7 @@ $ ->
     districts: '/home/districts'
     patient: '/card-index/patient'
     patients: '/card-index/patients'
+    clientGroups: '/card-index/client-groups'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -69,6 +70,8 @@ $ ->
     patients: []
     regions: []
     districts: []
+    clientGroups: []
+    bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
     selected:
       patient: defaultPatient
     isLoading: no
@@ -163,6 +166,12 @@ $ ->
     .done (regions) ->
       vm.regions regions
 
+  loadAllClientGroups = ->
+    $.get(apiUrl.clientGroups)
+    .fail handleError
+    .done (clientGroups) ->
+      vm.clientGroups clientGroups
+
   vm.selected.patient.regionId.subscribe (regionId) ->
     if regionId and !vm.selected.districtId
       $.get("#{apiUrl.districts}/#{regionId}")
@@ -172,6 +181,7 @@ $ ->
 
   loadAllPatients()
   loadAllRegions()
+  loadAllClientGroups()
 
   Glob.vm = vm
 

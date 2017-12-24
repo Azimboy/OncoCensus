@@ -29,12 +29,12 @@ object PatientProtocol {
   )
 
   object Gender extends EnumMappedToDb {
-    val Man = Value(1)
-    val Woman = Value(0)
+    val Male = Value(1)
+    val Female = Value(0)
 
     def withShortName: PartialFunction[String, Gender.Value] = {
-      case "man" => Man
-      case "woman" => Woman
+      case "Erkak" => Male
+      case "Ayol" => Female
     }
   }
 
@@ -51,10 +51,33 @@ object PatientProtocol {
     home: Option[String] = None,
     work: Option[String] = None,
     position: Option[String] = None,
-    bloodGroup: Option[String] = None
+    bloodGroup: Option[BloodGroup.Value] = None
   )
 
+  object BloodGroup extends EnumMappedToDb {
+    val I_Plus = Value("I(+)")
+    val I_Minus = Value("I(-)")
+    val II_Plus = Value("II(+)")
+    val II_Minus = Value("II(-)")
+    val III_Plus = Value("III(+)")
+    val III_Minus = Value("III(-)")
+    val IV_Plus = Value("IV(+)")
+    val IV_Minus = Value("IV(-)")
+
+    def withShortName: PartialFunction[String, BloodGroup.Value] = {
+      case "I(+)" => I_Plus
+      case "I(-)" => I_Minus
+      case "II(+)" => II_Plus
+      case "II(-)" => II_Minus
+      case "III(+)" => III_Plus
+      case "III(-)" => III_Minus
+      case "IV(+)" => IV_Plus
+      case "IV(-)" => IV_Minus
+    }
+  }
+
   implicit val genderFormat = EnumUtils.enumFormat(Gender)
+  implicit val bloodGroupFormat = EnumUtils.enumFormat(BloodGroup)
   implicit val clientGroupFormat = Json.format[ClientGroup]
   implicit val patientDataFormat = Json.format[PatientData]
   implicit val patientFormat = Json.format[Patient]
@@ -62,4 +85,5 @@ object PatientProtocol {
   case class AddPatient(patient: Patient)
 
   case object GetAllPatients
+  case object GetAllClientGroups
 }

@@ -7,7 +7,7 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import models.PatientProtocol.{AddPatient, Gender, GetAllPatients, Patient, PatientData}
+import models.PatientProtocol.{AddPatient, ClientGroup, Gender, GetAllClientGroups, GetAllPatients, Patient, PatientData}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -82,6 +82,15 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       Ok(Json.toJson(id))
     }.recover { case error =>
       logger.error("Add user error", error)
+      InternalServerError
+    }
+  }
+
+  def getClientGroups = Action.async { implicit request =>
+    (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
+      Ok(Json.toJson(clientGroups))
+    }.recover { case error =>
+      logger.error("ClientGroups", error)
       InternalServerError
     }
   }

@@ -106,6 +106,7 @@
                         <div class="profile-info-name">Telefon :</div>
                         <div class="profile-info-value">
                           <span data-bind="text: vm.selected.patient.phoneNumber"></span>
+                          <span data-bind="text: vm.selected.patient.email"></span>
                         </div>
                       </div>
                       <div class="profile-info-row">
@@ -118,13 +119,14 @@
                       <div class="profile-info-row">
                         <div class="profile-info-name">Muhim belgilari :</div>
                         <div class="profile-info-value">
-                          <span>MKB-10 SH C-61</span>
+                          <span data-bind="text: vm.selected.patient.clientGroup.name"></span>
+                          <span data-bind="text: vm.selected.patient.clientGroup.code"></span>
                         </div>
                       </div>
                       <div class="profile-info-row">
                         <div class="profile-info-name">Qon guruhi :</div>
                         <div class="profile-info-value">
-                          <span>IV(+)</span>
+                          <span data-bind="text: vm.selected.patient.patientDataJson.bloodGroup"></span>
                         </div>
                       </div>
                     </div>

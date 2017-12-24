@@ -73,6 +73,7 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
 
   val patients = TableQuery[Patients]
   val districts = TableQuery[Districts]
+  val clientGroups = TableQuery[ClientGroups]
 
   override def create(Patient: Patient) = {
     db.run {
@@ -84,9 +85,12 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
 
   override def findAll(): Future[Seq[Patient]] = {
     db.run {
-      patients.join(districts).on(_.districtId === _.id).result
-    }.map(_.map { case (patient, district) =>
-      patient.copy(district = Some(district))
+      patients
+        .join(districts).on(_.districtId === _.id)
+        .join(clientGroups).on(_._1.clientGroupId === _.id)
+        .result
+    }.map(_.map { case ((patient, district), clientGroup) =>
+      patient.copy(district = Some(district), clientGroup = Some(clientGroup))
     })
   }
 
