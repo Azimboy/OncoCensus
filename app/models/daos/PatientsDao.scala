@@ -4,7 +4,7 @@ import java.util.Date
 import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
-import models.PatientProtocol.{ClientGroup, Gender, Patient}
+import models.PatientProtocol.{Gender, Patient}
 import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.JsValue
@@ -12,13 +12,14 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PatientsComponent extends DepartmentsComponent
+trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
   { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import models.utils.PostgresDriver.api._
 
   class Patients(tag: Tag) extends Table[Patient](tag, "patients") with Date2SqlDate {
     val districts = TableQuery[Districts]
+    val clientGroups = TableQuery[ClientGroups]
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def createdAt = column[Date]("created_at")
@@ -32,15 +33,15 @@ trait PatientsComponent extends DepartmentsComponent
     def emailEncr = column[String]("email_encr")
     def phoneNumberEncr = column[String]("phone_number_encr")
     def patientDataJson = column[JsValue]("patient_data_json")
-    def clientGroup = column[ClientGroup.Value]("client_group")
+    def clientGroupId = column[Int]("client_group_id")
     def deadAt = column[Date]("dead_at")
     def deadReason = column[String]("dead_reason")
 
     def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, gender.?, birthDate.?,
-       districtId.?, emailEncr.?, phoneNumberEncr.?, patientDataJson.?, clientGroup.?, deadAt.?, deadReason.?).shaped <>
+       districtId.?, emailEncr.?, phoneNumberEncr.?, patientDataJson.?, clientGroupId.?, deadAt.?, deadReason.?).shaped <>
       (t => {
         val fields =
-          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None)
+          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None, None)
         (Patient.apply _).tupled(fields)
       },
         (i: Patient) =>
@@ -50,6 +51,7 @@ trait PatientsComponent extends DepartmentsComponent
       )
 
     def district = foreignKey("patients_fk_district_id", districtId, districts)(_.id)
+    def clientGroup = foreignKey("patients_fk_client_group_id", clientGroupId, clientGroups)(_.id)
   }
 }
 

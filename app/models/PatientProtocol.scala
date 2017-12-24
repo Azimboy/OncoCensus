@@ -21,10 +21,11 @@ object PatientProtocol {
     email: Option[String] = None,
     phoneNumber: Option[String] = None,
     patientDataJson: Option[JsValue] = None,
-    clientGroup: Option[ClientGroup.Value] = None,
+    clientGroupId: Option[Int] = None,
     deadAt: Option[Date] = None,
     deadReason: Option[String] = None,
-    district: Option[District] = None
+    district: Option[District] = None,
+    clientGroup: Option[ClientGroup] = None
   )
 
   object Gender extends EnumMappedToDb {
@@ -37,15 +38,11 @@ object PatientProtocol {
     }
   }
 
-  object ClientGroup extends EnumMappedToDb {
-    val C00 = Value("C00")
-    val C01 = Value("C01")
-
-    def withShortName: PartialFunction[String, ClientGroup.Value] = {
-      case "C00" => C00
-      case "C01" => C01
-    }
-  }
+  case class ClientGroup(
+    id: Option[Int] = None,
+    name: Option[String] = None,
+    code: Option[String] = None
+  )
 
   case class PatientData(
     passportNo: Option[String] = None,
@@ -58,7 +55,7 @@ object PatientProtocol {
   )
 
   implicit val genderFormat = EnumUtils.enumFormat(Gender)
-  implicit val clientGroupFormat = EnumUtils.enumFormat(ClientGroup)
+  implicit val clientGroupFormat = Json.format[ClientGroup]
   implicit val patientDataFormat = Json.format[PatientData]
   implicit val patientFormat = Json.format[Patient]
 

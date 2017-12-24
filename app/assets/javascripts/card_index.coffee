@@ -45,8 +45,13 @@ $ ->
     birthDate: ''
     regionId: ''
     districtId: ''
+    clientGroupId: ''
     email: ''
     phoneNumber: ''
+    clientGroup:
+      id: ''
+      name: ''
+      code: ''
     district:
       id: ''
       name: ''

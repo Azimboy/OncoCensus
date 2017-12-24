@@ -25,6 +25,7 @@ object CardIndexController {
     gender: String,
     birthDate: Option[Date],
     districtId: Int,
+    clientGroupId: Option[Int],
     email: Option[String],
     phoneNumber: Option[String],
     patientDataJson: PatientData
@@ -71,6 +72,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       gender = Some(Gender.withShortName(patientWeb.gender)),
       birthDate = Some(new Date),
       districtId = Some(patientWeb.districtId),
+      clientGroupId = patientWeb.clientGroupId,
       email = patientWeb.email,
       phoneNumber = patientWeb.phoneNumber,
       patientDataJson = Some(patientDataJs)
