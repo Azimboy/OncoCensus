@@ -33,8 +33,8 @@ object PatientProtocol {
     val Female = Value(0)
 
     def withShortName: PartialFunction[String, Gender.Value] = {
-      case "Erkak" => Male
-      case "Ayol" => Female
+      case "male" => Male
+      case "female" => Female
     }
   }
 

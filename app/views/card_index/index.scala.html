@@ -61,10 +61,10 @@
             </div>
 
             <div class="widget-body" data-bind="visible: vm.selected.patient.id">
-              <div class="widget-main padding-6 no-padding-left no-padding-right">
-                <h5 class="blue">
-                  <span data-bind="css: {'fa fa-male': vm.selected.patient.gender() == 'man', 'fa fa-female': vm.selected.patient.gender() == 'woman'}"></span>
-                  <span data-bind="text: vm.selected.patient.lastName" class="text-capitalize"></span>
+              <div class="widget-main padding-0">
+                <h5>
+                  <span data-bind="css: {'fa fa-male': vm.selected.patient.gender() == 'male', 'fa fa-female': vm.selected.patient.gender() == 'female'}"></span>
+                  <span data-bind="text: vm.selected.patient.lastName"></span>
                   <span data-bind="text: vm.selected.patient.firstName" class="text-capitalize"></span>
                     &nbsp;|&nbsp; Karta №: <span data-bind="text: vm.selected.patient.id"></span>
                 </h5>
@@ -74,9 +74,42 @@
                     <img height="150" class="thumbnail inline no-margin-bottom center-block" alt="Avatar" src="assets/images/avatars/avatar2.png"/>
                   </div>
                   <div class="col-sm-9">
+                    <ul class="list-unstyled spaced">
+                      <li class="no-margin-top">
+                        <i class="ace-icon fa fa-check-square-o bigger-110 green"></i>
+                        Nazoratga olindi: <span data-bind="text: vm.selected.patient.createdAt"></span>
+                      </li>
+                      <li>
+                        <i class="ace-icon fa fa-male bigger-110 purple"></i>
+                        <span data-bind="text: vm.selected.patient.birthDate"></span>
+                      </li>
+                      <li>
+                        <i class="ace-icon fa fa-hospital-o bigger-110 red"></i>
+                        <span data-bind="text: vm.selected.patient.clientGroup.code"></span>
+                        <span class="text-muted" data-bind="text: vm.selected.patient.clientGroup.name"></span>
+                        <span class="text-muted" data-bind="text: vm.selected.patient.patientDataJson.bloodGroup"></span>
+                      </li>
+                      <li>
+                        <i style="vertical-align: middle;" class="ace-icon fa fa-mobile bigger-140 blue"></i>
+                        <span data-bind="text: vm.selected.patient.phoneNumber"></span>
+                      </li>
+                      <li>
+                        <i class="ace-icon fa fa-home bigger-110 blue"></i>
+                        <span data-bind="text: vm.selected.patient.district.name"></span> tumani,
+                        <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi,
+                        <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
+                        <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy
+                      </li>
+                      <li>
+                        <i class="ace-icon fa fa-info-circle bigger-110 blue"></i>
+                        <span data-bind="text: vm.selected.patient.patientDataJson.work"></span>
+                        <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
+                      </li>
+                    </ul>
+                    @*
                     <div class="profile-user-info profile-user-info-striped">
                       <div class="profile-info-row">
-                        <div class="profile-info-name">Nazoratga olingan sana :</div>
+                        <div class="profile-info-name">Nazoratga olindi :</div>
                         <div class="profile-info-value">
                           <span data-bind="text: vm.selected.patient.createdAt"></span>
                         </div>
@@ -88,7 +121,7 @@
                         </div>
                       </div>
                       <div class="profile-info-row">
-                        <div class="profile-info-name">Passport Seriyasi :</div>
+                        <div class="profile-info-name">Passport seriyasi :</div>
                         <div class="profile-info-value">
                           <span data-bind="text: vm.selected.patient.patientDataJson.passportNo"></span>
                         </div>
@@ -130,6 +163,7 @@
                         </div>
                       </div>
                     </div>
+                    *@
                   </div>
                 </div>
                 <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>

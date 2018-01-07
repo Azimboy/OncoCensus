@@ -17,8 +17,10 @@
       <tr data-bind="click: $parent.vm.onPatientSelected, css: {'bg-info': $parent.vm.selected.patient.id() == $data.id}">
         <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
         <td width="90%">
-          <span data-bind="text: $data.lastName"></span>&nbsp;<span data-bind="text: $data.firstName"></span><br>
-          <span data-bind="text: $data.passportNo"></span>
+          <span data-bind="text: $data.lastName"></span>&nbsp;
+          <span data-bind="text: $data.firstName"></span><br>
+          ? yoshda
+          <span data-bind="text: $data.patientDataJson.passportNo"></span>
         </td>
       </tr>
     </tbody>
@@ -94,8 +96,8 @@
         <div class="col-xs-6">
           <label for="gender">Jinsi</label>
           <select class="form-control" name="gender" id="gender" data-bind="value: $data.gender, optionsCaption: 'Jinsi'">
-            <option>Erkak</option>
-            <option>Ayol</option>
+            <option value="male">Erkak</option>
+            <option value="female">Ayol</option>
           </select>
         </div>
         <div class="col-xs-6">
