@@ -9,8 +9,11 @@ lazy val `oncocensus` = (project in file(".")).enablePlugins(PlayScala)
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
       
 resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
-      
+
 scalaVersion := "2.12.2"
+
+includeFilter in (Assets, LessKeys.less) := "*.less"
+excludeFilter in (Assets, LessKeys.less) := "_*.less"
 
 val playVersion = "2.6.5"
 val akkaVersion = "2.5.6"
@@ -65,7 +68,12 @@ val webJars: Seq[ModuleID] = Seq(
 	"org.webjars" % "knockout" % "3.3.0",
 	"org.webjars" % "lodash" % "3.10.1",
 	"org.webjars" % "toastr" % "2.1.2",
-	"org.webjars" % "momentjs" % "2.8.1"
+	"org.webjars" % "bootstrap-select" % "1.7.3-1",
+	"org.webjars" % "Eonasdan-bootstrap-datetimepicker" % "4.15.35",
+	"org.webjars" % "momentjs" % "2.8.1",
+	"org.webjars" % "jquery-ui" % "1.11.4",
+	"org.webjars" % "jquery-ui-src" % "1.11.4",
+	"org.webjars" % "jquery-file-upload" % "9.10.1"
 	//	"org.webjars" % "material-design-icons" % "2.2.0"
 )
 

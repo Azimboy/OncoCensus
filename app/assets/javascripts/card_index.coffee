@@ -2,6 +2,8 @@ $ ->
   my.initAjax()
   window.Glob ?= {}
 
+#  $('.app-select').selectpicker()
+
   apiUrl =
     regions: '/home/regions'
     districts: '/home/districts'
@@ -18,23 +20,41 @@ $ ->
     else
       alert('Something went wrong! Please try again.')
 
-  birthDate = moment("00:00", 'hh:mm A').format('DD.MM.YYYY hh:mm A')
-
-  initDatePicker = (selector, defaultDate, format) ->
-    $el = $(selector)
-    $el.on('dp.hide', () ->
-      $el.find('input').change()
-    )
-
-    $el.datetimepicker
-      format: format or 'YYYY-MM-DD hh:mm A'
-      useCurrent: no
-      defaultDate: defaultDate
-
-  initDatePicker('#dateFrom', birthDate)
-
   $addPatientModal = $('#add-patient-modal')
   $editPatientModal = $('#edit-patient-modal')
+
+  $.mask.definitions['9'] = ''
+  $.mask.definitions['d'] = '[0-9]'
+  $('#phoneNumber').mask('998(dd)-ddd-dd-dd');
+
+  $('#birthDate').datetimepicker
+    viewMode: 'years'
+    format: 'DD.MM.YYYY'
+    autoclose: true
+    todayHighlight: true
+
+  $patientForm = $('#patient-form')
+  fileData = null
+  $patientForm.fileupload
+    dataType: 'text'
+    autoUpload: no
+    replaceFileInput: true
+    singleFileUploads: true
+    multipart: true
+    add: (e, data) ->
+      fileData = data
+    fail: (e, data) ->
+      handleError(data.jqXHR)
+#      vm.enableSubmitButton(yes)
+    done: (e, data) ->
+      result = data.result
+      if result is 'OK'
+        vm.isLoading(no)
+        toastr.success('Yangi foydalanuvchi muvaffaqiyatli yaratildi')
+        loadAllPatients()
+        $addPatientModal.modal('hide')
+      else
+        alert(result or 'Something went wrong! Please try again.')
 
   defaultPatient =
     id: ''
@@ -75,6 +95,8 @@ $ ->
     selected:
       patient: defaultPatient
     isLoading: no
+    isAddingPatient: no
+    isUpdatingPatient: no
 
   vm.formatDate = (millis, format = 'YYYY-MM-DD') ->
     if millis
@@ -105,54 +127,72 @@ $ ->
       yes
 
   vm.onClickAddPatientButton = ->
+    vm.isAddingPatient(yes)
     ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
     $addPatientModal.modal('show')
 
-  vm.createPatient = ->
+  vm.onClickEditPatientButton = ->
+    vm.isUpdatingPatient(yes)
+    #    ko.mapping.fromJS(patient, {}, vm.selected.patient)
+    $editPatientModal.modal('show')
+
+  vm.onAddPatient = ->
     patientObj = ko.mapping.toJS(vm.selected.patient)
-    console.log(patientObj)
     if isPatientValid(patientObj)
-      vm.isLoading(yes)
-      $.ajax
-        url: apiUrl.patient
-        data: JSON.stringify(patientObj)
-        type: 'POST'
-        dataType: "json"
-        contentType: 'application/json'
-      .fail handleError
-      .done (id) ->
-        vm.isLoading(no)
-        patientObj.id = id
-        toastr.success('Yangi foydalanuvchi muvaffaqiyatli yaratildi')
-        loadAllPatients()
-        $addPatientModal.modal('hide')
+#      vm.isLoading(yes)
+      if fileData
+        fileData.submit()
+      else
+        console.log('!!!!!!!!')
+        $patientForm.fileupload('send', {files: ''})
+    no
+
+#  vm.editPatient = ->
+#    $patientForm.fileupload('send', {files: ''})
+#    console.log($patientForm.fileupload('send', {files: ''}))
+#    no
+  #      $.ajax
+#        url: apiUrl.patient
+#        data: JSON.stringify(patientObj)
+#        type: 'POST'
+#        dataType: "json"
+#        contentType: 'application/json'
+#      .fail handleError
+#      .done (id) ->
+#        vm.isLoading(no)
+#        patientObj.id = id
+#        toastr.success('Yangi foydalanuvchi muvaffaqiyatli yaratildi')
+#        loadAllPatients()
+#        $addPatientModal.modal('hide')
 
   vm.onPatientSelected = (patient) ->
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
     vm.selected.patient.createdAt(vm.formatDate(vm.selected.patient.createdAt()))
     vm.selected.patient.birthDate(vm.formatDate(vm.selected.patient.birthDate()))
+    console.log(patient.gender)
+    console.log(vm.selected.patient.gender())
 
 #  vm.onClickEditUserButton = (user) ->
 #    ko.mapping.fromJS(user, {}, vm.selected.user)
 #    $editUserModal.modal('show')
 
-  #  vm.updateUser = () ->
-  #    patientObj = ko.mapping.toJS(vm.selected.user)
-  #
-  #    if isUserValid(patientObj)
-  #      vm.isLoading(yes)
-  #      $.ajax
-  #        url: apiUrl.user + "/#{patientObj.id}"
-  #        data: JSON.stringify(patientObj)
-  #        type: 'PUT'
-  #        dataType: "json"
-  #        contentType: 'application/json'
-  #      .fail handleError
-  #      .done () ->
-  #        vm.isLoading(no)
-  #        toastr.success('Muvaffaqiyatli saqlandi')
-  #        loadAllUsers()
-  #        $editUserModal.modal('hide')
+#  vm.updateUser = () ->
+#    patientObj = ko.mapping.toJS(vm.selected.user)
+#
+#    if isUserValid(patientObj)
+#      vm.isLoading(yes)
+#      $.ajax
+#        url: apiUrl.user + "/#{patientObj.id}"
+#        data: JSON.stringify(patientObj)
+#        type: 'PUT'
+#        dataType: "json"
+#        contentType: 'application/json'
+#      .fail handleError
+#      .done () ->
+#        vm.isLoading(no)
+#        toastr.success('Muvaffaqiyatli saqlandi')
+#        loadAllUsers()
+#        $editUserModal.modal('hide')
 
   loadAllPatients = ->
     $.get(apiUrl.patients)

@@ -16,9 +16,8 @@
     <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap.min.css")" />
     <link rel="stylesheet" href="@routes.Assets.versioned("/font-awesome/4.5.0/css/font-awesome.min.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/daterangepicker.min.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap-datepicker3.min.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap-datetimepicker.min.css")" />
+    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/common.css")" />
+    @Html(webJarsUtil.css("css/bootstrap-datetimepicker.min.css"))
     <!-- page specific plugin styles -->
 
     <!-- text fonts -->
@@ -28,8 +27,7 @@
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-part2.min.css")" class="ace-main-stylesheet" />
     <![endif]-->
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-skins.min.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-rtl.min.css")" />
+    @Html(webJarsUtil.css("build/toastr.min.css"))
 
     <!--[if lte IE 9]>
 		<link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-ie.min.css")" />
@@ -59,32 +57,25 @@
     </script>
     <script src="@routes.Assets.versioned("/javascripts/bootstrap.min.js")"></script>
 
-    <!-- page specific plugin scripts -->
-
-    <!--[if lte IE 8]>
-    <script src="@routes.Assets.versioned("/javascripts/excanvas.min.js")"></script>
-    <![endif]-->
-    <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.ui.touch-punch.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.easypiechart.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.sparkline.index.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.flot.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.flot.pie.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.flot.resize.min.js")"></script>
-      <!-- ace scripts -->
+    <!-- ace scripts -->
     <script src="@routes.Assets.versioned("/javascripts/ace-elements.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/ace.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/polyfills.js")"></script>
+
+    <script src="@routes.Assets.versioned("/javascripts/jquery.maskedinput.min.js")"></script>
 
     @Html(webJarsUtil.script("knockout.js"))
     <script src="@routes.Assets.versioned("lib/knockout.mapping-latest.js")"></script>
     @Html(webJarsUtil.script("lodash.min.js"))
     @Html(webJarsUtil.script("min/moment.min.js"))
-    <script src="@routes.Assets.versioned("/javascripts/daterangepicker.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/bootstrap-datetimepicker.min.js")"></script>
+    <script src="@routes.Assets.versioned("/javascripts/common.js")"></script>
+    <script src="@routes.Assets.versioned("/lib/eonasdan-datetimepicker.js")"></script>
+    @Html(webJarsUtil.script("bootstrap-select.min.js"))
+
     @Html(webJarsUtil.script("build/toastr.min.js"))
-    <script src="@routes.Assets.versioned("/javascripts/common.assist.js")"></script>
+    @Html(webJarsUtil.script("jquery-ui-src/1.11.4/ui/widget.js"))
+    @Html(webJarsUtil.script("jquery-file-upload/9.10.1/js/jquery.iframe-transport.js"))
+    @Html(webJarsUtil.script("jquery-file-upload/9.10.1/js/jquery.fileupload.js"))
   </head>
   <body style="background-color: white!important;">
     @content

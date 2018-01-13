@@ -6,10 +6,10 @@
 @card_index.main("OncoCensus"){
   <script src="@routes.Assets.versioned("javascripts/card_index.js")"></script>
 
-  <div class="row" style="margin-left: 0px; margin-right: 0px">
-    <div class="col-xs-12" style="padding-left: 0px; padding-right: 0px">
-      <div class="row">
-        <div class="col-md-4 widget-container-col" id="widget-container-col-1">
+  <div class="row no-margin-left no-margin-right">
+    <div class="col-xs-12 no-padding-left no-padding-right">
+      <div class="row no-margin-left no-margin-right">
+        <div class="col-md-4 widget-container-col no-padding-left" id="widget-container-col-1">
           <div class="widget-box transparent" id="widget-box-12">
             <div class="widget-header">
               <h4 class="widget-title lighter">Bemorlar</h4>
@@ -23,7 +23,7 @@
                   <i class="ace-icon fa fa-refresh"></i>
                 </a>
 
-                <a href="#" data-bind="click: vm.onClickAddPatientButton">
+                <a href="#" data-action="add" data-bind="click: vm.onClickAddPatientButton">
                   <i class="ace-icon fa fa-plus"></i>
                 </a>
               </div>
@@ -36,7 +36,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-8 widget-container-col" id="widget-container-col-2">
+        <div class="col-md-8 widget-container-col no-padding-right" id="widget-container-col-2">
           <div class="widget-box transparent" id="widget-box-12">
             <div class="widget-header">
               <h4 class="widget-title lighter">Ambulator tibbiy varaqa</h4>
@@ -50,12 +50,12 @@
                   <i class="ace-icon fa fa-refresh"></i>
                 </a>
 
-                <a href="#" data-action="reload">
+                <a href="#" data-action="edit" data-bind="click: vm.onClickEditPatientButton">
                   <i class="ace-icon fa fa-edit"></i>
                 </a>
 
-                <a href="#" data-action="reload">
-                  <i class="ace-icon fa fa-remove"></i>
+                <a href="#" data-action="remove">
+                  <i class="ace-icon fa fa-trash-o"></i>
                 </a>
               </div>
             </div>
@@ -63,7 +63,6 @@
             <div class="widget-body" data-bind="visible: vm.selected.patient.id">
               <div class="widget-main padding-0">
                 <h5>
-                  <span data-bind="css: {'fa fa-male': vm.selected.patient.gender() == 'male', 'fa fa-female': vm.selected.patient.gender() == 'female'}"></span>
                   <span data-bind="text: vm.selected.patient.lastName"></span>
                   <span data-bind="text: vm.selected.patient.firstName" class="text-capitalize"></span>
                     &nbsp;|&nbsp; Karta №: <span data-bind="text: vm.selected.patient.id"></span>
@@ -80,7 +79,9 @@
                         Nazoratga olindi: <span data-bind="text: vm.selected.patient.createdAt"></span>
                       </li>
                       <li>
-                        <i class="ace-icon fa fa-male bigger-110 purple"></i>
+                        <i data-bind="css: {'fa fa-female': vm.selected.patient.gender() == 'Male',
+                                            'fa fa-male': vm.selected.patient.gender() == 'Female'}"
+                        class="ace-icon fa fa-female bigger-110 purple"></i>
                         <span data-bind="text: vm.selected.patient.birthDate"></span>
                       </li>
                       <li>
