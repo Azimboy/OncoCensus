@@ -1,5 +1,6 @@
 package controllers
 
+import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject._
 
@@ -7,7 +8,7 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import models.PatientProtocol.{AddPatient, ClientGroup, Gender, GetAllClientGroups, GetAllPatients, Patient, PatientData}
+import models.PatientProtocol.{AddPatient, BloodGroup, ClientGroup, Gender, GetAllClientGroups, GetAllPatients, Patient, PatientData}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -16,23 +17,6 @@ import views.html.card_index
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
-
-object CardIndexController {
-  case class PatientWeb(
-    firstName: Option[String],
-    lastName: Option[String],
-    middleName: Option[String],
-    gender: String,
-    birthDate: Option[Date],
-    districtId: Int,
-    clientGroupId: Option[Int],
-    email: Option[String],
-    phoneNumber: Option[String],
-    patientDataJson: PatientData
-  )
-
-  implicit val patientWebFormat = Json.format[PatientWeb]
-}
 
 @Singleton
 class CardIndexController @Inject()(val controllerComponents: ControllerComponents,
@@ -43,8 +27,6 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   extends BaseController with LazyLogging {
 
   implicit val defaultTimeout = Timeout(60.seconds)
-
-  import CardIndexController._
 
   def index = Action {
     Ok(card_index.index())
@@ -59,22 +41,38 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     }
   }
 
-  def createPatient = Action.async(parse.json[PatientWeb]) { implicit request =>
-    val patientWeb = request.body
+  def createPatient = Action.async(parse.multipartFormData) { implicit request =>
 
-    val patientDataJs = Json.toJson(patientWeb.patientDataJson)
+    implicit def getValue(key: String): Option[String] = {
+      val value = request.body.dataParts.get(key).flatMap(_.headOption)
+      if (value.forall(_.isEmpty)) {
+        None
+      } else {
+        value
+      }
+    }
+
+    val patientDataJs = Json.toJson(PatientData(
+      passportNo = "passportNo",
+      province = "province",
+      street = "street",
+      home = "home",
+      work = "work",
+      position = "position",
+      bloodGroup = getValue("bloodGroup").map(BloodGroup.withName)
+    ))
 
     val newPatient = Patient(
       createdAt = Some(new Date),
-      firstName = patientWeb.firstName,
-      lastName = patientWeb.lastName,
-      middleName = patientWeb.middleName,
-      gender = Some(Gender.withShortName(patientWeb.gender)),
-      birthDate = Some(new Date),
-      districtId = Some(patientWeb.districtId),
-      clientGroupId = patientWeb.clientGroupId,
-      email = patientWeb.email,
-      phoneNumber = patientWeb.phoneNumber,
+      firstName = "firstName",
+      lastName = "lastName",
+      middleName = "middleName",
+      gender = getValue("gender").map(Gender.withShortName),
+      birthDate = getValue("birthDate").map(parseDate),
+      districtId = getValue("districtId").map(_.toInt),
+      clientGroupId = getValue("clientGroupId").map(_.toInt),
+      email = "email",
+      phoneNumber = "phoneNumber",
       patientDataJson = Some(patientDataJs)
     )
 
@@ -93,6 +91,11 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       logger.error("ClientGroups", error)
       InternalServerError
     }
+  }
+
+  private def parseDate(dateStr: String) = {
+    val dateFormat = new SimpleDateFormat("dd.MM.yyyy")
+    dateFormat.parse(dateStr)
   }
 
 }
