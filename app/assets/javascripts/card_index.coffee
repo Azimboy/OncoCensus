@@ -23,6 +23,7 @@ $ ->
   $addPatientModal = $('#add-patient-modal')
   $editPatientModal = $('#edit-patient-modal')
 
+  $('#passportNumber').mask('AA-0000000');
   $.mask.definitions['9'] = ''
   $.mask.definitions['d'] = '[0-9]'
   $('#phoneNumber').mask('998(dd)-ddd-dd-dd');

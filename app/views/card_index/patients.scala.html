@@ -42,7 +42,9 @@
             <div class="form-group col-xs-12">
               <div class="row">
                 <div class="col-xs-6">
-                  <img height="150" class="thumbnail inline no-margin-bottom center-block" alt="Avatar" src="assets/images/avatars/avatar2.png"/>
+                  <span class="profile-picture">
+                    <img id="avatar" class="editable img-responsive" alt="Avatar" src="assets/images/avatars/avatar2.jpg" />
+                  </span>
                   <input type="file" name="avatar">
                 </div>
                 <div class="col-xs-6">
@@ -159,7 +161,7 @@
                     <span class="input-group-addon">
                       <i class="ace-icon fa fa-phone"></i>
                     </span>
-                    <input type="text" class="form-control input-mask-phone" id="phoneNumber" data-bind="value: vm.selected.patient.phoneNumber" name="phoneNumber" />
+                    <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.phoneNumber" name="phoneNumber" />
                   </div>
                 </div>
                 <div class="col-xs-6">
