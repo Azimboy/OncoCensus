@@ -63,13 +63,15 @@
     <div class="form-group col-xs-12">
       <div class="row">
         <div class="col-xs-6">
-          <label for="avatar">Fotosurat</label>
-          <div>
-            <span class="profile-picture">
-              <img id="avatar" class="editable img-responsive" alt="Avatar" src="assets/images/avatars/avatar2.png" />
-            </span>
+          <img id="avatar" class="editable img-responsive profile-pic" alt="Avatar" src="assets/images/avatars/avatar2.png" />
+          <div class="input-group">
+            <label class="input-group-btn">
+              <span class="btn btn-default upload-button">
+                Rasm yuklash <input type="file" class="file-upload" style="display: none;" name="file" >
+              </span>
+            </label>
+            <input type="text" class="form-control" readonly>
           </div>
-          <input type="hidden" name="avatar">
         </div>
         <div class="col-xs-6">
           <div>

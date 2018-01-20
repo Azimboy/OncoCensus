@@ -34,8 +34,23 @@ $ ->
     autoclose: true
     todayHighlight: true
 
+  readURL = (input) ->
+    if input.files and input.files[0]
+      reader = new FileReader
+
+      reader.onload = (e) ->
+        $('.profile-pic').attr 'src', e.target.result
+
+      reader.readAsDataURL input.files[0]
+
+  $('.file-upload').on 'change', ->
+    readURL this
+
+  $('.upload-button').on 'click', ->
+    $('.file-upload').click()
+
 #  Avatar upload scripts
-  try
+#  try
   #ie8 throws some harmless exceptions, so let's catch'em
   #first let's add a fake appendChild method for Image element for browsers that have a problem with this
   #because editable plugin calls appendChild, and it causes errors on IE at unpredicted points
@@ -44,52 +59,52 @@ $ ->
 #    catch e
 #      Image::appendChild = (el) ->
 
-    $('#avatar').editable
-      type: 'image'
-      name: 'avatar'
-      value: null
-      image:
-        btn_choose: 'Change Avatar'
-        droppable: true
-        maxSize: 500000
-        name: 'avatar'
-        on_error: (error_type) ->
-          #on_error function will be called when the selected file has a problem
-          if error_type == 1
-            #file format error
-            toastr.error('Please choose a jpg|gif|png image!', 'File is not an image!')
-          else if error_type == 2
-            toastr.error('Image size should not exceed 100Kb!', 'File too big!')
-          else
-            toastr.error('Error!', 'Error!')
-      url: (params) ->
-        # ***UPDATE AVATAR HERE*** //
-        #for a working upload example you can replace the contents of this function with
-        #examples/profile-avatar-update.js
-        deferred = new ($.Deferred)
-        value = $('#avatar').next().find('input[type=hidden]:eq(0)').val()
-        if !value or value.length == 0
-          deferred.resolve()
-          return deferred.promise()
-        #dummy upload
-        setTimeout (->
-          if 'FileReader' of window
-            #for browsers that have a thumbnail of selected image
-            thumb = $('#avatar').next().find('img').data('thumb')
-            if thumb
-              $('#avatar').get(0).src = thumb
-          deferred.resolve 'status': 'OK'
-          toastr.success('Uploading to server can be easily implemented. A working example is included with the template.', 'Avatar Updated!')
-        ), parseInt(Math.random() * 800 + 800)
-        deferred.promise()
-          # ***END OF UPDATE AVATAR HERE*** //
-      success: (response, newValue) ->
-        console.log(response)
-        console.log(newValue)
-        no
-
-  catch e
-    console.log(e)
+#    $('#avatar').editable
+#      type: 'image'
+#      name: 'avatar'
+#      value: null
+#      image:
+#        btn_choose: 'Change Avatar'
+#        droppable: true
+#        maxSize: 500000
+#        name: 'avatar'
+#        on_error: (error_type) ->
+#          #on_error function will be called when the selected file has a problem
+#          if error_type == 1
+#            #file format error
+#            toastr.error('Please choose a jpg|gif|png image!', 'File is not an image!')
+#          else if error_type == 2
+#            toastr.error('Image size should not exceed 100Kb!', 'File too big!')
+#          else
+#            toastr.error('Error!', 'Error!')
+#      url: (params) ->
+#        # ***UPDATE AVATAR HERE*** //
+#        #for a working upload example you can replace the contents of this function with
+#        #examples/profile-avatar-update.js
+#        deferred = new ($.Deferred)
+#        value = $('#avatar').next().find('input[type=hidden]:eq(0)').val()
+#        if !value or value.length == 0
+#          deferred.resolve()
+#          return deferred.promise()
+#        #dummy upload
+#        setTimeout (->
+#          if 'FileReader' of window
+#            #for browsers that have a thumbnail of selected image
+#            thumb = $('#avatar').next().find('img').data('thumb')
+#            if thumb
+#              $('#avatar').get(0).src = thumb
+#          deferred.resolve 'status': 'OK'
+#          toastr.success('Uploading to server can be easily implemented. A working example is included with the template.', 'Avatar Updated!')
+#        ), parseInt(Math.random() * 800 + 800)
+#        deferred.promise()
+#          # ***END OF UPDATE AVATAR HERE*** //
+#      success: (response, newValue) ->
+#        console.log(response)
+#        console.log(newValue)
+#        no
+#
+#  catch e
+#    console.log(e)
 
   $patientForm = $('#patient-form')
   fileData = null
