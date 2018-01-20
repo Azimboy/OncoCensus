@@ -16,6 +16,9 @@
     <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap.min.css")" />
     <link rel="stylesheet" href="@routes.Assets.versioned("/font-awesome/4.5.0/css/font-awesome.min.css")" />
+    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap-editable.min.css")" />
+    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/jquery-ui.custom.min.css")" />
+
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/common.css")" />
     @Html(webJarsUtil.css("css/bootstrap-datetimepicker.min.css"))
     <!-- page specific plugin styles -->
@@ -76,6 +79,12 @@
     @Html(webJarsUtil.script("jquery-ui-src/1.11.4/ui/widget.js"))
     @Html(webJarsUtil.script("jquery-file-upload/9.10.1/js/jquery.iframe-transport.js"))
     @Html(webJarsUtil.script("jquery-file-upload/9.10.1/js/jquery.fileupload.js"))
+
+    <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
+    <script src="@routes.Assets.versioned("/javascripts/jquery.ui.touch-punch.min.js")"></script>
+    <script src="@routes.Assets.versioned("/javascripts/bootstrap-editable.min.js")"></script>
+    <script src="@routes.Assets.versioned("/javascripts/ace-editable.min.js")"></script>
+
   </head>
   <body style="background-color: white!important;">
     @content
