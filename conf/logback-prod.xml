@@ -33,7 +33,7 @@
             <OnMatch>DENY</OnMatch>
         </filter>
         <encoder>
-            <pattern>%date %coloredLevel %logger - %message%n%xException{10}</pattern>
+            <pattern>%date %coloredLevel %logger{15} - %message%n%xException{10}</pattern>
         </encoder>
     </appender>
 
@@ -53,6 +53,7 @@
     <root level="WARN">
         <appender-ref ref="ASYNCFILE" />
         <appender-ref ref="ASYNCSTDOUT" />
+        <appender-ref ref="NOTIFICATION" />
     </root>
 
 </configuration>
