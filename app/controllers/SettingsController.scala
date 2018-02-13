@@ -8,9 +8,8 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
-import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region, UpdateDepartment}
+import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
 import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
-import models.utils.CieloConfigUtil._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -52,9 +51,6 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 	extends BaseController with LazyLogging {
 
 	implicit val defaultTimeout = Timeout(60.seconds)
-
-	implicit val currentConfig = getWebServerConfig(configuration)
-//	val userAccountManager = getActorSelFromConfig("actor-path.user-account-manager")
 
 	def index = Action {
 		Ok(settings.index())

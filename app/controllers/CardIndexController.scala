@@ -1,5 +1,6 @@
 package controllers
 
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject._
@@ -42,9 +43,10 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   }
 
   def createPatient = Action.async(parse.multipartFormData) { implicit request =>
+    val multipartBody = request.body
 
     implicit def getValue(key: String): Option[String] = {
-      val value = request.body.dataParts.get(key).flatMap(_.headOption)
+      val value = multipartBody.dataParts.get(key).flatMap(_.headOption)
       if (value.forall(_.isEmpty)) {
         None
       } else {
@@ -76,10 +78,13 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       patientDataJson = Some(patientDataJs)
     )
 
-    (patientManager ? AddPatient(newPatient)).mapTo[Int].map { id =>
+    val photosPath = multipartBody.file("patientsPhoto").map(file => Paths.get(file.ref.getAbsolutePath))
+
+    logger.info(s"Photo PATH = $photosPath")
+    (patientManager ? AddPatient(newPatient, photosPath)).mapTo[Int].map { id =>
       Ok(Json.toJson(id))
     }.recover { case error =>
-      logger.error("Add user error", error)
+      logger.error("Error accurred during creating new patient", error)
       InternalServerError
     }
   }

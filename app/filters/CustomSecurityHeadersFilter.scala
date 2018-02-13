@@ -7,11 +7,7 @@ class CustomSecurityHeadersFilter extends EssentialFilter {
 
   def apply(next: EssentialAction) = EssentialAction { req =>
     next(req).map { result =>
-      if (req.path.startsWith("/TDDI/") || req.path.startsWith("/sms-api/")) { // /sms-api/ is for WEX
-        result
-      } else {
-        result.withHeaders("X-Frame-Options" -> "SAMEORIGIN")
-      }
+      result.withHeaders("X-Frame-Options" -> "SAMEORIGIN")
     }
   }
 }

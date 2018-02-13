@@ -32,21 +32,22 @@ trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
     def districtId = column[Int]("district_id")
     def emailEncr = column[String]("email_encr")
     def phoneNumberEncr = column[String]("phone_number_encr")
+    def avatarId = column[String]("avatar_id")
     def patientDataJson = column[JsValue]("patient_data_json")
     def clientGroupId = column[Int]("client_group_id")
     def deadAt = column[Date]("dead_at")
     def deadReason = column[String]("dead_reason")
 
     def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, gender.?, birthDate.?,
-       districtId.?, emailEncr.?, phoneNumberEncr.?, patientDataJson.?, clientGroupId.?, deadAt.?, deadReason.?).shaped <>
+       districtId.?, emailEncr.?, phoneNumberEncr.?, avatarId.?, patientDataJson.?, clientGroupId.?, deadAt.?, deadReason.?).shaped <>
       (t => {
         val fields =
-          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None, None)
+          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, t._16, None, None)
         (Patient.apply _).tupled(fields)
       },
         (i: Patient) =>
           Patient.unapply(i).map { t =>
-            (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15)
+            (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, t._16)
           }
       )
 

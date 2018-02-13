@@ -1,5 +1,6 @@
 package models
 
+import java.nio.file.Path
 import java.util.Date
 
 import models.AppProtocol.District
@@ -20,6 +21,7 @@ object PatientProtocol {
     districtId: Option[Int] = None,
     email: Option[String] = None,
     phoneNumber: Option[String] = None,
+    avatarId: Option[String] = None,
     patientDataJson: Option[JsValue] = None,
     clientGroupId: Option[Int] = None,
     deadAt: Option[Date] = None,
@@ -33,8 +35,8 @@ object PatientProtocol {
     val Female = Value(0)
 
     def withShortName: PartialFunction[String, Gender.Value] = {
-      case "male" => Male
-      case "female" => Female
+      case "Male" => Male
+      case "Female" => Female
     }
   }
 
@@ -82,8 +84,9 @@ object PatientProtocol {
   implicit val patientDataFormat = Json.format[PatientData]
   implicit val patientFormat = Json.format[Patient]
 
-  case class AddPatient(patient: Patient)
+  case class AddPatient(patient: Patient, photosPath: Option[Path])
 
   case object GetAllPatients
   case object GetAllClientGroups
+
 }

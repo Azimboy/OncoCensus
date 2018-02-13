@@ -79,9 +79,8 @@
                         Nazoratga olindi: <span data-bind="text: vm.selected.patient.createdAt"></span>
                       </li>
                       <li>
-                        <i data-bind="css: {'fa fa-female': vm.selected.patient.gender() == 'Male',
-                                            'fa fa-male': vm.selected.patient.gender() == 'Female'}"
-                        class="ace-icon fa fa-female bigger-110 purple"></i>
+                        <i data-bind="visible: vm.selected.patient.gender() == 'Male'" class="fa fa-male ace-icon bigger-110 purple"></i>
+                        <i data-bind="visible: vm.selected.patient.gender() == 'Female'" class="fa fa-female ace-icon bigger-110 purple" style="padding-left: 4px;"></i>
                         <span data-bind="text: vm.selected.patient.birthDate"></span>
                       </li>
                       <li>

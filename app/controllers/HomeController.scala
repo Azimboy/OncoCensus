@@ -5,6 +5,7 @@ import javax.inject._
 import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
+import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.{District, GetAllRegions, GetDistrictsByRegionId, Region}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -21,7 +22,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
                                @Named("department-manager") val departmentManager: ActorRef,
                                implicit val webJarsUtil: WebJarsUtil)
                               (implicit val ec: ExecutionContext)
-  extends BaseController {
+  extends BaseController with LazyLogging {
 
   implicit val defaultTimeout = Timeout(60.seconds)
 

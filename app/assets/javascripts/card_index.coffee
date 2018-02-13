@@ -2,7 +2,7 @@ $ ->
   my.initAjax()
   window.Glob ?= {}
 
-#  $('.app-select').selectpicker()
+  #  $('.app-select').selectpicker()
 
   apiUrl =
     regions: '/home/regions'
@@ -10,6 +10,59 @@ $ ->
     patient: '/card-index/patient'
     patients: '/card-index/patients'
     clientGroups: '/card-index/client-groups'
+
+  showTooltip = ($el, title) ->
+    setTimeout ->
+      $el.tooltip({title, placement: 'bottom', trigger: 'manual'}).tooltip('show')
+    , 300
+
+    setTimeout ->
+      $el.tooltip('hide')
+    , 3000
+
+  $('input:text[name=firstName]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Ism\" maydonini to'ldiring!")
+
+  $('input:text[name=lastName]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Familiya\" maydonini to'ldiring!")
+
+  $('input:text[name=gender]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Jinsi\" maydonini to'ldiring!")
+
+  $('input:text[name=birthDate]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Tug'ulgan yili\" maydonini to'ldiring!")
+
+  $('input:text[name=clientGroupId]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Klient guruhi\" maydonini to'ldiring!")
+
+  $('input:text[name=passportNumber]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Passport raqami\" maydonini to'ldiring!")
+
+  $('input:text[name=regionId]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Viloyat\" maydonini to'ldiring!")
+
+  $('input:text[name=districtId]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Tuman\" maydonini to'ldiring!")
+
+  $('input:text[name=bloodGroup]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Qon guruhi\" maydonini to'ldiring!")
+
+  $('input:text[name=province]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Mahalla\" maydonini to'ldiring!")
+
+  $('input:text[name=phoneNumber]').focusout ->
+    if notvalid($(this).val())
+      showTooltip($(this), "\"Telefon raqami\" maydonini to'ldiring!")
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -23,7 +76,7 @@ $ ->
   $addPatientModal = $('#add-patient-modal')
   $editPatientModal = $('#edit-patient-modal')
 
-  $('#passportNumber').mask('AA-0000000');
+#  $('#passportNumber').mask('AA-0000000');
   $.mask.definitions['9'] = ''
   $.mask.definitions['d'] = '[0-9]'
   $('#phoneNumber').mask('998(dd)-ddd-dd-dd');
@@ -34,20 +87,20 @@ $ ->
     autoclose: true
     todayHighlight: true
 
-  readURL = (input) ->
-    if input.files and input.files[0]
-      reader = new FileReader
+#  readURL = (input) ->
+#    if input.files and input.files[0]
+#      reader = new FileReader
+#
+#      reader.onload = (e) ->
+#        $('.profile-pic').attr 'src', e.target.result
+#
+#      reader.readAsDataURL input.files[0]
 
-      reader.onload = (e) ->
-        $('.profile-pic').attr 'src', e.target.result
-
-      reader.readAsDataURL input.files[0]
-
-  $('.file-upload').on 'change', ->
-    readURL this
-
-  $('.upload-button').on 'click', ->
-    $('.file-upload').click()
+#  $('.file-upload').on 'change', ->
+#    readURL this
+#
+#  $('.upload-button').on 'click', ->
+#    $('.file-upload').click()
 
 #  Avatar upload scripts
 #  try
@@ -178,26 +231,26 @@ $ ->
   notvalid = (str) ->
     !$.trim(str)
 
-  isPatientValid = (patient) ->
-    warningText =
-      if notvalid(patient.firstName)
-        'Ism maydonini  to\'ldiring'
-      else if notvalid(patient.lastName)
-        'Familiya maydonini to\'ldiring'
-      else if notvalid(patient.middleName)
-        'Otasining ismi maydonini to\'ldiring'
-      else if !patient.districtId
-        'Tuman maydonini to\'ldiring'
-      else if patient.email and !my.isValidEmail(patient.email)
-        'Haqiqiy email manzilini kiriting'
+#  isPatientValid = (patient) ->
+#    warningText =
+#      if notvalid(patient.firstName)
+#        'Ism maydonini  to\'ldiring'
+#      else if notvalid(patient.lastName)
+#        'Familiya maydonini to\'ldiring'
+#      else if notvalid(patient.middleName)
+#        'Otasining ismi maydonini to\'ldiring'
+#      else if !patient.districtId
+#        'Tuman maydonini to\'ldiring'
+#      else if patient.email and !my.isValidEmail(patient.email)
+#        'Haqiqiy email manzilini kiriting'
 #      else if patient.phoneNumber and !my.isValidPhone(patient.phoneNumber)
 #        'Haqiqiy telefon raqamni kiriting'
 
-    if warningText
-      toastr.error(warningText)
-      no
-    else
-      yes
+#    if warningText
+#      toastr.error(warningText)
+#      no
+#    else
+#      yes
 
   vm.onClickAddPatientButton = ->
     vm.isAddingPatient(yes)
@@ -210,14 +263,11 @@ $ ->
     $editPatientModal.modal('show')
 
   vm.onAddPatient = ->
-    patientObj = ko.mapping.toJS(vm.selected.patient)
-    if isPatientValid(patientObj)
-    #      vm.isLoading(yes)
-      if fileData
-        fileData.submit()
-      else
-        $patientForm.fileupload('send', {files: ''})
-        console.log('!!!!!!!!')
+    vm.isLoading(yes)
+    if fileData
+      fileData.submit()
+    else
+      $patientForm.fileupload('send', {files: ''})
     yes
 
 #  vm.editPatient = ->
@@ -242,8 +292,6 @@ $ ->
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
     vm.selected.patient.createdAt(vm.formatDate(vm.selected.patient.createdAt()))
     vm.selected.patient.birthDate(vm.formatDate(vm.selected.patient.birthDate()))
-    console.log(patient.gender)
-    console.log(vm.selected.patient.gender())
 
 #  vm.onClickEditUserButton = (user) ->
 #    ko.mapping.fromJS(user, {}, vm.selected.user)

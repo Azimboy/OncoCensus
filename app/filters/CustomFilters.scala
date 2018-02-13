@@ -12,7 +12,7 @@ class CustomFilters @Inject() (configuration: Configuration,
                                )
   extends HttpFilters
 {
-  private val conf = configuration.get[Configuration]("web-server")
+  private val conf = configuration.get[Configuration]("app")
   val useSecureFlashCookie = conf.getOptional[Boolean]("use-secure-flash-cookie").exists(x => x)
 
   val filters = if (useSecureFlashCookie) {

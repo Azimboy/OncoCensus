@@ -42,7 +42,7 @@ class EncryptionManager @Inject() (configuration: Configuration)
 	extends Actor with Stash with ActorLogging
 {
 
-	val config = configuration.get[Configuration]("web-server")
+	val config = configuration.get[Configuration]("app")
 	val keystorePath = config.get[String]("encr-manager.keystore-path")
 
 	import EncryptionManager._

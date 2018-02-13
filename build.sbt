@@ -73,11 +73,15 @@ val webJars: Seq[ModuleID] = Seq(
 	"org.webjars" % "momentjs" % "2.8.1",
 	"org.webjars" % "jquery-ui" % "1.11.4",
 	"org.webjars" % "jquery-ui-src" % "1.11.4",
-	"org.webjars" % "jquery-file-upload" % "9.10.1"
+	"org.webjars" % "jquery-file-upload" % "9.10.1",
+	"org.webjars" % "es5-shim" % "4.1.14",
+	"org.webjars" % "webshim" % "1.15.8",
+	"org.webjars" % "requirejs" % "2.2.0",
+	"org.webjars" % "modernizr" % "2.8.3"
 	//	"org.webjars" % "material-design-icons" % "2.2.0"
 )
 
 libraryDependencies ++= play ++ akka ++ database ++ webJars ++ loggingLibs ++
-	Seq(ehcache , ws , specs2 % Test , guice )
+	Seq(ws, specs2 % Test, guice)
 
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
