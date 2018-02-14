@@ -36,8 +36,8 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <form id="add-patient-form" enctype="multipart/form-data" method="post"
-          action="@controllers.routes.CardIndexController.createPatient()" data-bind="submit: vm.onAddPatient">
+          <form id="add-patient-form" name="add-patient-form" enctype="multipart/form-data" method="post"
+            action="@controllers.routes.CardIndexController.createPatient()">
             <div class="form-group col-xs-12">
               <div class="row">
                 <div class="col-xs-6">
@@ -48,15 +48,15 @@
                 <div class="col-xs-6">
                   <div>
                     <label for="input1">Ism</label>
-                    <input type="text" class="form-control" id="input1" data-bind="value: vm.selected.patient.firstName" name="firstName" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')">
+                    <input type="text" class="form-control" id="firstName" data-bind="value: vm.selected.patient.firstName" name="firstName">
                   </div>
                   <div>
                     <label for="input2">Familiya</label>
-                    <input type="text" class="form-control" id="input2" data-bind="value: vm.selected.patient.lastName" name="lastName" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')">
+                    <input type="text" class="form-control" id="lastName" data-bind="value: vm.selected.patient.lastName" name="lastName">
                   </div>
                   <div>
                     <label for="input3">Otasining ismi</label>
-                    <input type="text" class="form-control" id="input3" data-bind="value: vm.selected.patient.middleName" name="middleName">
+                    <input type="text" class="form-control" id="middleName" data-bind="value: vm.selected.patient.middleName" name="middleName">
                   </div>
                 </div>
               </div>
@@ -66,7 +66,7 @@
               <div class="row no-padding-left no-padding-right">
                 <div class="col-xs-6">
                   <label for="gender">Jins</label>
-                  <select class="form-control" autocomplete="off" name="gender" id="gender" data-bind="value: vm.selected.patient.gender" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')">
+                  <select class="form-control" autocomplete="off" name="gender" id="gender" data-bind="value: vm.selected.patient.gender">
                     <option value>Jinsi</option>
                     <option value="Male">Erkak</option>
                     <option value="Female">Ayol</option>
@@ -75,8 +75,7 @@
                 <div class="col-xs-6">
                   <label for="birthDate">Tug'ulgan yil</label>
                   <div class="input-group">
-                    <input class="form-control date-picker" id="birthDate" name="birthDate"
-                    type="text" data-bind="value: vm.selected.patient.birthDate" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')"/>
+                    <input type="text" class="form-control" id="birthDate" name="birthDate" data-bind="value: vm.selected.patient.birthDate"/>
                     <span class="input-group-addon">
                       <i class="fa fa-calendar bigger-110"></i>
                     </span>
@@ -89,13 +88,13 @@
               <div class="row">
                 <div class="col-xs-6">
                   <label class="control-label no-padding-right" for="clientGroup">Klient guruh</label>
-                  <select class="form-control" autocomplete="off" name="clientGroupId" id="clientGroup" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')"
+                  <select class="form-control" autocomplete="off" name="clientGroupId" id="clientGroupId"
                   data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.clientGroupId, optionsCaption: 'Klient guruhi'">
                   </select>
                 </div>
                 <div class="col-xs-6">
                   <label for="bloodGroup">Qon guruh</label>
-                  <select class="form-control" autocomplete="off" name="bloodGroup" id="bloodGroup" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')"
+                  <select class="form-control" autocomplete="off" name="bloodGroup" id="bloodGroup"
                   data-bind="options: vm.bloodGroups, value: vm.selected.patient.patientDataJson.bloodGroup, optionsCaption: 'Qon guruhi'">
                   </select>
                 </div>
@@ -106,7 +105,7 @@
               <div class="row">
                 <div class="col-xs-6">
                   <label for="passportNumber">Passport Raqam</label>
-                  <input type="text" class="form-control" id="passportNumber" data-bind="value: vm.selected.patient.patientDataJson.passportNo" name="passportNumber" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')">
+                  <input type="text" class="form-control" id="passportNumber" data-bind="value: vm.selected.patient.patientDataJson.passportNo" name="passportNumber">
                 </div>
               </div>
             </div>
@@ -114,13 +113,13 @@
               <div class="row">
                 <div class="col-xs-6">
                   <label class="control-label no-padding-right" for="region">Viloyat</label>
-                  <select class="form-control" autocomplete="off" name="regionId" id="region" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')"
+                  <select class="form-control" autocomplete="off" name="regionId" id="regionId"
                   data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.regionId, optionsCaption: 'Viloyat'">
                   </select>
                 </div>
                 <div class="col-xs-6">
                   <label class="control-label no-padding-right" for="district">Tuman</label>
-                  <select class="form-control" autocomplete="off" name="districtId" id="district" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')"
+                  <select class="form-control" autocomplete="off" name="districtId" id="districtId"
                   data-bind="options: vm.districts, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.districtId, optionsCaption: 'Tuman'">
                   </select>
                 </div>
@@ -130,7 +129,7 @@
               <div class="row">
                 <div class="col-xs-5">
                   <label for="province">Mahalla</label>
-                  <input type="text" class="form-control" id="province" data-bind="value: vm.selected.patient.patientDataJson.province" name="province" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')">
+                  <input type="text" class="form-control" id="province" data-bind="value: vm.selected.patient.patientDataJson.province" name="province">
                 </div>
                 <div class="col-xs-5">
                   <label for="street">Ko'cha</label>
@@ -162,7 +161,7 @@
                     <span class="input-group-addon">
                       <i class="ace-icon fa fa-phone"></i>
                     </span>
-                    <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.phoneNumber" name="phoneNumber" required oninvalid="this.setCustomValidity('Bu maydonni to\'ldiring!')"/>
+                    <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.phoneNumber" name="phoneNumber"/>
                   </div>
                 </div>
                 <div class="col-xs-6">
@@ -177,7 +176,7 @@
               </div>
             </div>
             <div class="col-xs-offset-4 col-xs-8">
-              <button type="submit" id="add-patient-btn" class="pull-left btn btn-primary" data-bind="disable: vm.isLoading">Qo'shish</button>
+              <button type="submit" id="add-patient-btn" class="pull-left btn btn-primary" data-bind="click: vm.onAddPatient, disable: vm.isLoading">Qo'shish</button>
               <div class="pull-left">&nbsp; &nbsp;</div>
               <button type="button" class="pull-left btn btn-danger" data-dismiss="modal">Bekor qilish</button> &nbsp;
               <div class="pull-left">&nbsp; &nbsp;</div>

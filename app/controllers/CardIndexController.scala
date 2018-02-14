@@ -81,8 +81,8 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     val photosPath = multipartBody.file("patientsPhoto").map(file => Paths.get(file.ref.getAbsolutePath))
 
     logger.info(s"Photo PATH = $photosPath")
-    (patientManager ? AddPatient(newPatient, photosPath)).mapTo[Int].map { id =>
-      Ok(Json.toJson(id))
+    (patientManager ? AddPatient(newPatient, photosPath)).mapTo[Int].map { _ =>
+      Ok("OK")
     }.recover { case error =>
       logger.error("Error accurred during creating new patient", error)
       InternalServerError

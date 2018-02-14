@@ -11,58 +11,58 @@ $ ->
     patients: '/card-index/patients'
     clientGroups: '/card-index/client-groups'
 
-  showTooltip = ($el, title) ->
-    setTimeout ->
-      $el.tooltip({title, placement: 'bottom', trigger: 'manual'}).tooltip('show')
-    , 300
-
-    setTimeout ->
-      $el.tooltip('hide')
-    , 3000
-
-  $('input:text[name=firstName]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Ism\" maydonini to'ldiring!")
-
-  $('input:text[name=lastName]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Familiya\" maydonini to'ldiring!")
-
-  $('input:text[name=gender]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Jinsi\" maydonini to'ldiring!")
-
-  $('input:text[name=birthDate]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Tug'ulgan yili\" maydonini to'ldiring!")
-
-  $('input:text[name=clientGroupId]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Klient guruhi\" maydonini to'ldiring!")
-
-  $('input:text[name=passportNumber]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Passport raqami\" maydonini to'ldiring!")
-
-  $('input:text[name=regionId]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Viloyat\" maydonini to'ldiring!")
-
-  $('input:text[name=districtId]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Tuman\" maydonini to'ldiring!")
-
-  $('input:text[name=bloodGroup]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Qon guruhi\" maydonini to'ldiring!")
-
-  $('input:text[name=province]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Mahalla\" maydonini to'ldiring!")
-
-  $('input:text[name=phoneNumber]').focusout ->
-    if notvalid($(this).val())
-      showTooltip($(this), "\"Telefon raqami\" maydonini to'ldiring!")
+#  $(document).ready ->
+#    inputElements = document.getElementsByTagName('INPUT')
+#    selectElements = document.getElementsByTagName('SELECT')
+#    i = 0
+#    while i < inputElements.length
+#      inputElements[i].oninvalid = (e) ->
+#        if !e.target.validity.valid
+#          switch e.target.id
+#            when 'firstName'
+#              e.target.setCustomValidity 'Bemorning ismini kiriting!'
+#            when 'lastName'
+#              e.target.setCustomValidity 'Bemorning familiyasini kiriting!'
+#            when 'birthDate'
+#              e.target.setCustomValidity 'Bemorning tug\'ulgan sanasini kiriting!'
+#            when 'passportNumber'
+#              e.target.setCustomValidity 'Bemorning passport raqamini kiriting!'
+#            when 'province'
+#              e.target.setCustomValidity 'Mahalla nomini kiriting!'
+#            when 'phoneNumber'
+#              e.target.setCustomValidity 'Bemorning telefon raqamini kiriting!'
+#            else
+#              e.target.setCustomValidity 'Bu maydonni to\'ldirish shart!'
+#              break
+#
+#      inputElements[i].oninput = (e) ->
+#        e.target.setCustomValidity ''
+#
+#      i++
+#
+#    j = 0
+#    while j < selectElements.length
+#      selectElements[j].oninvalid = (e) ->
+#        if !e.target.validity.valid
+#          switch e.target.id
+#            when 'gender'
+#              e.target.setCustomValidity 'Bemorning jinsini tanlang!'
+#            when 'clientGroupId'
+#              e.target.setCustomValidity 'Bemorning klient guruhini tanlang!'
+#            when 'bloodGroup'
+#              e.target.setCustomValidity 'Bemorning qon guruhini tanlang!'
+#            when 'regionId'
+#              e.target.setCustomValidity 'Viloyatni tanlang!'
+#            when 'districtId'
+#              e.target.setCustomValidity 'Tumanni tanlang!'
+#            else
+#              e.target.setCustomValidity 'Bu maydonni to\'ldirish shart!'
+#              break
+#
+#      selectElements[j].oninput = (e) ->
+#        e.target.setCustomValidity ''
+#
+#      j++
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -76,10 +76,10 @@ $ ->
   $addPatientModal = $('#add-patient-modal')
   $editPatientModal = $('#edit-patient-modal')
 
-#  $('#passportNumber').mask('AA-0000000');
   $.mask.definitions['9'] = ''
   $.mask.definitions['d'] = '[0-9]'
   $('#phoneNumber').mask('998(dd)-ddd-dd-dd');
+#  $('#passportNumber').mask('ddddddd');
 
   $('#birthDate').datetimepicker
     viewMode: 'years'
@@ -87,79 +87,7 @@ $ ->
     autoclose: true
     todayHighlight: true
 
-#  readURL = (input) ->
-#    if input.files and input.files[0]
-#      reader = new FileReader
-#
-#      reader.onload = (e) ->
-#        $('.profile-pic').attr 'src', e.target.result
-#
-#      reader.readAsDataURL input.files[0]
-
-#  $('.file-upload').on 'change', ->
-#    readURL this
-#
-#  $('.upload-button').on 'click', ->
-#    $('.file-upload').click()
-
-#  Avatar upload scripts
-#  try
-  #ie8 throws some harmless exceptions, so let's catch'em
-  #first let's add a fake appendChild method for Image element for browsers that have a problem with this
-  #because editable plugin calls appendChild, and it causes errors on IE at unpredicted points
-#    try
-#      document.createElement('IMG').appendChild document.createElement('B')
-#    catch e
-#      Image::appendChild = (el) ->
-
-#    $('#avatar').editable
-#      type: 'image'
-#      name: 'avatar'
-#      value: null
-#      image:
-#        btn_choose: 'Change Avatar'
-#        droppable: true
-#        maxSize: 500000
-#        name: 'avatar'
-#        on_error: (error_type) ->
-#          #on_error function will be called when the selected file has a problem
-#          if error_type == 1
-#            #file format error
-#            toastr.error('Please choose a jpg|gif|png image!', 'File is not an image!')
-#          else if error_type == 2
-#            toastr.error('Image size should not exceed 100Kb!', 'File too big!')
-#          else
-#            toastr.error('Error!', 'Error!')
-#      url: (params) ->
-#        # ***UPDATE AVATAR HERE*** //
-#        #for a working upload example you can replace the contents of this function with
-#        #examples/profile-avatar-update.js
-#        deferred = new ($.Deferred)
-#        value = $('#avatar').next().find('input[type=hidden]:eq(0)').val()
-#        if !value or value.length == 0
-#          deferred.resolve()
-#          return deferred.promise()
-#        #dummy upload
-#        setTimeout (->
-#          if 'FileReader' of window
-#            #for browsers that have a thumbnail of selected image
-#            thumb = $('#avatar').next().find('img').data('thumb')
-#            if thumb
-#              $('#avatar').get(0).src = thumb
-#          deferred.resolve 'status': 'OK'
-#          toastr.success('Uploading to server can be easily implemented. A working example is included with the template.', 'Avatar Updated!')
-#        ), parseInt(Math.random() * 800 + 800)
-#        deferred.promise()
-#          # ***END OF UPDATE AVATAR HERE*** //
-#      success: (response, newValue) ->
-#        console.log(response)
-#        console.log(newValue)
-#        no
-#
-#  catch e
-#    console.log(e)
-
-  $patientForm = $('#patient-form')
+  $patientForm = $('#add-patient-form')
   fileData = null
   $patientForm.fileupload
     dataType: 'text'
@@ -231,27 +159,6 @@ $ ->
   notvalid = (str) ->
     !$.trim(str)
 
-#  isPatientValid = (patient) ->
-#    warningText =
-#      if notvalid(patient.firstName)
-#        'Ism maydonini  to\'ldiring'
-#      else if notvalid(patient.lastName)
-#        'Familiya maydonini to\'ldiring'
-#      else if notvalid(patient.middleName)
-#        'Otasining ismi maydonini to\'ldiring'
-#      else if !patient.districtId
-#        'Tuman maydonini to\'ldiring'
-#      else if patient.email and !my.isValidEmail(patient.email)
-#        'Haqiqiy email manzilini kiriting'
-#      else if patient.phoneNumber and !my.isValidPhone(patient.phoneNumber)
-#        'Haqiqiy telefon raqamni kiriting'
-
-#    if warningText
-#      toastr.error(warningText)
-#      no
-#    else
-#      yes
-
   vm.onClickAddPatientButton = ->
     vm.isAddingPatient(yes)
     ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
@@ -262,13 +169,49 @@ $ ->
     #    ko.mapping.fromJS(patient, {}, vm.selected.patient)
     $editPatientModal.modal('show')
 
-  vm.onAddPatient = ->
-    vm.isLoading(yes)
-    if fileData
-      fileData.submit()
+  isPatientValid = (patient) ->
+    warningText =
+      if notvalid(patient.firstName)
+        'Bemorning ismini kiriting!'
+      else if notvalid(patient.lastName)
+        'Bemorning familiyasini kiriting!'
+      else if notvalid(patient.gender)
+        'Bemorning jinsini tanlang!'
+      else if notvalid(patient.birthDate)
+        'Bemorning tug\'ulgan sanasini kiriting!'
+      else if notvalid(patient.clientGroupId)
+        'Bemorning klient guruhini tanlang!'
+      else if notvalid(patient.patientDataJson.bloodGroup)
+        'Bemorning qon guruhini tanlang!'
+      else if notvalid(patient.patientDataJson.passportNo)
+        'Bemorning passport raqamini kiriting!'
+      else if notvalid(patient.regionId)
+        'Viloyatni tanlang!'
+      else if notvalid(patient.districtId)
+        'Tumanni tanlang!'
+      else if notvalid(patient.patientDataJson.province)
+        'Mahalla nomini kiriting!'
+      else if notvalid(patient.phoneNumber)
+        'Bemorning telefon raqamini kiriting!'
+
+    if warningText
+      toastr.error(warningText)
+      no
     else
-      $patientForm.fileupload('send', {files: ''})
-    yes
+      yes
+
+  vm.onAddPatient = ->
+    patientObj = ko.mapping.toJS(vm.selected.patient)
+    console.log(patientObj)
+    if isPatientValid(patientObj)
+      vm.isLoading(yes)
+      if fileData
+        fileData.submit()
+      else
+        $patientForm.fileupload('send', {files: ''})
+      yes
+    else
+      no
 
 #  vm.editPatient = ->
 #    $patientForm.fileupload('send', {files: ''})
