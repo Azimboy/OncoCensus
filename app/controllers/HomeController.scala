@@ -6,7 +6,7 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import models.AppProtocol.{District, GetAllRegions, GetDistrictsByRegionId, Region}
+import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, Region}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -45,14 +45,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     }
   }
 
-  def getRegions() = Action.async { implicit request =>
+  def getRegions = Action.async { implicit request =>
     (departmentManager ? GetAllRegions).mapTo[Seq[Region]].map { regions =>
       Ok(Json.toJson(regions))
     }
   }
 
-  def getDistrictsByRegionId(regionId: Int) = Action.async { implicit request =>
-    (departmentManager ? GetDistrictsByRegionId(regionId)).mapTo[Seq[District]].map { districts =>
+  def getDistricts = Action.async { implicit request =>
+    (departmentManager ? GetAllDistricts).mapTo[Seq[District]].map { districts =>
       Ok(Json.toJson(districts))
     }
   }

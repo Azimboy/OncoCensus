@@ -9,14 +9,15 @@ GET     /login                                              @controllers.HomeCon
 GET     /redirect/:menuName                                 @controllers.HomeController.redirectTo(menuName)
 
 GET     /home/regions                                       @controllers.HomeController.getRegions
-GET     /home/districts/:regionId                           @controllers.HomeController.getDistrictsByRegionId(regionId: Int)
+GET     /home/districts                                     @controllers.HomeController.getDistricts
 
 GET     /indicator                                          @controllers.IndicatorController.index
 GET     /reception                                          @controllers.ReceptionController.index
 
 GET     /card-index                                         @controllers.CardIndexController.index
 GET     /card-index/patients                                @controllers.CardIndexController.getPatients
-POST    /card-index/patient                                 @controllers.CardIndexController.createPatient
+POST    /card-index/patient                                 @controllers.CardIndexController.modifyPatient
+DELETE  /card-index/patient/:patientId                      @controllers.CardIndexController.deletePatient(patientId: Int)
 GET     /card-index/client-groups                           @controllers.CardIndexController.getClientGroups
 
 GET     /statistics                                         @controllers.StatisticsController.index

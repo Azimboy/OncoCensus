@@ -31,7 +31,7 @@ object AppProtocol {
 	implicit val departmentFormat = Json.format[Department]
 
 	case object GetAllRegions
-	case class GetDistrictsByRegionId(regionId: Int)
+	case object GetAllDistricts
 	case class GetDepartmentsByDistrictId(districtId: Int)
 
 	case object GetDepartmentsReport

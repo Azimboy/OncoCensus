@@ -6,7 +6,8 @@ import javax.inject.{Inject, Named}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.PatientProtocol.{AddPatient, ClientGroup, GetAllClientGroups, GetAllPatients, Patient}
+import com.typesafe.scalalogging.LazyLogging
+import models.PatientProtocol.{ClientGroup, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient}
 import models.actor_managers.EncryptionManager.{DecryptPatients, EncryptPatient}
 import models.daos.{ClientGroupsDao, PatientsDao}
 import models.utils.FileUtils
@@ -23,7 +24,7 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
                                 val patientsDao: PatientsDao)
                                 (implicit val ec: ExecutionContext)
 	extends Actor
-		with ActorLogging {
+		with ActorLogging with LazyLogging {
 
 	implicit val defaultTimeout = Timeout(60.seconds)
 
@@ -37,11 +38,11 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		case GetAllPatients =>
 			getAllPatients().pipeTo(sender())
 
-		case AddPatient(patient, photosPath) =>
-			addPatient(patient, photosPath).pipeTo(sender())
-
 		case GetAllClientGroups =>
 			getAllClientGroups().pipeTo(sender())
+
+		case ModifyPatient(patient, photosPath, isNewPatient) =>
+			modifyPatient(patient, photosPath, isNewPatient).pipeTo(sender())
 	}
 
 	def getAllPatients(): Future[Seq[Patient]] = {
@@ -51,29 +52,37 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		} yield decrPatients
 	}
 
-	def addPatient(patient: Patient, photosPath: Option[Path]): Future[Int] = {
-		for {
-			encrPatient <- (encryptionManager ? EncryptPatient(patient)).mapTo[Patient]
-			_ <- saveIfPhotoExists(photosPath).map { _ =>
-				log.info(s"Patients photo successfully saved.")
-			}
-			dbAction <- patientsDao.create(encrPatient)
-		}	yield dbAction
-	}
-
 	def getAllClientGroups(): Future[Seq[ClientGroup]] = {
 		clientGroupsDao.getAllClientGroups()
 	}
 
-	def saveIfPhotoExists(photosPath: Option[Path]): Future[Unit] = {
+	def modifyPatient(patient: Patient, photosPath: Option[Path], isNewPatient: Boolean): Future[Int] = {
+		for {
+			encrPatient <- (encryptionManager ? EncryptPatient(patient)).mapTo[Patient]
+			encrPatientWithAvatar <- saveAvatarIfExists(photosPath, encrPatient)
+			dbAction <- patient.id match {
+				case Some(patientId) =>
+					log.info(s"EDITING = $patientId")
+					patientsDao.update(encrPatientWithAvatar)
+				case None =>
+					log.info("NEW PNT")
+					patientsDao.create(encrPatientWithAvatar)
+			}
+		}	yield dbAction
+	}
+
+	def saveAvatarIfExists(photosPath: Option[Path], patient: Patient): Future[Patient] = {
 		photosPath match {
 			case Some(photoPath) =>
 				val avatarId = Random.alphanumeric.take(10).mkString
 				Future {
 					FileUtils.saveFile(photoPath, patientAvatarsPath, avatarId)
+				}.map { _ =>
+					log.info(s"Patients photo successfully saved.")
+					patient.copy(avatarId = Some(avatarId))
 				}
 			case None =>
-				Future.successful(())
+				Future.successful(patient)
 		}
 	}
 

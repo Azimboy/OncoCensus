@@ -6,7 +6,7 @@ import javax.inject.{Inject, Named}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, District, GetAllRegions, GetDepartmentsReport, GetDistrictsByRegionId, Region, UpdateDepartment}
+import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, District, GetAllDistricts, GetAllRegions, GetDepartmentsReport, Region, UpdateDepartment}
 import models.actor_managers.EncryptionManager.{DecryptText, EncryptDepartment}
 import models.daos.{DepartmentsDao, DistrictsDao, RegionsDao}
 
@@ -27,8 +27,8 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 		case GetAllRegions =>
 			getAllRegions().pipeTo(sender())
 
-		case GetDistrictsByRegionId(regionId) =>
-			getDistrictsByRegionId(regionId).pipeTo(sender())
+		case GetAllDistricts =>
+			getDistricts().pipeTo(sender())
 
 		case GetDepartmentsReport =>
 			getAllDepartments.pipeTo(sender())
@@ -47,11 +47,17 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 		regionsDao.getAllRegions()
 	}
 
-	def getDistrictsByRegionId(regionId: Int): Future[Seq[District]] = {
-		districtsDao.getDistrictsByRegionId(regionId)
+	def getDistricts(): Future[Seq[District]] = {
+		regionsDao.getAllRegions().flatMap { regions =>
+			Future.sequence(
+				regions.map { region =>
+					districtsDao.getDistrictsByRegionId(region.id.get)
+				}
+			).map(_.flatten)
+		}
 	}
 
-	def getAllDepartments: Future[Seq[Department]] = {
+	def getAllDepartments(): Future[Seq[Department]] = {
 		departmentsDao.findAll.flatMap { departments =>
 			Future.sequence( departments.map { report =>
 				(encryptionManager ? DecryptText(report.name)).mapTo[String].map { decrDepName =>

@@ -5,13 +5,12 @@ import javax.inject.{Inject, Named, Singleton}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.AppProtocol.{District, GetAllRegions, GetDistrictsByRegionId, Region}
 import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
 import models.actor_managers.EncryptionManager.{DecryptUserAccounts, EncryptUserAccount}
-import models.daos.{DistrictsDao, RegionsDao, UserAccountsDao}
+import models.daos.UserAccountsDao
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UserAccountManager @Inject()(@Named("encryption-manager") encryptionManager: ActorRef,

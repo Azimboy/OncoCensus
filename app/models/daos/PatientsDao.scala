@@ -58,7 +58,8 @@ trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
 
 @ImplementedBy(classOf[PatientsImpl])
 trait PatientsDao {
-  def create(Patient: Patient): Future[Int]
+  def create(patient: Patient): Future[Int]
+  def update(patient: Patient): Future[Int]
   def findAll: Future[Seq[Patient]]
 }
 
@@ -82,6 +83,10 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
         into ((r, id) => id)
         ) += Patient
     }
+  }
+
+  override def update(patient: Patient): Future[Int] = {
+    db.run(patients.filter(_.id === patient.id).update(patient))
   }
 
   override def findAll(): Future[Seq[Patient]] = {

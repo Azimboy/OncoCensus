@@ -1,6 +1,6 @@
 package controllers
 
-import java.nio.file.Paths
+import java.nio.file.{Path, Paths}
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject._
@@ -9,15 +9,16 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import models.PatientProtocol.{AddPatient, BloodGroup, ClientGroup, Gender, GetAllClientGroups, GetAllPatients, Patient, PatientData}
+import models.PatientProtocol._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
+import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.Json
 import play.api.mvc._
 import views.html.card_index
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CardIndexController @Inject()(val controllerComponents: ControllerComponents,
@@ -29,6 +30,16 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 
   implicit val defaultTimeout = Timeout(60.seconds)
 
+  implicit def getValue(key: String)(implicit request: Request[MultipartFormData[TemporaryFile]]): Option[String] = {
+    val value = request.body.dataParts.get(key).flatMap(_.headOption)
+
+    if (value.forall(_.isEmpty)) {
+      None
+    } else {
+      value
+    }
+  }
+
   def index = Action {
     Ok(card_index.index())
   }
@@ -37,23 +48,35 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     (patientManager ? GetAllPatients).mapTo[Seq[Patient]].map { patients =>
       Ok(Json.toJson(patients))
     }.recover { case error =>
-      logger.error("Patients", error)
+      logger.error("Error occurred during getting patients", error)
       InternalServerError
     }
   }
 
-  def createPatient = Action.async(parse.multipartFormData) { implicit request =>
-    val multipartBody = request.body
-
-    implicit def getValue(key: String): Option[String] = {
-      val value = multipartBody.dataParts.get(key).flatMap(_.headOption)
-      if (value.forall(_.isEmpty)) {
-        None
-      } else {
-        value
-      }
+  def getClientGroups = Action.async { implicit request =>
+    (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
+      Ok(Json.toJson(clientGroups))
+    }.recover { case error =>
+      logger.error("Error occurred during getting client groups", error)
+      InternalServerError
     }
+  }
 
+  def modifyPatient = Action.async(parse.multipartFormData) { implicit request =>
+    val (patient, photosPath) = getPatientData
+    (patientManager ? ModifyPatient(patient, photosPath)).mapTo[Int].map { _ =>
+      Ok("OK")
+    }.recover { case error =>
+      logger.error("Error occurred during creating new patient", error)
+      InternalServerError
+    }
+  }
+
+  def deletePatient(patientId: Int) = Action.async { implicit request =>
+    Future.successful(Ok("1"))
+  }
+
+  private def getPatientData(implicit request: Request[MultipartFormData[TemporaryFile]]): (Patient, Option[Path]) = {
     val patientDataJs = Json.toJson(PatientData(
       passportNo = "passportNo",
       province = "province",
@@ -64,7 +87,8 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       bloodGroup = getValue("bloodGroup").map(BloodGroup.withName)
     ))
 
-    val newPatient = Patient(
+    val patient = Patient(
+      id = getValue("patientId").map(_.toInt),
       createdAt = Some(new Date),
       firstName = "firstName",
       lastName = "lastName",
@@ -78,24 +102,9 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       patientDataJson = Some(patientDataJs)
     )
 
-    val photosPath = multipartBody.file("patientsPhoto").map(file => Paths.get(file.ref.getAbsolutePath))
-
+    val photosPath = request.body.file("patientsPhoto").map(file => Paths.get(file.ref.getAbsolutePath))
     logger.info(s"Photo PATH = $photosPath")
-    (patientManager ? AddPatient(newPatient, photosPath)).mapTo[Int].map { _ =>
-      Ok("OK")
-    }.recover { case error =>
-      logger.error("Error accurred during creating new patient", error)
-      InternalServerError
-    }
-  }
-
-  def getClientGroups = Action.async { implicit request =>
-    (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
-      Ok(Json.toJson(clientGroups))
-    }.recover { case error =>
-      logger.error("ClientGroups", error)
-      InternalServerError
-    }
+    (patient, None)
   }
 
   private def parseDate(dateStr: String) = {
