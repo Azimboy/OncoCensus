@@ -50,11 +50,11 @@
                   <i class="ace-icon fa fa-refresh"></i>
                 </a>
 
-                <a href="#" data-action="edit" data-bind="click: vm.onClickUpdatePatient">
+                <a href="#" data-action="edit" data-bind="click: vm.onClickUpdatePatient, enable: vm.selected.patient.id()">
                   <i class="ace-icon fa fa-edit"></i>
                 </a>
 
-                <a href="#" data-action="remove">
+                <a href="#" data-action="remove" data-bind="click: vm.onClickRemovePatient, enable: vm.selected.patient.id()">
                   <i class="ace-icon fa fa-trash-o"></i>
                 </a>
               </div>

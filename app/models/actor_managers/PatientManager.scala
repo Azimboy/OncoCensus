@@ -7,7 +7,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
-import models.PatientProtocol.{ClientGroup, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient}
+import models.PatientProtocol.{ClientGroup, DeletePatientById, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient}
 import models.actor_managers.EncryptionManager.{DecryptPatients, EncryptPatient}
 import models.daos.{ClientGroupsDao, PatientsDao}
 import models.utils.FileUtils
@@ -43,8 +43,10 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 
 		case ModifyPatient(patient, photosPath, isNewPatient) =>
 			modifyPatient(patient, photosPath, isNewPatient).pipeTo(sender())
-	}
 
+		case DeletePatientById(patientId) =>
+			deletePatientById(patientId).pipeTo(sender())
+	}
 	def getAllPatients(): Future[Seq[Patient]] = {
 		for {
 			encrPatients <- patientsDao.findAll
@@ -65,7 +67,7 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 					log.info(s"EDITING = $patientId")
 					patientsDao.update(encrPatientWithAvatar)
 				case None =>
-					log.info("NEW PNT")
+					log.info("NEW PATIENT")
 					patientsDao.create(encrPatientWithAvatar)
 			}
 		}	yield dbAction
@@ -84,6 +86,10 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 			case None =>
 				Future.successful(patient)
 		}
+	}
+
+	def deletePatientById(patientId: Int): Future[Int] = {
+		patientsDao.delete(patientId)
 	}
 
 }

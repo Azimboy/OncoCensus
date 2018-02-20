@@ -85,6 +85,7 @@ object PatientProtocol {
   implicit val patientFormat = Json.format[Patient]
 
   case class ModifyPatient(patient: Patient, photosPath: Option[Path], isNewPatient: Boolean = false)
+  case class DeletePatientById(patientId: Int)
 
   case object GetAllPatients
   case object GetAllClientGroups

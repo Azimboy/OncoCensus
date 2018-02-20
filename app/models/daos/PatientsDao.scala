@@ -60,6 +60,7 @@ trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
 trait PatientsDao {
   def create(patient: Patient): Future[Int]
   def update(patient: Patient): Future[Int]
+  def delete(patientId: Int): Future[Int]
   def findAll: Future[Seq[Patient]]
 }
 
@@ -87,6 +88,10 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
 
   override def update(patient: Patient): Future[Int] = {
     db.run(patients.filter(_.id === patient.id).update(patient))
+  }
+
+  override def delete(patientId: Int): Future[Int] = {
+    db.run(patients.filter(_.id === patientId).delete)
   }
 
   override def findAll(): Future[Seq[Patient]] = {

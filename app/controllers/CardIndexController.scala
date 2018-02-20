@@ -73,7 +73,12 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   }
 
   def deletePatient(patientId: Int) = Action.async { implicit request =>
-    Future.successful(Ok("1"))
+    (patientManager ? DeletePatientById(patientId)).mapTo[Int].map { _ =>
+      Ok(Json.toJson("OK"))
+    }.recover { case error =>
+      logger.error(s"Error occurred during deleting patient. PatientId: $patientId", error)
+      InternalServerError
+    }
   }
 
   private def getPatientData(implicit request: Request[MultipartFormData[TemporaryFile]]): (Patient, Option[Path]) = {

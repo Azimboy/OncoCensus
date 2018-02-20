@@ -64,9 +64,9 @@ $ ->
         formData.submit()
       else
         $patientForm.fileupload('send', {files: ''})
-      false
+      yes
     else
-      false
+      no
 
   defaultPatient =
     id: ''
@@ -117,24 +117,6 @@ $ ->
   notvalid = (str) ->
     !$.trim(str)
 
-  vm.onPatientSelected = (patient) ->
-    ko.mapping.fromJS(patient, {}, vm.selected.patient)
-    vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
-    vm.selected.patient.birthDate(vm.formatDate(patient.birthDate))
-    vm.selected.patient.regionId(patient.district.regionId)
-
-  vm.onClickAddPatient = ->
-    vm.isNewPatient(yes)
-    ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
-    $addPatientModal.modal('show')
-
-  vm.onClickUpdatePatient = ->
-    vm.isNewPatient(no)
-    if vm.selected.patient.id()
-      $updatePatientModal.modal('show')
-    else
-      toastr.warning('Tahrirlash uchun bemorni tanlang!')
-
   isPatientValid = (patient) ->
     warningText =
       if notvalid(patient.firstName())
@@ -165,6 +147,38 @@ $ ->
       no
     else
       yes
+
+  vm.onPatientSelected = (patient) ->
+    ko.mapping.fromJS(patient, {}, vm.selected.patient)
+    vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
+    vm.selected.patient.birthDate(vm.formatDate(patient.birthDate))
+    vm.selected.patient.regionId(patient.district.regionId)
+
+  vm.onClickAddPatient = ->
+    vm.isNewPatient(yes)
+    ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
+    $addPatientModal.modal('show')
+
+  vm.onClickUpdatePatient = ->
+    vm.isNewPatient(no)
+    if vm.selected.patient.id()
+      $updatePatientModal.modal('show')
+    else
+      toastr.warning('Tahrirlash uchun bemorni tanlang!')
+
+  vm.onClickRemovePatient = ->
+    if vm.selected.patient.id()
+      if confirm("Bu bemorning ma'lumotlarni o'chirish xohlaysizmi?")
+        $.ajax
+          url: apiUrl.patient + "/#{vm.selected.patient.id()}"
+          type: 'DELETE'
+          dataType: 'json'
+        .fail handleError
+        .done () ->
+          toastr.success("Bemorning ma'lumotlari muvaffaqiyatli o'chirildi.")
+          loadAllPatients()
+    else
+      toastr.warning('O\'chirish uchun bemorni tanlang!')
 
   loadAllPatients = ->
     $.get(apiUrl.patients)
