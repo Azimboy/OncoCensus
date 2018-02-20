@@ -4,6 +4,7 @@ import java.nio.file.Path
 import java.util.Date
 
 import models.AppProtocol.District
+import models.AppProtocol.Paging.PageReq
 import models.utils.{EnumMappedToDb, EnumUtils}
 import play.api.libs.json.{JsValue, Json}
 
@@ -87,7 +88,7 @@ object PatientProtocol {
   case class ModifyPatient(patient: Patient, photosPath: Option[Path], isNewPatient: Boolean = false)
   case class DeletePatientById(patientId: Int)
 
-  case object GetAllPatients
+  case class GetAllPatients(pageReq: PageReq)
   case object GetAllClientGroups
 
 }

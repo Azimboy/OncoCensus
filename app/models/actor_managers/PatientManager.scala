@@ -7,6 +7,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
+import models.AppProtocol.Paging.{PageReq, PageRes}
 import models.PatientProtocol.{ClientGroup, DeletePatientById, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient}
 import models.actor_managers.EncryptionManager.{DecryptPatients, EncryptPatient}
 import models.daos.{ClientGroupsDao, PatientsDao}
@@ -35,8 +36,8 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 	Files.createDirectories(patientAvatarsPath)
 
 	override def receive: Receive = {
-		case GetAllPatients =>
-			getAllPatients().pipeTo(sender())
+		case GetAllPatients(pageReq) =>
+			getAllPatients(pageReq).pipeTo(sender())
 
 		case GetAllClientGroups =>
 			getAllClientGroups().pipeTo(sender())
@@ -47,11 +48,12 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		case DeletePatientById(patientId) =>
 			deletePatientById(patientId).pipeTo(sender())
 	}
-	def getAllPatients(): Future[Seq[Patient]] = {
+	def getAllPatients(pageReq: PageReq): Future[PageRes[Patient]] = {
 		for {
 			encrPatients <- patientsDao.findAll
 			decrPatients <- (encryptionManager ? DecryptPatients(encrPatients)).mapTo[Seq[Patient]]
-		} yield decrPatients
+			pageRes = pageReq.toPageRes(decrPatients)
+		} yield pageRes
 	}
 
 	def getAllClientGroups(): Future[Seq[ClientGroup]] = {

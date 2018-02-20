@@ -7,14 +7,9 @@
       Kengaytirilgan qidiruv
     </a>
   </div>
-  <!-- ko template: {name: 'patient-table-template', data: {patients: vm.patients, vm: vm}} -->
-  <!-- /ko -->
-</div>
-
-<script type="text/html" id="patient-table-template">
   <table class="table table-hover">
-    <tbody data-bind="foreach: $data.patients">
-      <tr data-bind="click: $parent.vm.onPatientSelected, css: {'bg-info': $parent.vm.selected.patient.id() == $data.id}">
+    <tbody data-bind="foreach: vm.patients">
+      <tr data-bind="click: $root.vm.onPatientSelected, css: {'bg-info': $root.vm.selected.patient.id() == $data.id}">
         <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
         <td width="90%">
           <span data-bind="text: $data.lastName"></span>&nbsp;
@@ -25,7 +20,8 @@
       </tr>
     </tbody>
   </table>
-</script>
+  <ul id="pagination" style="margin: 0px!important;"></ul>
+</div>
 
 <div id="add-patient-modal" class="modal fade" role="dialog" data-backdrop="static">
   <div class="modal-dialog" role="document">

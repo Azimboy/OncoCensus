@@ -7,7 +7,11 @@ root = exports ? this
 
 $ ->
   if window.toastr
-    toastr.options.timeOut = 10000
+    toastr.options = {
+      'positionClass': 'toast-top-center'
+      'closeButton': true
+      'timeOut': 5000
+    }
 
 root.my =
   growlTimeoutSeconds: 5

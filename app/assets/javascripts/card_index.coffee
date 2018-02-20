@@ -27,6 +27,28 @@ $ ->
 #    autoclose: true
 #    todayHighlight: true
 
+  pageSize = 8
+  $pagination = {}
+  $paginationEl = $('#pagination')
+
+  initPagination = (total, startPage = 1) ->
+    totalPages = Math.ceil(total / pageSize)
+    if totalPages < 1
+      return no
+    $paginationEl.show()
+    $paginationEl.twbsPagination(
+      startPage: Math.min(startPage, totalPages)
+      totalPages: totalPages
+      visiblePages: 5
+      first: ''
+      prev: 'Oldingi'
+      next: 'Keyingi'
+      last: ''
+      onPageClick: (event, page) ->
+        loadAllPatients(null, page)
+    )
+    $pagination = $paginationEl.data('twbsPagination')
+
 #  TODO Need to fix form redirect issue
   formData = {}
   $patientForm = $('#patient-form')
@@ -180,11 +202,18 @@ $ ->
     else
       toastr.warning('O\'chirish uchun bemorni tanlang!')
 
-  loadAllPatients = ->
-    $.get(apiUrl.patients)
+  loadAllPatients = (event, page) ->
+    pageParam = "pageSize=#{pageSize}"
+    if page
+      pageParam += "&page=#{page}"
+
+    $.get(apiUrl.patients + "?#{pageParam}")
     .fail handleError
-    .done (patients) ->
-      vm.patients patients
+    .done (result) ->
+      $pagination.destroy?()
+      initPagination(result.total, page)
+      console.log(result.total)
+      vm.patients result.items
 
   loadAllRegions = ->
     $.get(apiUrl.regions)

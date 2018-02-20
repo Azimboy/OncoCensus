@@ -9,6 +9,7 @@ import akka.actor.ActorRef
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
+import models.AppProtocol.Paging.{PageReq, PageRes}
 import models.PatientProtocol._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -44,9 +45,10 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     Ok(card_index.index())
   }
 
-  def getPatients = Action.async { implicit request =>
-    (patientManager ? GetAllPatients).mapTo[Seq[Patient]].map { patients =>
-      Ok(Json.toJson(patients))
+  def getPatients(page: Int, pageSize: Int) = Action.async { implicit request =>
+	  val pageReq = PageReq(page = page, size = pageSize)
+    (patientManager ? GetAllPatients(pageReq)).mapTo[PageRes[Patient]].map { pageRes =>
+      Ok(Json.toJson(pageRes))
     }.recover { case error =>
       logger.error("Error occurred during getting patients", error)
       InternalServerError

@@ -77,7 +77,8 @@ val webJars: Seq[ModuleID] = Seq(
 	"org.webjars" % "es5-shim" % "4.1.14",
 	"org.webjars" % "webshim" % "1.15.8",
 	"org.webjars" % "requirejs" % "2.2.0",
-	"org.webjars" % "modernizr" % "2.8.3"
+	"org.webjars" % "modernizr" % "2.8.3",
+	"org.webjars.bower" % "twbs-pagination" % "1.2.5" exclude("org.webjars.bower", "jquery")
 	//	"org.webjars" % "material-design-icons" % "2.2.0"
 )
 
