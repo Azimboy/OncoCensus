@@ -1,11 +1,75 @@
 @()
 <div>
-  <input class="input-sm form-control" width="100%" type="text">
+  <span class="input-icon block" style="display: block;">
+    <input type="text" data-bind="value: vm.filters.lastName" class="input-sm form-control">
+    <i class="ace-icon fa fa-search"></i>
+  </span>
   <div style="margin-top: 5px; margin-bottom: 5px" >
-    <a href="#" class="blue">
-      <span class="fa fa-search"></span>
+    <a href="#" class="blue" data-bind="click: vm.enableFilters">
+      <span class="fa fa-filter"></span>
       Kengaytirilgan qidiruv
     </a>
+    <div data-bind="visible: vm.isFiltersShown">
+      <div class="space-4"></div>
+      <div class="row">
+        <label for="by-gender" class="col-xs-2 text-right no-padding-right" style="font-size: 13px;">Jins</label>
+        <div class="col-xs-10" id="by-gender">
+          <label class="inline">
+            <input type="checkbox" data-bind="checked: vm.filters.isMale"> Erkak
+          </label>&nbsp;&nbsp;&nbsp;
+          <label class="inline">
+            <input type="checkbox" data-bind="checked: vm.filters.isFemale"> Ayol
+          </label>
+        </div>
+      </div>
+      <div class="space-4"></div>
+      <div class="row">
+        <label for="by-age" class="col-xs-2 text-right no-padding-right" style="font-size: 13px;">Yosh</label>
+        <div class="col-xs-10 form-inline" id="by-age">
+          <div class="form-group">
+            <input type="number" data-bind="value: vm.filters.minAge" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; dan &nbsp;
+          </div>
+          <div class="form-group">
+            <input type="number" data-bind="value: vm.filters.maxAge" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; gacha &nbsp;
+          </div>
+        </div>
+      </div>
+      <div class="space-4"></div>
+      <div class="row">
+        <label for="by-region" class="col-xs-2 text-right no-padding-right" style="font-size: 13px;">Viloyat</label>
+        <div class="col-xs-10 form-inline" id="by-region">
+          <select class="form-control" autocomplete="off" name="regionId" id="regionId"
+          data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.filters.regionId, optionsCaption: 'Viloyat'">
+          </select>
+        </div>
+      </div>
+      <div class="space-4"></div>
+      <div class="row">
+        <label for="by-district" class="col-xs-2 text-right no-padding-right" style="font-size: 13px;">Tuman</label>
+        <div class="col-xs-10 form-inline" id="by-district">
+          <select class="form-control" autocomplete="off" name="regionId" id="regionId"
+          data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.filters.districtId, optionsCaption: 'Tuman'">
+          </select>
+        </div>
+      </div>
+      <div class="space-4"></div>
+      <div class="row">
+        <label for="by-client-group" class="col-xs-2 text-right no-padding-right" style="font-size: 13px;">Klient guruhi</label>
+        <div class="col-xs-10 form-inline" id="by-client-group">
+          <select class="form-control" autocomplete="off" name="regionId" id="regionId"
+          data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: 'Klient guruhi'">
+          </select>
+        </div>
+      </div>
+      <div class="space-4"></div>
+      <div class="row">
+        <label for="by-passport-id" class="col-xs-2 text-right no-padding-right" style="font-size: 13px;">Passport raqami</label>
+        <div class="col-xs-10 form-inline" id="by-passport-id">
+          <input type="text" class="form-control" data-bind="value: vm.filters.passportId">
+        </div>
+      </div>
+      <div class="space-4"></div>
+    </div>
   </div>
   <table class="table table-hover">
     <tbody data-bind="foreach: vm.patients">
@@ -14,8 +78,9 @@
         <td width="90%">
           <span data-bind="text: $data.lastName"></span>&nbsp;
           <span data-bind="text: $data.firstName"></span><br>
-          ? yoshda
-          <span data-bind="text: $data.patientDataJson.passportNo"></span>
+          <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>,
+          <span data-bind="text: $data.patientDataJson.passportNumber"></span>,
+          <span data-bind="text: $data.district.name"></span>
         </td>
       </tr>
     </tbody>
@@ -126,7 +191,7 @@
       <div class="row">
         <div class="col-xs-6">
           <label for="passportNumber">Passport Raqam</label>
-          <input type="text" class="form-control" id="passportNumber" data-bind="value: patient.patientDataJson.passportNo" name="passportNumber">
+          <input type="text" class="form-control" id="passportNumber" data-bind="value: patient.patientDataJson.passportNumber" name="passportNumber">
         </div>
       </div>
     </div>

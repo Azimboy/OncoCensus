@@ -20,7 +20,7 @@
                   <i class="ace-icon fa fa-cog"></i>
                 </a>
 
-                <a href="#" data-action="reload">
+                <a href="#" data-action="reload" data-bind="click: vm.onFilterPatients">
                   <i class="ace-icon fa fa-refresh"></i>
                 </a>
 
@@ -124,7 +124,7 @@
                       <div class="profile-info-row">
                         <div class="profile-info-name">Passport seriyasi :</div>
                         <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.patientDataJson.passportNo"></span>
+                          <span data-bind="text: vm.selected.patient.patientDataJson.passportNumber"></span>
                         </div>
                       </div>
                       <div class="profile-info-row">

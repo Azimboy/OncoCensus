@@ -98,6 +98,7 @@ $ ->
     middleName: ''
     gender: ''
     birthDate: ''
+    age: ''
     regionId: ''
     districtId: ''
     clientGroupId: ''
@@ -112,7 +113,7 @@ $ ->
       name: ''
       regionId: ''
     patientDataJson:
-      passportNo: ''
+      passportNumber: ''
       province: ''
       street: ''
       home: ''
@@ -121,6 +122,7 @@ $ ->
       bloodGroup: ''
 
   vm = ko.mapping.fromJS
+    isFiltersShown: no
     patients: []
     regions: []
     districts: []
@@ -129,12 +131,27 @@ $ ->
     selected:
       patient: defaultPatient
       districts: []
+    filters:
+      lastName: undefined
+      isMale: yes
+      isFemale: yes
+      minAge: undefined
+      maxAge: undefined
+      regionId: undefined
+      districtId: undefined
+      clientGroupId: undefined
+      passportNumber: undefined
+      province: undefined
     isLoading: no
     isNewPatient: no
 
   vm.formatDate = (millis, format = 'DD.MM.YYYY') ->
     if millis
       moment(millis).format(format)
+
+  vm.getAge = (date) ->
+    if date
+      moment().diff(date, 'years')
 
   notvalid = (str) ->
     !$.trim(str)
@@ -153,7 +170,7 @@ $ ->
         'Bemorning klient guruhini tanlang!'
       else if notvalid(patient.patientDataJson.bloodGroup())
         'Bemorning qon guruhini tanlang!'
-      else if notvalid(patient.patientDataJson.passportNo())
+      else if notvalid(patient.patientDataJson.passportNumber())
         'Bemorning passport raqamini kiriting!'
       else if notvalid(patient.regionId())
         'Viloyatni tanlang!'
@@ -202,18 +219,67 @@ $ ->
     else
       toastr.warning('O\'chirish uchun bemorni tanlang!')
 
+  vm.enableFilters = ->
+    vm.isFiltersShown(!vm.isFiltersShown())
+
+  vm.onFilterPatients = ->
+    loadAllPatients()
+
   loadAllPatients = (event, page) ->
     pageParam = "pageSize=#{pageSize}"
     if page
       pageParam += "&page=#{page}"
 
-    $.get(apiUrl.patients + "?#{pageParam}")
+    filtersJs = ko.mapping.toJS(vm.filters)
+    minAge = filtersJs.minAge
+    maxAge = filtersJs.maxAge
+
+    if minAge
+      filtersJs.minAge = parseInt(minAge)
+    if maxAge
+      filtersJs.maxAge = parseInt(maxAge)
+
+    console.log(filtersJs)
+
+    $.post(apiUrl.patients + "?#{pageParam}", JSON.stringify(filtersJs))
     .fail handleError
     .done (result) ->
       $pagination.destroy?()
       initPagination(result.total, page)
-      console.log(result.total)
-      vm.patients result.items
+      patients = result.items
+      for patient in patients
+        patient.age = vm.getAge(patient.birthDate)
+      vm.patients patients
+
+  vm.filters.lastName.subscribe ->
+    loadAllPatients()
+
+  vm.filters.isMale.subscribe ->
+    loadAllPatients()
+
+  vm.filters.isFemale.subscribe ->
+    loadAllPatients()
+
+  vm.filters.minAge.subscribe ->
+    loadAllPatients()
+
+  vm.filters.maxAge.subscribe ->
+    loadAllPatients()
+
+  vm.filters.regionId.subscribe ->
+    loadAllPatients()
+
+  vm.filters.districtId.subscribe ->
+    loadAllPatients()
+
+  vm.filters.clientGroupId.subscribe ->
+    loadAllPatients()
+
+  vm.filters.passportNumber.subscribe ->
+    loadAllPatients()
+
+  vm.filters.province.subscribe ->
+    loadAllPatients()
 
   loadAllRegions = ->
     $.get(apiUrl.regions)

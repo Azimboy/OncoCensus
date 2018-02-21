@@ -45,9 +45,10 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     Ok(card_index.index())
   }
 
-  def getPatients(page: Int, pageSize: Int) = Action.async { implicit request =>
+  def getPatients(page: Int, pageSize: Int) = Action.async(parse.json[PatientsFilter]) { implicit request =>
 	  val pageReq = PageReq(page = page, size = pageSize)
-    (patientManager ? GetAllPatients(pageReq)).mapTo[PageRes[Patient]].map { pageRes =>
+    val patientsFilter = request.body
+    (patientManager ? GetAllPatients(pageReq, patientsFilter)).mapTo[PageRes[Patient]].map { pageRes =>
       Ok(Json.toJson(pageRes))
     }.recover { case error =>
       logger.error("Error occurred during getting patients", error)
@@ -84,8 +85,10 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   }
 
   private def getPatientData(implicit request: Request[MultipartFormData[TemporaryFile]]): (Patient, Option[Path]) = {
+    val patientId = getValue("patientId").map(_.toInt)
+
     val patientDataJs = Json.toJson(PatientData(
-      passportNo = "passportNo",
+      passportNumber = "passportNumber",
       province = "province",
       street = "street",
       home = "home",
@@ -95,8 +98,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     ))
 
     val patient = Patient(
-      id = getValue("patientId").map(_.toInt),
-      createdAt = Some(new Date),
+      id = patientId,
       firstName = "firstName",
       lastName = "lastName",
       middleName = "middleName",

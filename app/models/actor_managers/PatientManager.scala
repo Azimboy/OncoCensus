@@ -1,6 +1,7 @@
 package models.actor_managers
 
 import java.nio.file.{Files, Path, Paths}
+import java.util.Date
 import javax.inject.{Inject, Named}
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
@@ -8,7 +9,7 @@ import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.PatientProtocol.{ClientGroup, DeletePatientById, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient}
+import models.PatientProtocol.{ClientGroup, DeletePatientById, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient, PatientsFilter}
 import models.actor_managers.EncryptionManager.{DecryptPatients, EncryptPatient}
 import models.daos.{ClientGroupsDao, PatientsDao}
 import models.utils.FileUtils
@@ -36,8 +37,8 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 	Files.createDirectories(patientAvatarsPath)
 
 	override def receive: Receive = {
-		case GetAllPatients(pageReq) =>
-			getAllPatients(pageReq).pipeTo(sender())
+		case GetAllPatients(pageReq, patientsFilter) =>
+			getAllPatients(pageReq, patientsFilter).pipeTo(sender())
 
 		case GetAllClientGroups =>
 			getAllClientGroups().pipeTo(sender())
@@ -48,9 +49,9 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		case DeletePatientById(patientId) =>
 			deletePatientById(patientId).pipeTo(sender())
 	}
-	def getAllPatients(pageReq: PageReq): Future[PageRes[Patient]] = {
+	def getAllPatients(pageReq: PageReq, patientsFilter: PatientsFilter): Future[PageRes[Patient]] = {
 		for {
-			encrPatients <- patientsDao.findAll
+			encrPatients <- patientsDao.findByFilter(patientsFilter)
 			decrPatients <- (encryptionManager ? DecryptPatients(encrPatients)).mapTo[Seq[Patient]]
 			pageRes = pageReq.toPageRes(decrPatients)
 		} yield pageRes
@@ -64,14 +65,16 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		for {
 			encrPatient <- (encryptionManager ? EncryptPatient(patient)).mapTo[Patient]
 			encrPatientWithAvatar <- saveAvatarIfExists(photosPath, encrPatient)
-			dbAction <- patient.id match {
+			dbAction <- (patient.id match {
 				case Some(patientId) =>
 					log.info(s"EDITING = $patientId")
-					patientsDao.update(encrPatientWithAvatar)
+					patientsDao.findById(patientId).mapTo[Option[Patient]].map { patient =>
+						patientsDao.update(encrPatientWithAvatar.copy(createdAt = patient.get.createdAt))
+					}
 				case None =>
 					log.info("NEW PATIENT")
-					patientsDao.create(encrPatientWithAvatar)
-			}
+					Future.successful(patientsDao.create(encrPatientWithAvatar.copy(createdAt = Some(new Date))))
+			}).flatten
 		}	yield dbAction
 	}
 

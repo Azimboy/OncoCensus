@@ -4,8 +4,9 @@ import java.util.Date
 import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
-import models.PatientProtocol.{Gender, Patient}
-import models.utils.Date2SqlDate
+import com.typesafe.scalalogging.LazyLogging
+import models.PatientProtocol.{Gender, Patient, PatientsFilter}
+import models.utils.{Date2SqlDate, DateUtils}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.JsValue
 import slick.jdbc.JdbcProfile
@@ -61,7 +62,8 @@ trait PatientsDao {
   def create(patient: Patient): Future[Int]
   def update(patient: Patient): Future[Int]
   def delete(patientId: Int): Future[Int]
-  def findAll: Future[Seq[Patient]]
+  def findByFilter(patientsFilter: PatientsFilter): Future[Seq[Patient]]
+  def findById(patientId: Int): Future[Option[Patient]]
 }
 
 @Singleton
@@ -70,7 +72,8 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   extends PatientsDao
   with PatientsComponent
   with HasDatabaseConfigProvider[JdbcProfile]
-  with Date2SqlDate {
+  with Date2SqlDate
+  with LazyLogging {
 
   import dbConfig.profile.api._
 
@@ -94,15 +97,55 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
     db.run(patients.filter(_.id === patientId).delete)
   }
 
-  override def findAll(): Future[Seq[Patient]] = {
+  override def findByFilter(patientsFilter: PatientsFilter): Future[Seq[Patient]] = {
+    val byGender = (patientsFilter.isMale, patientsFilter.isFemale) match {
+      case (true, false) => patients.filter(_.gender === Gender.Male)
+      case (false, true) => patients.filter(_.gender === Gender.Female)
+      case _ => patients
+    }
+
+    val minDate = getBirthDate(patientsFilter.minAge)
+    val maxDate = getBirthDate(patientsFilter.maxAge)
+
+    val byMaxAge = maxDate.map(t => byGender.filter(_.birthDate >= t)).getOrElse(byGender)
+    val byMinAge = minDate.map(t => byMaxAge.filter(_.birthDate <= t)).getOrElse(byMaxAge)
+
+    logger.info(s"MIN = $minDate")
+    logger.info(s"MAX = $maxDate")
+
+    val withDistricts = byMinAge.join(districts).on(_.districtId === _.id)
+
+    val byRegion = patientsFilter.regionId match {
+      case Some(regionId) => withDistricts.filter(_._2.regionId === regionId)
+      case None => withDistricts
+    }
+
+    val byDistrict = patientsFilter.districtId match {
+      case Some(districtId) => byRegion
+          .filter(_._1.districtId === districtId)
+      case None => byRegion
+    }
+
+    val byClientGroup = patientsFilter.clientGroupId match {
+      case Some(clientGroupId) => byDistrict.filter(_._1.clientGroupId === clientGroupId)
+      case None => byDistrict
+    }
+
+    val withClientGroup = byClientGroup.join(clientGroups).on(_._1.clientGroupId === _.id)
+
     db.run {
-      patients
-        .join(districts).on(_.districtId === _.id)
-        .join(clientGroups).on(_._1.clientGroupId === _.id)
-        .result
+      withClientGroup.sortBy(_._1._1.id).result
     }.map(_.map { case ((patient, district), clientGroup) =>
       patient.copy(district = Some(district), clientGroup = Some(clientGroup))
     })
+  }
+
+  override def findById(patientId: Int): Future[Option[Patient]] = {
+    db.run(patients.filter(_.id === patientId).result.headOption)
+  }
+
+  private def getBirthDate(ageOpt: Option[Int]) = {
+    ageOpt.map(age => DateUtils.addYearsToCurrentDate(-age))
   }
 
 }

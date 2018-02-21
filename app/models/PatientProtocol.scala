@@ -48,7 +48,7 @@ object PatientProtocol {
   )
 
   case class PatientData(
-    passportNo: Option[String] = None,
+    passportNumber: Option[String] = None,
     province: Option[String] = None,
     street: Option[String] = None,
     home: Option[String] = None,
@@ -79,6 +79,20 @@ object PatientProtocol {
     }
   }
 
+  case class PatientsFilter(
+    lastName: Option[String],
+    isMale: Boolean,
+    isFemale: Boolean,
+    minAge: Option[Int],
+    maxAge: Option[Int],
+    regionId: Option[Int],
+    districtId: Option[Int],
+    clientGroupId: Option[Int],
+    passportNumber: Option[String],
+    province: Option[String]
+  )
+
+  implicit val patientsFilterFormat = Json.format[PatientsFilter]
   implicit val genderFormat = EnumUtils.enumFormat(Gender)
   implicit val bloodGroupFormat = EnumUtils.enumFormat(BloodGroup)
   implicit val clientGroupFormat = Json.format[ClientGroup]
@@ -88,7 +102,7 @@ object PatientProtocol {
   case class ModifyPatient(patient: Patient, photosPath: Option[Path], isNewPatient: Boolean = false)
   case class DeletePatientById(patientId: Int)
 
-  case class GetAllPatients(pageReq: PageReq)
+  case class GetAllPatients(pageReq: PageReq, patientsFilter: PatientsFilter)
   case object GetAllClientGroups
 
 }

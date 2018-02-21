@@ -15,7 +15,7 @@ GET     /indicator                                          @controllers.Indicat
 GET     /reception                                          @controllers.ReceptionController.index
 
 GET     /card-index                                         @controllers.CardIndexController.index
-GET     /card-index/patients                                @controllers.CardIndexController.getPatients(page: Int ?= 1, pageSize: Int ?= 15)
+POST    /card-index/patients                                @controllers.CardIndexController.getPatients(page: Int ?= 1, pageSize: Int ?= 15)
 POST    /card-index/patient                                 @controllers.CardIndexController.modifyPatient
 DELETE  /card-index/patient/:patientId                      @controllers.CardIndexController.deletePatient(patientId: Int)
 GET     /card-index/client-groups                           @controllers.CardIndexController.getClientGroups
