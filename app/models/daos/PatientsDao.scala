@@ -121,8 +121,7 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
     }
 
     val byDistrict = patientsFilter.districtId match {
-      case Some(districtId) => byRegion
-          .filter(_._1.districtId === districtId)
+      case Some(districtId) => byRegion.filter(_._1.districtId === districtId)
       case None => byRegion
     }
 
