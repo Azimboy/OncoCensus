@@ -11,7 +11,7 @@ import akka.util.Timeout
 import com.google.common.io.BaseEncoding
 import models.AppProtocol.Department
 import models.PatientProtocol.Patient
-import models.UserAccountProtocol.UserAccount
+import models.UserProtocol.User
 import play.api.Configuration
 import play.api.libs.json._
 
@@ -26,11 +26,11 @@ object EncryptionManager {
 	case class DecryptTexts(texts: Seq[String])
 	case class DecryptBytes(bytes: Array[Byte])
 
-	case class EncryptUserAccount(userAccount: UserAccount)
-	case class DecryptUserAccount(userAccount: UserAccount)
-	case class DecryptUserAccounts(userAccounts: Seq[UserAccount])
+	case class EncryptUser(user: User)
+	case class DecryptUser(user: User)
+	case class DecryptUsers(users: Seq[User])
 
-	case class EncryptDepartment(userAccount: Department)
+	case class EncryptDepartment(user: Department)
 	case class DecryptDepartments(departments: Seq[Department])
 
 	case class EncryptPatient(patient: Patient)
@@ -105,14 +105,14 @@ class EncryptionManager @Inject() (configuration: Configuration)
 		case DecryptBytes(bytes) =>
 			sender() ! decryptBytes(bytes)
 
-		case EncryptUserAccount(userAccount) =>
-			sender() ! encryptUserAccount(userAccount)
+		case EncryptUser(user) =>
+			sender() ! encryptUser(user)
 
-		case DecryptUserAccount(userAccount) =>
-			sender() ! decryptUserAccount(userAccount)
+		case DecryptUser(user) =>
+			sender() ! decryptUser(user)
 
-		case DecryptUserAccounts(userAccounts) =>
-			sender() ! decryptUserAccounts(userAccounts)
+		case DecryptUsers(users) =>
+			sender() ! decryptUsers(users)
 
 		case EncryptDepartment(department) =>
 			sender() ! encryptDepartment(department)
@@ -227,35 +227,35 @@ class EncryptionManager @Inject() (configuration: Configuration)
 		cipherDecr.doFinal(bytes)
 	}
 
-	def encryptUserAccount(userAccount: UserAccount): UserAccount = {
-		userAccount.copy(
-			login = encryptText(userAccount.login),
-			passwordHash = encryptText(userAccount.passwordHash),
-			roleCodes = userAccount.roleCodes.map(encryptText),
-			firstName = userAccount.firstName.map(encryptText),
-			lastName = userAccount.lastName.map(encryptText),
-			middleName = userAccount.middleName.map(encryptText),
-			email = userAccount.email.map(encryptText),
-			phoneNumber = userAccount.phoneNumber.map(encryptText)
+	def encryptUser(user: User): User = {
+		user.copy(
+			login = encryptText(user.login),
+			passwordHash = encryptText(user.passwordHash),
+			roleCodes = user.roleCodes.map(encryptText),
+			firstName = user.firstName.map(encryptText),
+			lastName = user.lastName.map(encryptText),
+			middleName = user.middleName.map(encryptText),
+			email = user.email.map(encryptText),
+			phoneNumber = user.phoneNumber.map(encryptText)
 		)
 	}
 
-	def decryptUserAccount(userAccount: UserAccount): UserAccount = {
-		userAccount.copy(
-			login = decryptText(userAccount.login),
-			passwordHash = decryptText(userAccount.passwordHash),
-			roleCodes = userAccount.roleCodes.map(decryptText),
-			firstName = userAccount.firstName.map(decryptText),
-			lastName = userAccount.lastName.map(decryptText),
-			middleName = userAccount.middleName.map(decryptText),
-			email = userAccount.email.map(decryptText),
-			phoneNumber = userAccount.phoneNumber.map(decryptText),
-			department = userAccount.department.map(dep => dep.copy(name = decryptText(dep.name)))
+	def decryptUser(user: User): User = {
+		user.copy(
+			login = decryptText(user.login),
+			passwordHash = decryptText(user.passwordHash),
+			roleCodes = user.roleCodes.map(decryptText),
+			firstName = user.firstName.map(decryptText),
+			lastName = user.lastName.map(decryptText),
+			middleName = user.middleName.map(decryptText),
+			email = user.email.map(decryptText),
+			phoneNumber = user.phoneNumber.map(decryptText),
+			department = user.department.map(dep => dep.copy(name = decryptText(dep.name)))
 		)
 	}
 
-	def decryptUserAccounts(accounts: Seq[UserAccount]) = {
-		accounts.map(decryptUserAccount)
+	def decryptUsers(accounts: Seq[User]) = {
+		accounts.map(decryptUser)
 	}
 
 	def encryptDepartment(department: Department): Department = {

@@ -6,11 +6,11 @@ import models.AppProtocol.Department
 import org.joda.time.{DateTime, Hours}
 import play.api.libs.json.Json
 
-object UserAccountProtocol {
+object UserProtocol {
 
 	private val UserUnlocksInHours = 12
 
-	case class UserAccount(
+	case class User(
 		id: Option[Int] = None,
 		createdAt: Option[Date] = None,
 		login: String,
@@ -38,9 +38,9 @@ object UserAccountProtocol {
 			case None => false
 		}
 	}
-	implicit val userAccountFormat = Json.format[UserAccount]
+	implicit val userFormat = Json.format[User]
 
-	case class AddUserAccount(userAccount: UserAccount)
-	case object GetAllUserAccounts
+	case class AddUser(user: User)
+	case object GetAllUsers
 
 }

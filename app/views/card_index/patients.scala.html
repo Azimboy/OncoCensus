@@ -86,6 +86,7 @@
           <td width="90%">
             <span data-bind="text: $data.lastName"></span>&nbsp;
             <span data-bind="text: $data.firstName"></span><br>
+            <span data-bind="visible: $data.clientGroup.code"><span data-bind="text: $data.clientGroup.code"></span></span>,
             <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>,
             <span data-bind="text: $data.patientDataJson.passportNumber"></span>,
             <span data-bind="text: $data.district.name"></span>
@@ -96,7 +97,7 @@
     <ul id="pagination" style="margin: 0px!important;"></ul>
   </div>
   <div class="alert alert-info" data-bind="visible: vm.patients().length == 0">
-    <p class="text-center text-info">Sizning so'rovingiz bo'yicha ma'lumot topilmadi!</p>
+    <span class="text-center text-info"><span class="fa fa-info-circle"></span> So'rov bo'yicha ma'lumot topilmadi!</span>
   </div>
 </div>
 

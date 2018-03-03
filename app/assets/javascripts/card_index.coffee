@@ -128,6 +128,7 @@ $ ->
     districts: []
     clientGroups: []
     bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
+    rightPage: 'empty'
     selected:
       patient: defaultPatient
       districts: []
@@ -207,6 +208,7 @@ $ ->
 
   vm.onClickRemovePatient = ->
     if vm.selected.patient.id()
+#      TODO use bootbox js
       if confirm("Bu bemorning ma'lumotlarni o'chirish xohlaysizmi?")
         $.ajax
           url: apiUrl.patient + "/#{vm.selected.patient.id()}"
@@ -308,6 +310,12 @@ $ ->
   loadAllRegions()
   loadAllDistricts()
   loadAllClientGroups()
+
+  vm.getRightPageName = ->
+    switch vm.rightPage()
+      when 'empty' then 'AMBULATOR TIBBIY VARAQA'
+      when 'card_index' then 'AMBULATOR TIBBIY VARAQA'
+      when 'medical_check' then 'TIBBIY KO\'RIK KO\'RSATMALARI'
 
   Glob.vm = vm
 

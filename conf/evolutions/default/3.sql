@@ -1,6 +1,7 @@
 # --- !Ups
 
-INSERT INTO "client_groups" ("id", "name", "code")
+INSERT INTO
+  "client_groups" ("id", "name", "code")
 VALUES
   (1, 'Lab havfli o''smasi', 'C00'),
   (2, 'Og''iz bo''shlig''i va yutqini havfli o''smasi', 'C01'),

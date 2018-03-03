@@ -13,7 +13,7 @@
         <div class="col-xs-4 widget-container-col no-padding-left" id="widget-container-col-1">
           <div class="widget-box transparent" id="widget-box-12">
             <div class="widget-header">
-              <h4 class="widget-title lighter">Bemorlar</h4>
+              <h4 class="widget-title lighter">BEMORLAR</h4>
 
               <div class="widget-toolbar no-border">
                 <a href="#" data-action="settings">
@@ -40,7 +40,7 @@
         <div class="col-xs-8 widget-container-col no-padding-right" id="widget-container-col-2">
           <div class="widget-box transparent" id="widget-box-12">
             <div class="widget-header">
-              <h4 class="widget-title lighter">Ambulator tibbiy varaqa</h4>
+              <h4 class="widget-title lighter" data-bind="text: vm.getRightPageName()"></h4>
 
               <div class="widget-toolbar no-border">
                 <a href="#" data-action="settings">
@@ -107,120 +107,63 @@
                         <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
                       </li>
                     </ul>
-                    @*
-                    <div class="profile-user-info profile-user-info-striped">
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Nazoratga olindi :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.createdAt"></span>
-                        </div>
-                      </div>
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Tug'ulgan sanasi :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.birthDate"></span>
-                        </div>
-                      </div>
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Passport seriyasi :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.patientDataJson.passportNumber"></span>
-                        </div>
-                      </div>
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Yashash manzili :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.district.name"></span> tumani
-                          <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi
-                          <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi
-                          <span data-bind="text: vm.selected.patient.patientDataJson.home"></span>
-                        </div>
-                      </div>
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Telefon :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.phoneNumber"></span>
-                          <span data-bind="text: vm.selected.patient.email"></span>
-                        </div>
-                      </div>
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Ish joyi va lavozimi :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.patientDataJson.work"></span>
-                          <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
-                        </div>
-                      </div>
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Muhim belgilari :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.clientGroup.name"></span>
-                          <span data-bind="text: vm.selected.patient.clientGroup.code"></span>
-                        </div>
-                      </div>
-                      <div class="profile-info-row">
-                        <div class="profile-info-name">Qon guruhi :</div>
-                        <div class="profile-info-value">
-                          <span data-bind="text: vm.selected.patient.patientDataJson.bloodGroup"></span>
-                        </div>
-                      </div>
-                    </div>
-                    *@
                   </div>
                 </div>
-                <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>
-                <hr style="margin-top: 0px; margin-bottom: 15px">
-                <div class="green">
-                  <i class="fa fa-plus-circle"></i> Yangi tibbiy ko'rik&nbsp;
+                <div>
+                  <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>
+                  <table class="table" style="margin-bottom: 0px">
+                    <tr>
+                      <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
+                      <td width="93%" style="border: 0px!important;">
+                        Onkolog - Rahmonov Murod Islombekovich
+                        <div class="text-muted">
+                          <span class="fa fa-calendar"></span> Dushanba, 15 okt 2017 - yil, 13:15 &nbsp;
+                          <span class="fa fa-pencil"></span> DR - Rahmonov M, 15.10, 14:30:15
+                          <span class="pull-right green">
+                            <i class="fa fa-check-circle"></i> Ko'rikni tugallash&nbsp;
+                            <i class="fa fa-print blue"></i>
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                  <span class="green"><i class="fa fa-plus-circle"></i> Yangi tibbiy ko'rik</span>
                 </div>
-                <table class="table" style="margin-bottom: 0px">
-                  <tr>
-                    <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
-                    <td width="93%" style="border: 0px!important;">
-                      Onkolog - Rahmonov Murod Islombekovich
-                      <div class="text-muted">
-                        <span class="fa fa-calendar"></span> Dushanba, 15 okt 2017 - yil, 13:15 &nbsp;
-                        <span class="fa fa-pencil"></span> DR - Rahmonov M, 15.10, 14:30:15
-                        <span class="pull-right green">
-                          <i class="fa fa-check-circle"></i> Ko'rikni tugallash&nbsp;
-                          <i class="fa fa-print blue"></i>
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-                <h5 class="blue"><span class="fa fa-info-circle"></span> UMUMIY MA'LUMOTLAR</h5>
-                <hr style="margin-top: 0px; margin-bottom: 15px">
-                <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-line-chart purple" ></span></td>
-                      <td width="93%" style="border: 0px!important;">
-                        Kasallik tarixi
-                        <div class="text-muted">
-                          Qabul va ko'rik tahlillari natijalari
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-file purple" ></span></td>
-                      <td width="93%" style="border: 0px!important;">
-                        Elektron hujjatlar
-                        <div class="text-muted">
-                          Tizimga yuklangan barcha elektron ma'lumotlar
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-info purple" ></span></td>
-                      <td width="93%" style="border: 0px!important;">
-                        So'rov va shikoyatlar
-                        <div class="text-muted">
-                          Bemor to'g'risidagi qo'shimcha ma'lumotlar
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+
+                <div>
+                  <h5 class="blue"><span class="fa fa-info-circle"></span> UMUMIY MA'LUMOTLAR</h5>
+                  <table class="table table-hover">
+                    <tbody>
+                      <tr>
+                        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-line-chart purple" ></span></td>
+                        <td width="93%" style="border: 0px!important;">
+                          Kasallik tarixi
+                          <div class="text-muted">
+                            Qabul va ko'rik tahlillari natijalari
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-file purple" ></span></td>
+                        <td width="93%" style="border: 0px!important;">
+                          Elektron hujjatlar
+                          <div class="text-muted">
+                            Tizimga yuklangan barcha elektron ma'lumotlar
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-info purple" ></span></td>
+                        <td width="93%" style="border: 0px!important;">
+                          So'rov va shikoyatlar
+                          <div class="text-muted">
+                            Bemor to'g'risidagi qo'shimcha ma'lumotlar
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

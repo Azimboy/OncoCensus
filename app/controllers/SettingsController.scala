@@ -9,7 +9,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
 import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
-import models.UserAccountProtocol.{AddUserAccount, GetAllUserAccounts, UserAccount}
+import models.UserProtocol.{AddUser, GetAllUsers, User}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -20,7 +20,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
 
 object SettingsController {
-	case class UserAccountWeb(
+	case class UserWeb(
 	  login: String,
 	  firstName: Option[String] = None,
 	  lastName: Option[String] = None,
@@ -36,14 +36,14 @@ object SettingsController {
 		name: String
 	)
 
-	implicit val userAccountWebFormat = Json.format[UserAccountWeb]
+	implicit val userWebFormat = Json.format[UserWeb]
 	implicit val departmentWebFormat = Json.format[DepartmentWeb]
 }
 
 @Singleton
 class SettingsController @Inject()(val controllerComponents: ControllerComponents,
                                    val configuration: Configuration,
-                                   @Named("user-account-manager") val userAccountManager: ActorRef,
+                                   @Named("user-manager") val userManager: ActorRef,
                                    @Named("department-manager") val departmentManager: ActorRef,
                                    implicit val webJarsUtil: WebJarsUtil,
                                    implicit val actorSystem: ActorSystem
@@ -57,28 +57,28 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 	}
 
 	def getUsers = Action.async { implicit request =>
-		(userAccountManager ? GetAllUserAccounts).mapTo[Seq[UserAccount]].map { users =>
+		(userManager ? GetAllUsers).mapTo[Seq[User]].map { users =>
 			Ok(Json.toJson(users))
 		}
 	}
 
-	def createUser = Action.async(parse.json[UserAccountWeb]) { implicit request =>
-		val userAccountWeb = request.body
+	def createUser = Action.async(parse.json[UserWeb]) { implicit request =>
+		val userWeb = request.body
 
-		val newUserAccount = UserAccount(
-			login = userAccountWeb.login,
+		val newUser = User(
+			login = userWeb.login,
 			passwordHash = "123",
 			createdAt = Some(new Date),
-			firstName = userAccountWeb.firstName,
-			lastName = userAccountWeb.lastName,
-			middleName = userAccountWeb.middleName,
-			departmentId = userAccountWeb.departmentId,
-			roleCodes = userAccountWeb.roleCodes,
-			email = userAccountWeb.email,
-			phoneNumber = userAccountWeb.phoneNumber
+			firstName = userWeb.firstName,
+			lastName = userWeb.lastName,
+			middleName = userWeb.middleName,
+			departmentId = userWeb.departmentId,
+			roleCodes = userWeb.roleCodes,
+			email = userWeb.email,
+			phoneNumber = userWeb.phoneNumber
 		)
 
-		(userAccountManager ? AddUserAccount(newUserAccount)).mapTo[Int].map { id =>
+		(userManager ? AddUser(newUser)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
 			logger.error("Add user error", error)
@@ -86,23 +86,23 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 		}
 	}
 // TODO fix User update
-	def updateUser(id: Int) = Action.async(parse.json[UserAccountWeb]) { implicit request =>
-		val userAccountWeb = request.body
+	def updateUser(id: Int) = Action.async(parse.json[UserWeb]) { implicit request =>
+		val userWeb = request.body
 
-		val newUserAccount = UserAccount(
-			login = userAccountWeb.login,
+		val newUser = User(
+			login = userWeb.login,
 			passwordHash = "123",
 			createdAt = Some(new Date),
-			firstName = userAccountWeb.firstName,
-			lastName = userAccountWeb.lastName,
-			middleName = userAccountWeb.middleName,
-			departmentId = userAccountWeb.departmentId,
-			roleCodes = userAccountWeb.roleCodes,
-			email = userAccountWeb.email,
-			phoneNumber = userAccountWeb.phoneNumber
+			firstName = userWeb.firstName,
+			lastName = userWeb.lastName,
+			middleName = userWeb.middleName,
+			departmentId = userWeb.departmentId,
+			roleCodes = userWeb.roleCodes,
+			email = userWeb.email,
+			phoneNumber = userWeb.phoneNumber
 		)
 
-		(userAccountManager ? AddUserAccount(newUserAccount)).mapTo[Int].map { id =>
+		(userManager ? AddUser(newUser)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
 			logger.error("Add user error", error)

@@ -4,19 +4,19 @@ import java.util.Date
 import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
-import models.UserAccountProtocol._
+import models.UserProtocol._
 import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait UserAccountsComponent extends DepartmentsComponent
+trait UsersComponent extends DepartmentsComponent
   { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import dbConfig.profile.api._
 
-  class UserAccounts(tag: Tag) extends Table[UserAccount](tag, "user_accounts") with Date2SqlDate {
+  class Users(tag: Tag) extends Table[User](tag, "users") with Date2SqlDate {
     val departments = TableQuery[Departments]
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -40,75 +40,75 @@ trait UserAccountsComponent extends DepartmentsComponent
       (t => {
         val fields =
           (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None)
-        (UserAccount.apply _).tupled(fields)
+        (User.apply _).tupled(fields)
       },
-        (i: UserAccount) =>
-          UserAccount.unapply(i).map { t =>
+        (i: User) =>
+          User.unapply(i).map { t =>
             (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15)
           }
       )
 
-    def department = foreignKey("user_accounts_fk_department_id", departmentId, departments)(_.id)
+    def department = foreignKey("users_fk_department_id", departmentId, departments)(_.id)
   }
 }
 
-@ImplementedBy(classOf[UserAccountsImpl])
-trait UserAccountsDao {
-  def findById(id: Int): Future[Option[UserAccount]]
-  def create(userAccount: UserAccount): Future[Int]
-  def findAll: Future[Seq[UserAccount]]
-  def updateUserAccount(userAccount: UserAccount): Future[Int]
+@ImplementedBy(classOf[UsersImpl])
+trait UsersDao {
+  def findById(id: Int): Future[Option[User]]
+  def create(user: User): Future[Int]
+  def findAll: Future[Seq[User]]
+  def updateUser(user: User): Future[Int]
   def updateUserPasswordHashEncr(userId: Int, passwordHashEncr: String): Future[Int]
   def updateUserPasswordHashEncrAndExpiresDate(userId: Int, passwordHashEncr: String, expiresAt: Date): Future[Int]
-  def checkLoginUser(loginEncr: String, passwordHashEncr: String): Future[Option[UserAccount]]
-  def checkPasswordWithCurrent(userId: Int, passwordHashEncr: String): Future[Option[UserAccount]]
-  def updateUserAccountBlockStatusByLogin(loginEncr: String, blockedAt: Option[Date]): Future[Int]
+  def checkLoginUser(loginEncr: String, passwordHashEncr: String): Future[Option[User]]
+  def checkPasswordWithCurrent(userId: Int, passwordHashEncr: String): Future[Option[User]]
+  def updateUserBlockStatusByLogin(loginEncr: String, blockedAt: Option[Date]): Future[Int]
 }
 
 @Singleton
-class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+class UsersImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
                                 (implicit val ec: ExecutionContext)
-  extends UserAccountsDao
-  with UserAccountsComponent
+  extends UsersDao
+  with UsersComponent
   with HasDatabaseConfigProvider[JdbcProfile]
   with Date2SqlDate {
 
   import dbConfig.profile.api._
 
-  val userAccounts = TableQuery[UserAccounts]
+  val users = TableQuery[Users]
   val departments = TableQuery[Departments]
 
   override def findById(id: Int) = {
     db.run {
-      userAccounts.filter(_.id === id).result.headOption
+      users.filter(_.id === id).result.headOption
     }
   }
 
-  override def create(userAccount: UserAccount) = {
+  override def create(user: User) = {
     db.run {
-      (userAccounts returning userAccounts.map(_.id)
+      (users returning users.map(_.id)
         into ((r, id) => id)
-        ) += userAccount
+        ) += user
     }
   }
 
-  override def findAll(): Future[Seq[UserAccount]] = {
+  override def findAll(): Future[Seq[User]] = {
     db.run {
-      userAccounts.join(departments).on(_.departmentId === _.id).result
-    }.map(_.map { case (userAccount, department) =>
-      userAccount.copy(department = Some(department))
+      users.join(departments).on(_.departmentId === _.id).result
+    }.map(_.map { case (user, department) =>
+      user.copy(department = Some(department))
     })
   }
 
-  override def updateUserAccount(userAccount: UserAccount): Future[Int] = {
+  override def updateUser(user: User): Future[Int] = {
     db.run {
-      userAccounts.filter(_.id === userAccount.id).update(userAccount)
+      users.filter(_.id === user.id).update(user)
     }
   }
 
   override def updateUserPasswordHashEncr(userId: Int, passwordHashEncr: String): Future[Int] = {
     db.run {
-      userAccounts.filter(_.id === userId)
+      users.filter(_.id === userId)
         .map(row => (row.passwordHashEncr, row.updatedAt))
         .update(passwordHashEncr, new Date)
     }
@@ -116,7 +116,7 @@ class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigP
 
   override def updateUserPasswordHashEncrAndExpiresDate(userId: Int, passwordHashEncr: String, expiresAt: Date): Future[Int] = {
     db.run {
-      userAccounts.filter(_.id === userId)
+      users.filter(_.id === userId)
         .map(row => (row.passwordHashEncr, row.updatedAt, row.expiresAt))
         .update(passwordHashEncr, new Date, expiresAt)
     }
@@ -124,19 +124,19 @@ class UserAccountsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigP
 
   override def checkLoginUser(loginEncr: String, passwordHashEncr: String) = {
     db.run {
-      userAccounts.filter(user => user.loginEncr === loginEncr && user.passwordHashEncr === passwordHashEncr).result.headOption
+      users.filter(user => user.loginEncr === loginEncr && user.passwordHashEncr === passwordHashEncr).result.headOption
     }
   }
 
-  override def checkPasswordWithCurrent(userId: Int, passwordHashEncr: String): Future[Option[UserAccount]] = {
+  override def checkPasswordWithCurrent(userId: Int, passwordHashEncr: String): Future[Option[User]] = {
     db.run {
-      userAccounts.filter(user => user.id === userId && user.passwordHashEncr === passwordHashEncr).result.headOption
+      users.filter(user => user.id === userId && user.passwordHashEncr === passwordHashEncr).result.headOption
     }
   }
 
-  override def updateUserAccountBlockStatusByLogin(loginEncr: String, blockedAt: Option[Date]): Future[Int] = {
+  override def updateUserBlockStatusByLogin(loginEncr: String, blockedAt: Option[Date]): Future[Int] = {
     db.run {
-      userAccounts.filter(_.loginEncr === loginEncr)
+      users.filter(_.loginEncr === loginEncr)
         .map(_.blockedAt).update(blockedAt)
     }
   }
