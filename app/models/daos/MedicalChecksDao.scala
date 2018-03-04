@@ -29,13 +29,14 @@ trait MedicalChecksComponent
 		def userId = column[Int]("user_id")
 		def startedAt = column[Date]("started_at")
 		def finishedAt = column[Date]("finished_at")
+		def complaint = column[String]("complaint")
 		def objInfo = column[String]("obj_info")
 		def objReview = column[String]("obj_review")
-		def statusLokalis = column[String]("status_lokalis")
+		def statusLocalis = column[String]("status_localis")
 		def diagnose = column[String]("diagnose")
 		def recommendation = column[String]("recommendation")
 
-		def * = (id.?, patientId.?, userId.?, startedAt.?, finishedAt.?, objInfo.?, objReview.?, statusLokalis.?, diagnose.?, recommendation.?) <>
+		def * = (id.?, patientId.?, userId.?, startedAt.?, finishedAt.?, complaint.?, objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?) <>
 			(MedicalCheck.tupled, MedicalCheck.unapply _)
 
 		def patient = foreignKey("medical_checks_fk_patient_id", patientId, patients)(_.id)

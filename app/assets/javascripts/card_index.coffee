@@ -18,14 +18,29 @@ $ ->
     else
       alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
+  complaints = ['Umumiy holsizlik', 'Qabziyat', 'Bel-dumg\'aza sohasida og\'riq', 'Ishtaha pastligi', 'Epitsistostomik naycha borligi']
+  statuses = ['Qorin simmetrik', 'Nafas aktida qatnashadi', 'Paypaslaganda yumshoq', 'Qorin pastki qismida epitsistostomik naycha', 'Funksiyasi saqlangan', 'Periferik l\tugunlari kattalashmagan']
+
   $addPatientModal = $('#add-patient-modal')
   $updatePatientModal = $('#update-patient-modal')
+  $addMedicalCheckModal = $('#add-medical-check-modal')
 
-#  $('#birthDate').datetimepicker
-#    viewMode: 'years'
-#    format: 'DD.MM.YYYY'
-#    autoclose: true
-#    todayHighlight: true
+  $('.date-picker').datepicker
+    autoclose: true
+    todayHighlight: true
+
+  tagComplaint = $('#complaint')
+  tagStatusLocalis = $('#statusLocalis')
+  try
+    tagComplaint.tag
+      placeholder: '...'
+      source: complaints
+    tagStatusLocalis.tag
+      placeholder: '...'
+      source: statuses
+  catch e
+    tagComplaint.after('<textarea id="'+tagComplaint.attr('id')+'" name="'+tagComplaint.attr('name')+'" rows="3">'+tagComplaint.val()+'</textarea>').remove()
+    tagStatusLocalis.after('<textarea id="'+tagStatusLocalis.attr('id')+'" name="'+tagStatusLocalis.attr('name')+'" rows="3">'+tagStatusLocalis.val()+'</textarea>').remove()
 
   pageSize = 8
   $pagination = {}
@@ -78,8 +93,7 @@ $ ->
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
-  $patientForm.submit (e) ->
-    e.preventDefault()
+  $patientForm.submit ->
     vm.isLoading(yes)
     if isPatientValid(vm.selected.patient)
       if formData
@@ -89,6 +103,37 @@ $ ->
       yes
     else
       no
+
+  medicalCheckData = {}
+  $medicalCheckForm = $('#medical-check-form')
+  $medicalCheckForm.fileupload
+    dataType: 'text'
+    autoUpload: false
+    replaceFileInput: true
+    singleFileUploads: false
+    multipart: true
+    add: (e, data) ->
+      medicalCheckData = data
+    fail: (e, data) ->
+      handleError(data.jqXHR)
+      vm.isLoading(no)
+    done: (e, data) ->
+      result = data.result
+      if result is 'OK'
+        vm.isLoading(no)
+        toastr.success('Yangi ma\'lumotlar ro\'yhatga olindi.')
+        $addMedicalCheckModal.modal('hide')
+      else
+        alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
+
+  $medicalCheckForm.submit ->
+    vm.isLoading(yes)
+    console.log(medicalCheckData)
+    if medicalCheckData
+      medicalCheckData.submit()
+    else
+      $medicalCheckForm.fileupload('send', {files: ''})
+    yes
 
   defaultPatient =
     id: ''
@@ -121,6 +166,19 @@ $ ->
       position: ''
       bloodGroup: ''
 
+  defaultMedicalCheck =
+    id: ''
+    patientId: ''
+    userId: ''
+    startedAt: ''
+    finishedAt: ''
+    complaint: ''
+    objInfo: ''
+    objReview: ''
+    statusLocalis: ''
+    diagnose: ''
+    recommendation: ''
+
   vm = ko.mapping.fromJS
     isFiltersShown: no
     patients: []
@@ -131,6 +189,7 @@ $ ->
     rightPage: 'empty'
     selected:
       patient: defaultPatient
+      medicalCheck: defaultMedicalCheck
       districts: []
     filters:
       lastName: undefined
@@ -241,8 +300,6 @@ $ ->
     if maxAge
       filtersJs.maxAge = parseInt(maxAge)
 
-    console.log(filtersJs)
-
     $.post(apiUrl.patients + "?#{pageParam}", JSON.stringify(filtersJs))
     .fail handleError
     .done (result) ->
@@ -302,6 +359,9 @@ $ ->
     .done (clientGroups) ->
       vm.clientGroups clientGroups
 
+  vm.getPatientFullName = ->
+    "#{vm.selected.patient.lastName vm.selected.patient.firstName vm.selected.patient.middleName}"
+
   vm.selected.patient.regionId.subscribe (regionId) ->
     if regionId
       vm.selected.districts(ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId))
@@ -316,6 +376,13 @@ $ ->
       when 'empty' then 'AMBULATOR TIBBIY VARAQA'
       when 'card_index' then 'AMBULATOR TIBBIY VARAQA'
       when 'medical_check' then 'TIBBIY KO\'RIK KO\'RSATMALARI'
+
+  vm.onClickAddMedicalCheck = ->
+    vm.selected.medicalCheck.startedAt(vm.formatDate(moment()))
+    $addMedicalCheckModal.modal('show')
+
+  vm.selected.medicalCheck.complaint.subscribe (value) ->
+    console.log(value)
 
   Glob.vm = vm
 
