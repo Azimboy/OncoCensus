@@ -2,7 +2,6 @@ package controllers
 
 import java.nio.file.{Path, Paths}
 import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject._
 
 import akka.actor.ActorRef
@@ -10,6 +9,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
+import models.CheckUpProtocol.{AddCheckUp, CheckUp}
 import models.PatientProtocol._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -18,13 +18,14 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import views.html.card_index
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
-import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CardIndexController @Inject()(val controllerComponents: ControllerComponents,
                                     val configuration: Configuration,
                                     @Named("patient-manager") val patientManager: ActorRef,
+                                    @Named("check-up-manager") val checkUpManager: ActorRef,
                                     implicit val webJarsUtil: WebJarsUtil)
                                    (implicit val ec: ExecutionContext)
   extends BaseController with LazyLogging {
@@ -80,6 +81,29 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       Ok(Json.toJson("OK"))
     }.recover { case error =>
       logger.error(s"Error occurred during deleting patient. PatientId: $patientId", error)
+      InternalServerError
+    }
+  }
+
+  def addCheckUp = Action.async(parse.multipartFormData) { implicit request =>
+    val checkUp = CheckUp(
+      patientId = getValue("patientId").map(_.toInt),
+      userId = Some(1),
+      startedAt = getValue("startedAt").map(parseDate),
+      complaint = "complaint",
+      objInfo = "objInfo",
+      objReview = "objReview",
+      statusLocalis = "statusLocalis",
+      diagnose = "diagnose",
+      recommendation = "recommendation",
+    )
+
+    val filePaths = request.body.files.map(_.ref.getAbsolutePath)
+
+    (checkUpManager ? AddCheckUp(checkUp, filePaths)).mapTo[Int].map { _ =>
+      Ok("OK")
+    }.recover { case error =>
+      logger.error(s"Error occurred during adding checkUp.", error)
       InternalServerError
     }
   }

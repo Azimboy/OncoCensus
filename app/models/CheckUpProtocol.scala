@@ -4,15 +4,15 @@ import java.util.Date
 
 import play.api.libs.json.Json
 
-object MedicalCheckProtocol {
+object CheckUpProtocol {
 
-	case class MedicalCheck(
+	case class CheckUp(
     id: Option[Int] = None,
     patientId: Option[Int] = None,
     userId: Option[Int] = None,
     startedAt: Option[Date] = None,
     finishedAt: Option[Date] = None,
-    complaint: Option[String],
+    complaint: Option[String] = None,
     objInfo: Option[String] = None,
     objReview: Option[String] = None,
     statusLocalis: Option[String] = None,
@@ -20,6 +20,8 @@ object MedicalCheckProtocol {
     recommendation: Option[String] = None,
 	)
 
-	implicit val medicalCheckFormat = Json.format[MedicalCheck]
+	implicit val checkUpFormat = Json.format[CheckUp]
+
+	case class AddCheckUp(checkUp: CheckUp, filePaths: Seq[String])
 
 }

@@ -10,6 +10,7 @@ import akka.actor._
 import akka.util.Timeout
 import com.google.common.io.BaseEncoding
 import models.AppProtocol.Department
+import models.CheckUpProtocol.CheckUp
 import models.PatientProtocol.Patient
 import models.UserProtocol.User
 import play.api.Configuration
@@ -36,6 +37,9 @@ object EncryptionManager {
 	case class EncryptPatient(patient: Patient)
 	case class DecryptPatient(patient: Patient)
 	case class DecryptPatients(patients: Seq[Patient])
+
+	case class EncryptCheckUp(checkUp: CheckUp)
+	case class DecryptCheckUp(checkUp: CheckUp)
 }
 
 class EncryptionManager @Inject() (configuration: Configuration)
@@ -128,6 +132,12 @@ class EncryptionManager @Inject() (configuration: Configuration)
 
 		case DecryptPatients(patients) =>
 			sender() ! decryptPatients(patients)
+
+		case EncryptCheckUp(checkUp) =>
+			sender() ! encryptCheckUp(checkUp)
+
+		case DecryptCheckUp(checkUp) =>
+			sender() ! decryptCheckUp(checkUp)
 
 	}
 
@@ -292,6 +302,28 @@ class EncryptionManager @Inject() (configuration: Configuration)
 
 	def decryptPatients(patients: Seq[Patient]): Any = {
 		patients.map(decryptPatient)
+	}
+
+	def encryptCheckUp(checkUp: CheckUp): CheckUp = {
+		checkUp.copy(
+			complaint = checkUp.complaint.map(encryptText),
+			objInfo = checkUp.objInfo.map(encryptText),
+			objReview = checkUp.objReview.map(encryptText),
+			statusLocalis = checkUp.statusLocalis.map(encryptText),
+			diagnose = checkUp.diagnose.map(encryptText),
+			recommendation = checkUp.recommendation.map(encryptText)
+		)
+	}
+
+	def decryptCheckUp(checkUp: CheckUp): CheckUp = {
+		checkUp.copy(
+			complaint = checkUp.complaint.map(decryptText),
+			objInfo = checkUp.objInfo.map(decryptText),
+			objReview = checkUp.objReview.map(decryptText),
+			statusLocalis = checkUp.statusLocalis.map(decryptText),
+			diagnose = checkUp.diagnose.map(decryptText),
+			recommendation = checkUp.recommendation.map(decryptText)
+		)
 	}
 
 }

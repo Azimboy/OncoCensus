@@ -23,7 +23,7 @@ $ ->
 
   $addPatientModal = $('#add-patient-modal')
   $updatePatientModal = $('#update-patient-modal')
-  $addMedicalCheckModal = $('#add-medical-check-modal')
+  $addCheckUpModal = $('#add-medical-check-modal')
 
   $('.date-picker').datepicker
     autoclose: true
@@ -104,16 +104,16 @@ $ ->
     else
       no
 
-  medicalCheckData = {}
-  $medicalCheckForm = $('#medical-check-form')
-  $medicalCheckForm.fileupload
+  checkUpData = null
+  $checkUpForm = $('#medical-check-form')
+  $checkUpForm.fileupload
     dataType: 'text'
-    autoUpload: false
-    replaceFileInput: true
-    singleFileUploads: false
-    multipart: true
+    autoUpload: no
+    replaceFileInput: yes
+    singleFileUploads: no
+    multipart: yes
     add: (e, data) ->
-      medicalCheckData = data
+      checkUpData = data
     fail: (e, data) ->
       handleError(data.jqXHR)
       vm.isLoading(no)
@@ -122,18 +122,9 @@ $ ->
       if result is 'OK'
         vm.isLoading(no)
         toastr.success('Yangi ma\'lumotlar ro\'yhatga olindi.')
-        $addMedicalCheckModal.modal('hide')
+        $addCheckUpModal.modal('hide')
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
-
-  $medicalCheckForm.submit ->
-    vm.isLoading(yes)
-    console.log(medicalCheckData)
-    if medicalCheckData
-      medicalCheckData.submit()
-    else
-      $medicalCheckForm.fileupload('send', {files: ''})
-    yes
 
   defaultPatient =
     id: ''
@@ -166,7 +157,7 @@ $ ->
       position: ''
       bloodGroup: ''
 
-  defaultMedicalCheck =
+  defaultCheckUp =
     id: ''
     patientId: ''
     userId: ''
@@ -189,7 +180,7 @@ $ ->
     rightPage: 'empty'
     selected:
       patient: defaultPatient
-      medicalCheck: defaultMedicalCheck
+      checkUp: defaultCheckUp
       districts: []
     filters:
       lastName: undefined
@@ -375,13 +366,22 @@ $ ->
     switch vm.rightPage()
       when 'empty' then 'AMBULATOR TIBBIY VARAQA'
       when 'card_index' then 'AMBULATOR TIBBIY VARAQA'
-      when 'medical_check' then 'TIBBIY KO\'RIK KO\'RSATMALARI'
+      when 'check_up' then 'TIBBIY KO\'RIK KO\'RSATMALARI'
 
-  vm.onClickAddMedicalCheck = ->
-    vm.selected.medicalCheck.startedAt(vm.formatDate(moment()))
-    $addMedicalCheckModal.modal('show')
+  vm.onClickAddCheckUp = ->
+    vm.selected.checkUp.startedAt(vm.formatDate(moment()))
+    $addCheckUpModal.modal('show')
 
-  vm.selected.medicalCheck.complaint.subscribe (value) ->
+  vm.onSubmitCheckUp = ->
+    vm.isLoading(yes)
+    console.log(checkUpData)
+    if checkUpData
+      checkUpData.submit()
+    else
+      $checkUpForm.fileupload('send', {files: ''})
+    yes
+
+  vm.selected.checkUp.complaint.subscribe (value) ->
     console.log(value)
 
   Glob.vm = vm

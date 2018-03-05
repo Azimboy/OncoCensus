@@ -5,14 +5,15 @@ import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import models.MedicalCheckProtocol.MedicalCheck
+import models.CheckUpProtocol.CheckUp
+import models.UserProtocol.User
 import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.Future
 
-trait MedicalChecksComponent
+trait CheckUpsComponent
 	extends PatientsComponent
 	with UsersComponent
 	with Date2SqlDate
@@ -20,7 +21,7 @@ trait MedicalChecksComponent
 
 	import dbConfig.profile.api._
 
-	class MedicalChecks(tag: Tag) extends Table[MedicalCheck](tag, "medical_checks") {
+	class CheckUps(tag: Tag) extends Table[CheckUp](tag, "check_ups") {
 		val patients = TableQuery[Patients]
 		val users = TableQuery[Users]
 
@@ -37,22 +38,23 @@ trait MedicalChecksComponent
 		def recommendation = column[String]("recommendation")
 
 		def * = (id.?, patientId.?, userId.?, startedAt.?, finishedAt.?, complaint.?, objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?) <>
-			(MedicalCheck.tupled, MedicalCheck.unapply _)
+			(CheckUp.tupled, CheckUp.unapply _)
 
-		def patient = foreignKey("medical_checks_fk_patient_id", patientId, patients)(_.id)
-		def user = foreignKey("medical_checks_fk_user_id", userId, users)(_.id)
+		def patient = foreignKey("check_ups_fk_patient_id", patientId, patients)(_.id)
+		def user = foreignKey("check_ups_fk_user_id", userId, users)(_.id)
 	}
 }
 
-@ImplementedBy(classOf[MedicalChecksDaoImpl])
-trait MedicalChecksDao {
-	def findById(id: Int): Future[Option[MedicalCheck]]
+@ImplementedBy(classOf[CheckUpsDaoImpl])
+trait CheckUpsDao {
+	def create(checkUp: CheckUp): Future[Int]
+	def findById(id: Int): Future[Option[CheckUp]]
 }
 
 @Singleton
-class MedicalChecksDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-	extends MedicalChecksDao
-		with MedicalChecksComponent
+class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+	extends CheckUpsDao
+		with CheckUpsComponent
 		with PatientsComponent
 		with UsersComponent
 		with HasDatabaseConfigProvider[JdbcProfile]
@@ -60,11 +62,19 @@ class MedicalChecksDaoImpl @Inject()(protected val dbConfigProvider: DatabaseCon
 
 	import dbConfig.profile.api._
 
-	val medicalChecks = TableQuery[MedicalChecks]
+	val checkUps = TableQuery[CheckUps]
+
+	override def create(checkUp: CheckUp): Future[Int] = {
+		db.run {
+			(checkUps returning checkUps.map(_.id)
+				into ((r, id) => id)
+				) += checkUp
+		}
+	}
 
 	override def findById(id: Int) = {
 		db.run {
-			medicalChecks.filter(_.id === id).result.headOption
+			checkUps.filter(_.id === id).result.headOption
 		}
 	}
 

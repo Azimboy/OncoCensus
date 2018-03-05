@@ -49,6 +49,7 @@ $ ->
     selected:
       user: defaultUser
       department: defaultDepartment
+      districts: []
     isLoading: no
 
   notvalid = (str) ->
@@ -152,6 +153,13 @@ $ ->
     .done (regions) ->
       vm.regions regions
 
+  loadAllDistricts = ->
+    $.get(apiUrl.districts)
+    .fail handleError
+    .done (districts) ->
+      vm.selected.districts districts
+      vm.districts districts
+
   loadAllDepartments = ->
     $.get(apiUrl.departments)
     .fail handleError
@@ -166,11 +174,8 @@ $ ->
       vm.departments departments
 
   vm.selected.department.regionId.subscribe (regionId) ->
-    if regionId and !vm.selected.districtId
-      $.get("#{apiUrl.districts}/#{regionId}")
-      .fail handleError
-      .done (districts) ->
-        vm.districts districts
+    if regionId
+      vm.selected.districts(ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId))
 
   isDepartmentValid = (department) ->
     warningText =
@@ -245,6 +250,7 @@ $ ->
 
   loadAllUsers()
   loadAllRegions()
+  loadAllDistricts()
   loadAllDepartments()
 
   Glob.vm = vm
