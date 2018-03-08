@@ -20,6 +20,7 @@ GET     /card-index/client-groups                           @controllers.CardInd
 POST    /card-index/patient                                 @controllers.CardIndexController.modifyPatient
 DELETE  /card-index/patient/:patientId                      @controllers.CardIndexController.deletePatient(patientId: Int)
 POST    /card-index/check-up                                @controllers.CardIndexController.addCheckUp
+GET     /card-index/check-ups/:patientId                    @controllers.CardIndexController.getCheckUpsByPatientId(patientId: Int)
 
 GET     /statistics                                         @controllers.StatisticsController.index
 

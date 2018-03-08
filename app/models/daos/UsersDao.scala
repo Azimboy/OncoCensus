@@ -67,7 +67,7 @@ trait UsersDao {
 
 @Singleton
 class UsersImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-                                (implicit val ec: ExecutionContext)
+                         (implicit val ec: ExecutionContext)
   extends UsersDao
   with UsersComponent
   with HasDatabaseConfigProvider[JdbcProfile]

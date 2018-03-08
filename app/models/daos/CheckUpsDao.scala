@@ -11,7 +11,7 @@ import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait CheckUpsComponent
 	extends PatientsComponent
@@ -38,7 +38,16 @@ trait CheckUpsComponent
 		def recommendation = column[String]("recommendation")
 
 		def * = (id.?, patientId.?, userId.?, startedAt.?, finishedAt.?, complaint.?, objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?) <>
-			(CheckUp.tupled, CheckUp.unapply _)
+			(t => {
+				val fields =
+					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, None)
+				(CheckUp.apply _).tupled(fields)
+			},
+				(i: CheckUp) =>
+					CheckUp.unapply(i).map { t =>
+						(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11)
+					}
+			)
 
 		def patient = foreignKey("check_ups_fk_patient_id", patientId, patients)(_.id)
 		def user = foreignKey("check_ups_fk_user_id", userId, users)(_.id)
@@ -48,11 +57,13 @@ trait CheckUpsComponent
 @ImplementedBy(classOf[CheckUpsDaoImpl])
 trait CheckUpsDao {
 	def create(checkUp: CheckUp): Future[Int]
+	def findByPatientId(patientId: Int): Future[Seq[CheckUp]]
 	def findById(id: Int): Future[Option[CheckUp]]
 }
 
 @Singleton
 class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+                               (implicit val ec: ExecutionContext)
 	extends CheckUpsDao
 		with CheckUpsComponent
 		with PatientsComponent
@@ -63,6 +74,7 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 	import dbConfig.profile.api._
 
 	val checkUps = TableQuery[CheckUps]
+	val users = TableQuery[Users]
 
 	override def create(checkUp: CheckUp): Future[Int] = {
 		db.run {
@@ -70,6 +82,15 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 				into ((r, id) => id)
 				) += checkUp
 		}
+	}
+
+	override def findByPatientId(patientId: Int): Future[Seq[CheckUp]] = {
+		db.run {
+			checkUps.filter(_.patientId === patientId)
+				.join(users).on(_.userId === _.id).result
+		}.map(_.map { case (checkUp, user) =>
+			checkUp.copy(user = Some(user))
+		})
 	}
 
 	override def findById(id: Int) = {

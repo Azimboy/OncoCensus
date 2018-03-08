@@ -8,6 +8,7 @@ $ ->
     patient: '/card-index/patient'
     patients: '/card-index/patients'
     clientGroups: '/card-index/client-groups'
+    checkUps: '/card-index/check-ups'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -28,6 +29,11 @@ $ ->
   $('.date-picker').datepicker
     autoclose: true
     todayHighlight: true
+
+#  $('.date-time-picker').datetimepicker
+##    format: 'MM.DD.YYYY hh:mm:ss'
+#    autoclose: true
+#    todayHighlight: true
 
   tagComplaint = $('#complaint')
   tagStatusLocalis = $('#statusLocalis')
@@ -177,6 +183,7 @@ $ ->
     districts: []
     clientGroups: []
     bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
+    checkUps: []
     rightPage: 'empty'
     selected:
       patient: defaultPatient
@@ -243,6 +250,7 @@ $ ->
     vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
     vm.selected.patient.birthDate(vm.formatDate(patient.birthDate))
     vm.selected.patient.regionId(patient.district.regionId)
+    getPatientsCheckUps(patient.id)
 
   vm.onClickAddPatient = ->
     vm.isNewPatient(yes)
@@ -368,6 +376,7 @@ $ ->
       when 'card_index' then 'AMBULATOR TIBBIY VARAQA'
       when 'check_up' then 'TIBBIY KO\'RIK KO\'RSATMALARI'
 
+  # CHECH UP
   vm.onClickAddCheckUp = ->
     vm.selected.checkUp.startedAt(vm.formatDate(moment()))
     $addCheckUpModal.modal('show')
@@ -381,8 +390,14 @@ $ ->
       $checkUpForm.fileupload('send', {files: ''})
     yes
 
-  vm.selected.checkUp.complaint.subscribe (value) ->
-    console.log(value)
+  getPatientsCheckUps = (patientId) ->
+    $.get(apiUrl.checkUps + '/' + patientId)
+    .fail handleError
+    .done (checkUps) ->
+      vm.checkUps checkUps
+
+  vm.onCheckUpSelected = (checkUp) ->
+    ko.mapping.fromJS(checkUp, {}, vm.selected.checkUp)
 
   Glob.vm = vm
 

@@ -9,7 +9,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.CheckUpProtocol.{AddCheckUp, CheckUp}
+import models.CheckUpProtocol.{AddCheckUp, CheckUp, GetCheckUpsByPatientId}
 import models.PatientProtocol._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -104,6 +104,15 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       Ok("OK")
     }.recover { case error =>
       logger.error(s"Error occurred during adding checkUp.", error)
+      InternalServerError
+    }
+  }
+
+  def getCheckUpsByPatientId(patientId: Int) = Action.async { implicit request =>
+    (checkUpManager ? GetCheckUpsByPatientId(patientId)).mapTo[Seq[CheckUp]].map { checkUps =>
+      Ok(Json.toJson(checkUps))
+    }.recover { case error =>
+      logger.error(s"Error occurred during getting check ups. PatientId: $patientId", error)
       InternalServerError
     }
   }

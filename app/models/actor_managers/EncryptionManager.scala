@@ -40,6 +40,7 @@ object EncryptionManager {
 
 	case class EncryptCheckUp(checkUp: CheckUp)
 	case class DecryptCheckUp(checkUp: CheckUp)
+	case class DecryptCheckUps(checkUps: Seq[CheckUp])
 }
 
 class EncryptionManager @Inject() (configuration: Configuration)
@@ -138,6 +139,9 @@ class EncryptionManager @Inject() (configuration: Configuration)
 
 		case DecryptCheckUp(checkUp) =>
 			sender() ! decryptCheckUp(checkUp)
+
+		case DecryptCheckUps(checkUps) =>
+			sender() ! decryptCheckUps(checkUps)
 
 	}
 
@@ -322,8 +326,13 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			objReview = checkUp.objReview.map(decryptText),
 			statusLocalis = checkUp.statusLocalis.map(decryptText),
 			diagnose = checkUp.diagnose.map(decryptText),
-			recommendation = checkUp.recommendation.map(decryptText)
+			recommendation = checkUp.recommendation.map(decryptText),
+			user = checkUp.user.map(decryptUser)
 		)
+	}
+
+	def decryptCheckUps(checkUps: Seq[CheckUp]): Seq[CheckUp] = {
+		checkUps.map(decryptCheckUp)
 	}
 
 }

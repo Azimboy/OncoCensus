@@ -49,24 +49,37 @@
 </div>
 
 <div>
-  <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>
-  <table class="table" style="margin-bottom: 0px">
-    <tr>
-      <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
-      <td width="93%" style="border: 0px!important;">
-        Onkolog - Rahmonov Murod Islombekovich
-        <div class="text-muted">
-          <span class="fa fa-calendar"></span> Dushanba, 15 okt 2017 - yil, 13:15 &nbsp;
-          <span class="fa fa-pencil"></span> DR - Rahmonov M, 15.10, 14:30:15
+  <div class="row">
+    <div class="col-xs-9">
+      <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>
+    </div>
+    <div class="col-xs-3">
+      <a href="#" class="green pull-right" style="margin-top: 10px" data-bind="click: vm.onClickAddCheckUp"><i class="fa fa-plus-square"></i> Yangi tibbiy ko'rik</a>
+    </div>
+  </div>
+  <table class="table table-hover" style="margin-bottom: 0px;">
+    <tbody data-bind="foreach: vm.checkUps">
+      <tr data-bind="click: $root.vm.onCheckUpSelected, css: {'bg-danger': $root.vm.selected.checkUp.id() == $data.id}">
+        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
+        <td width="93%" style="border: 0px!important;">
+          Onkolog - <span data-bind="text: $data.user.lastName"></span>&nbsp;
+          <span data-bind="text: $data.user.firstName"></span>&nbsp;
+          <span data-bind="text: $data.user.middleName"></span>
           <span class="pull-right green">
-            <i class="fa fa-check-circle"></i> Ko'rikni tugallash&nbsp;
-            <i class="fa fa-print blue"></i>
+            <a href="#" class="orange"><i class="fa fa-pencil" data-toggle="sadfasdf"></i> Tahrirlash</a>&nbsp;&nbsp;
+            <a href="#" class="red"><i class="fa fa-check-circle"></i> Ko'rikni tugallash</a>&nbsp;&nbsp;
+            <a href="#" class="blue"><i class="fa fa-print"></i> Chop qilish</a>
           </span>
-        </div>
-      </td>
-    </tr>
+          <div class="text-muted">
+            <span class="fa fa-calendar"></span>
+            <span data-bind="text: $root.vm.formatDate($data.startedAt, 'MMMM DD, YYYY HH:mm')"></span>&nbsp;&nbsp;
+            <span class="fa fa-file-text-o"></span>
+            <span data-bind="text: $data.diagnose"></span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
   </table>
-  <a href="#" class="green" data-bind="click: vm.onClickAddCheckUp"><i class="fa fa-plus-circle"></i> Yangi tibbiy ko'rik</a>
 </div>
 
 <div>
@@ -119,7 +132,7 @@
             <div class="col-sm-4">
               <div class="input-group">
                 <input type="text" id="startedAt" name="startedAt" data-bind="value: vm.selected.checkUp.startedAt"
-                  class="form-control date-picker" data-date-format="dd.mm.yyyy" />
+                  class="form-control date-picker" />
                 <span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>
               </div>
             </div>

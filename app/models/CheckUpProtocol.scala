@@ -2,6 +2,7 @@ package models
 
 import java.util.Date
 
+import models.UserProtocol.User
 import play.api.libs.json.Json
 
 object CheckUpProtocol {
@@ -18,10 +19,12 @@ object CheckUpProtocol {
     statusLocalis: Option[String] = None,
     diagnose: Option[String] = None,
     recommendation: Option[String] = None,
+    user: Option[User] = None
 	)
 
 	implicit val checkUpFormat = Json.format[CheckUp]
 
 	case class AddCheckUp(checkUp: CheckUp, filePaths: Seq[String])
 
+	case class GetCheckUpsByPatientId(patientId: Int)
 }
