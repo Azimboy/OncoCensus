@@ -7,6 +7,14 @@ import play.api.libs.json.Json
 
 object CheckUpProtocol {
 
+	case class CheckUpFile(
+    id: Option[Int] = None,
+    checkUpId: Option[Int] = None,
+    uploadedAt: Option[Date] = None,
+    fileId: Option[String] = None,
+    originalFileName: Option[String] = None
+  )
+
 	case class CheckUp(
     id: Option[Int] = None,
     patientId: Option[Int] = None,
@@ -19,12 +27,15 @@ object CheckUpProtocol {
     statusLocalis: Option[String] = None,
     diagnose: Option[String] = None,
     recommendation: Option[String] = None,
-    user: Option[User] = None
+    user: Option[User] = None,
+    files: Seq[CheckUpFile] = Nil
 	)
 
+	implicit val checkUpFileFormat = Json.format[CheckUpFile]
 	implicit val checkUpFormat = Json.format[CheckUp]
 
 	case class AddCheckUp(checkUp: CheckUp, filePaths: Seq[String])
 
 	case class GetCheckUpsByPatientId(patientId: Int)
+
 }

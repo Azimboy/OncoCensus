@@ -40,7 +40,7 @@ trait CheckUpsComponent
 		def * = (id.?, patientId.?, userId.?, startedAt.?, finishedAt.?, complaint.?, objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?) <>
 			(t => {
 				val fields =
-					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, None)
+					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, None, Nil)
 				(CheckUp.apply _).tupled(fields)
 			},
 				(i: CheckUp) =>
