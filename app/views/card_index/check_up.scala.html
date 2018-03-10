@@ -1,53 +1,4 @@
 @()
-<h5>
-  <span data-bind="text: vm.selected.patient.lastName"></span>
-  <span data-bind="text: vm.selected.patient.firstName" class="text-capitalize"></span>
-    &nbsp;|&nbsp; Karta №: <span data-bind="text: vm.selected.patient.id"></span>
-</h5>
-<hr style="margin-top: 0px; margin-bottom: 15px">
-<div>
-  <div class="row no-margin-right">
-    <div class="col-sm-3">
-      <img height="150" class="thumbnail inline no-margin-bottom center-block" alt="Avatar" src="assets/images/avatars/avatar2.png"/>
-    </div>
-    <div class="col-sm-9">
-    </div>
-    <ul class="list-unstyled spaced">
-      <li class="no-margin-top">
-        <i class="ace-icon fa fa-check-square-o bigger-110 green"></i>
-        Nazoratga olindi: <span data-bind="text: vm.selected.patient.createdAt"></span>
-      </li>
-      <li>
-        <i data-bind="visible: vm.selected.patient.gender() == 'Male'" class="fa fa-male ace-icon bigger-110 purple"></i>
-        <i data-bind="visible: vm.selected.patient.gender() == 'Female'" class="fa fa-female ace-icon bigger-110 purple" style="padding-left: 4px;"></i>
-        <span data-bind="text: vm.selected.patient.birthDate"></span>
-      </li>
-      <li>
-        <i class="ace-icon fa fa-hospital-o bigger-110 red"></i>
-        <span data-bind="text: vm.selected.patient.clientGroup.code"></span>
-        <span class="text-muted" data-bind="text: vm.selected.patient.clientGroup.name"></span>
-        <span class="text-muted" data-bind="text: vm.selected.patient.patientDataJson.bloodGroup"></span>
-      </li>
-      <li>
-        <i style="vertical-align: middle;" class="ace-icon fa fa-mobile bigger-140 blue"></i>
-        <span data-bind="text: vm.selected.patient.phoneNumber"></span>
-      </li>
-      <li>
-        <i class="ace-icon fa fa-home bigger-110 blue"></i>
-        <span data-bind="text: vm.selected.patient.district.name"></span> tumani,
-        <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi,
-        <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
-        <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy
-      </li>
-      <li>
-        <i class="ace-icon fa fa-info-circle bigger-110 blue"></i>
-        <span data-bind="text: vm.selected.patient.patientDataJson.work"></span>
-        <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
-      </li>
-    </ul>
-  </div>
-</div>
-
 <div>
   <div class="row">
     <div class="col-xs-9">
@@ -82,41 +33,6 @@
   </table>
 </div>
 
-<div>
-  <h5 class="blue"><span class="fa fa-info-circle"></span> UMUMIY MA'LUMOTLAR</h5>
-  <table class="table table-hover">
-    <tbody>
-      <tr>
-        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-line-chart purple" ></span></td>
-        <td width="93%" style="border: 0px!important;">
-          Kasallik tarixi
-          <div class="text-muted">
-            Qabul va ko'rik tahlillari natijalari
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-file purple" ></span></td>
-        <td width="93%" style="border: 0px!important;">
-          Elektron hujjatlar
-          <div class="text-muted">
-            Tizimga yuklangan barcha elektron ma'lumotlar
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-info purple" ></span></td>
-        <td width="93%" style="border: 0px!important;">
-          So'rov va shikoyatlar
-          <div class="text-muted">
-            Bemor to'g'risidagi qo'shimcha ma'lumotlar
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
 <div id="add-medical-check-modal" class="modal fade" role="dialog" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -125,92 +41,88 @@
         <h4 class="modal-title">Tibbiy ko'rik</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal" action="@controllers.routes.CardIndexController.addCheckUp" id="medical-check-form"
+        <form action="@controllers.routes.CardIndexController.addCheckUp" id="medical-check-form"
         enctype="multipart/form-data" method="post">
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="startedAt">Tekshiruv sanasi:</label>
-            <div class="col-sm-4">
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="startedAt">Tekshiruv sanasi</label>
               <div class="input-group">
                 <input type="text" id="startedAt" name="startedAt" data-bind="value: vm.selected.checkUp.startedAt"
-                  class="form-control date-picker" />
+                class="form-control date-picker" />
                 <span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>
               </div>
             </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="patientName">Bemor:</label>
-            <div class="col-sm-9">
-              <input type="text" id="patientName" name="patientName" data-bind="value: vm.selected.patient.firstName() + ' ' + vm.selected.patient.lastName()" class="col-xs-10 col-sm-8"/>
+            <div class="col-xs-6">
+              <label for="patientName">Bemor</label>
+              <input type="text" id="patientName" name="patientName" data-bind="value: vm.selected.patient.firstName() + ' ' + vm.selected.patient.lastName()" class="form-control"/>
               <input type="hidden" name="patientId" data-bind="value: vm.selected.patient.id">
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="complaint">Shikoyat:</label>
-            <div class="col-sm-9">
-              <div class="inline">
-                <input type="text" id="complaint" name="complaint" data-bind="value: vm.selected.checkUp.complaint" />
+          <div class="form-group row">
+            <div class="col-xs-12">
+              <label for="complaint">Shikoyat</label>
+              <div>
+                <input type="text" id="complaint" name="complaint" data-bind="value: vm.selected.checkUp.complaint" class="form-control" />
               </div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="objInfo">Obyektiv ma'lumot:</label>
-            <div class="col-sm-9">
-              <textarea id="objInfo" name="objInfo" rows="4" data-bind="value: vm.selected.checkUp.objInfo" class="col-xs-10 col-sm-8"></textarea>
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="objInfo">Obyektiv ma'lumot</label>
+              <textarea id="objInfo" name="objInfo" rows="3" data-bind="value: vm.selected.checkUp.objInfo" class="form-control"></textarea>
+            </div>
+            <div class="col-xs-6">
+              <label for="objReview">Obyektiv ko'rik</label>
+              <textarea id="objReview" name="objReview" rows="3" data-bind="value: vm.selected.checkUp.objReview" class="form-control"></textarea>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="objReview">Obyektiv ko'rik:</label>
-            <div class="col-sm-9">
-              <textarea type="text" id="objReview" name="objReview" rows="3" data-bind="value: vm.selected.checkUp.objReview" class="col-xs-10 col-sm-8"></textarea>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="statusLocalis">Status localis:</label>
-            <div class="col-sm-9">
-              <div class="inline">
-                <input type="text" id="statusLocalis" name="statusLocalis" data-bind="value: vm.selected.checkUp.statusLocalis" />
+          <div class="form-group row">
+            <div class="col-xs-12">
+              <label for="statusLocalis">Status localis</label>
+              <div>
+                <input type="text" id="statusLocalis" name="statusLocalis" data-bind="value: vm.selected.checkUp.statusLocalis" class="form-control"/>
               </div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="files">Fayllar:</label>
-            <div class="col-sm-9">
-              <div class="inline">
-                <input type="file" id="files" name="files"/>
+          <div class="form-group row">
+            <div class="col-xs-12">
+              <label for="attachments">Tibbiy ko'rik tahlillari</label>
+              <div class="input-group" id="attachments">
+                <span class="input-group-btn">
+                  <label class="btn btn-inverse btn-white">
+                    <span class="ace-icon fa fa-files-o icon-on-right bigger-110"></span>
+                    Fayllarni yuklash
+                    <input type="file" style="display: none;" name="files[]" multiple>
+                  </label>
+                </span>
+                <input type="text" class="form-control">
               </div>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="diagnose">Tashhis:</label>
-            <div class="col-sm-9">
-              <input type="text" id="diagnose" name="diagnose" data-bind="value: vm.selected.checkUp.diagnose" class="col-xs-10 col-sm-8"/>
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="diagnose">Tashhis</label>
+              <textarea id="diagnose" name="diagnose" rows="3" data-bind="value: vm.selected.checkUp.diagnose" class="form-control"></textarea>
+            </div>
+            <div class="col-xs-6">
+              <label for="recommendation">Tavsiya</label>
+              <textarea id="recommendation" name="recommendation" rows="3" data-bind="value: vm.selected.checkUp.recommendation" class="form-control"></textarea>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="recommendation">Tavsiya:</label>
-            <div class="col-sm-9">
-              <input type="text" id="recommendation" name="recommendation" data-bind="value: vm.selected.checkUp.recommendation" class="col-xs-10 col-sm-8"/>
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="doctorName">Shifokor</label>
+              <input type="text" id="doctorName" name="doctorName" class="form-control"/>
+              <input type="hidden" id="userId" name="userId"/>
             </div>
           </div>
-          <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right" for="doctorName">Shifokor</label>
-            <div class="col-sm-9">
-              <input type="text" id="doctorName" name="doctorName" class=" col-xs-10 col-sm-8"/>
-              <input type="hidden" id="userId" name="userId" class=" col-xs-10 col-sm-8"/>
-            </div>
-          </div>
-          <div class="clearfix form-actions">
-            <div class="col-md-offset-3 col-md-9">
-              <button class="btn btn-warning pull-left" type="submit" id="file-upload"
-              data-bind="click: vm.onSubmitCheckUp, disable: vm.isLoading">Saqlash</button>
+          <div class="row">
+            <div class="col-xs-offset-4 col-xs-8">
+              <button type="submit" class="pull-left btn btn-primary" data-bind="click: vm.onSubmitCheckUp, disable: vm.isLoading">Saqlash</button>
               <div class="pull-left">&nbsp; &nbsp;</div>
-              <div class="pull-left busy-loader" data-bl-selector=".btn-send-message, .app-select" data-bl-url="issue-tracking/assist/upload"></div>
-
-                &nbsp; &nbsp; &nbsp;
-              <button class="btn" type="reset">
-                <i class="ace-icon fa fa-undo bigger-110"></i>
-                Reset
-              </button>
+              <button type="button" class="pull-left btn btn-danger" data-dismiss="modal">Bekor qilish</button> &nbsp;
+              <div class="pull-left">&nbsp; &nbsp;</div>
+              <div class="pull-left busy-loader" data-bl-selector=".app-select" data-bl-url="card-index/check-up"></div>
             </div>
           </div>
         </form>
