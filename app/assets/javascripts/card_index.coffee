@@ -128,6 +128,8 @@ $ ->
       if result is 'OK'
         vm.isLoading(no)
         toastr.success('Yangi ma\'lumotlar ro\'yhatga olindi.')
+        if vm.selected.patient.id()
+          getPatientsCheckUps(vm.selected.patient.id())
         $addCheckUpModal.modal('hide')
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
@@ -200,6 +202,7 @@ $ ->
       clientGroupId: undefined
       passportNumber: undefined
       province: undefined
+    checkUpFiles: []
     isLoading: no
     isNewPatient: no
 
@@ -381,14 +384,46 @@ $ ->
     vm.selected.checkUp.startedAt(vm.formatDate(moment()))
     $addCheckUpModal.modal('show')
 
-  vm.onSubmitCheckUp = ->
-    vm.isLoading(yes)
-    console.log(checkUpData)
-    if checkUpData
-      checkUpData.submit()
+  isCheckUpValid = (checkUp) ->
+    warningText =
+#      if notvalid(checkUp.complaint())
+#        'Shikoyat maydonini to\'ldiring!'
+#      else
+      if notvalid(checkUp.objInfo())
+        'Obyektiv ma\'lumotlarni kiriting!'
+      else if notvalid(checkUp.objReview())
+        'Obyektiv ko\'rikni kiriting!'
+#      else if notvalid(checkUp.statusLocalis())
+#        'Status localis maydonini to\'ldiring!'
+      else if notvalid(checkUp.diagnose())
+        'Tashhis maydonini to\'ldiring!'
+      else if notvalid(checkUp.recommendation())
+        'Tavsiya maydonini to\'ldiring!'
+      else
+        isFilesInvalid = no
+        for fileName in vm.checkUpFiles()
+          fileName = fileName.toLowerCase()
+          if !(/\.(jpg|jpeg|png|pdf|doc|docx|xls|xlsx|csv)$/.test(fileName))
+            vm.checkUpFiles.removeAll()
+            checkUpData = null
+            isFilesInvalid = yes
+            break
+        if isFilesInvalid
+          'Noto\'g\'ri fayl yuklandi. Iltimos fayllarni tekshirib qaytadan yuklang!'
+
+    if warningText
+      toastr.error(warningText)
+      no
     else
-      $checkUpForm.fileupload('send', {files: ''})
-    yes
+      yes
+
+  vm.onSubmitCheckUp = ->
+    if isCheckUpValid(vm.selected.checkUp)
+      vm.isLoading(yes)
+      if checkUpData
+        checkUpData.submit()
+      else
+        $checkUpForm.fileupload('send', {files: ''})
 
   getPatientsCheckUps = (patientId) ->
     $.get(apiUrl.checkUps + '/' + patientId)
@@ -398,6 +433,18 @@ $ ->
 
   vm.onCheckUpSelected = (checkUp) ->
     ko.mapping.fromJS(checkUp, {}, vm.selected.checkUp)
+
+  vm.onFileSelected = (v, event) ->
+    vm.checkUpFiles.removeAll()
+    ko.utils.arrayForEach(event.target.files, (file) ->
+      vm.checkUpFiles.push(file.name)
+    )
+
+  vm.fileUploadedInfo = ko.computed ->
+    switch vm.checkUpFiles().length
+      when 0 then 'Fayl yuklanmagan'
+      when 1 then vm.checkUpFiles()[0]
+      else vm.checkUpFiles().length + ' ta fayl yuklandi'
 
   Glob.vm = vm
 

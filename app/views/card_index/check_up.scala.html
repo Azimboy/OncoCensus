@@ -1,37 +1,35 @@
 @()
-<div>
-  <div class="row">
-    <div class="col-xs-9">
-      <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>
-    </div>
-    <div class="col-xs-3">
-      <a href="#" class="green pull-right" style="margin-top: 10px" data-bind="click: vm.onClickAddCheckUp"><i class="fa fa-plus-square"></i> Yangi tibbiy ko'rik</a>
-    </div>
+<div class="row no-margin-right">
+  <div class="col-xs-9">
+    <h5 class="blue"><span class="fa fa-stethoscope"></span> TIBBIY KO'RIK KO'RSATMALARI</h5>
   </div>
-  <table class="table table-hover" style="margin-bottom: 0px;">
-    <tbody data-bind="foreach: vm.checkUps">
-      <tr data-bind="click: $root.vm.onCheckUpSelected, css: {'bg-danger': $root.vm.selected.checkUp.id() == $data.id}">
-        <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
-        <td width="93%" style="border: 0px!important;">
-          Onkolog - <span data-bind="text: $data.user.lastName"></span>&nbsp;
-          <span data-bind="text: $data.user.firstName"></span>&nbsp;
-          <span data-bind="text: $data.user.middleName"></span>
-          <span class="pull-right green">
-            <a href="#" class="orange"><i class="fa fa-pencil" data-toggle="sadfasdf"></i> Tahrirlash</a>&nbsp;&nbsp;
-            <a href="#" class="red"><i class="fa fa-check-circle"></i> Ko'rikni tugallash</a>&nbsp;&nbsp;
-            <a href="#" class="blue"><i class="fa fa-print"></i> Chop qilish</a>
-          </span>
-          <div class="text-muted">
-            <span class="fa fa-calendar"></span>
-            <span data-bind="text: $root.vm.formatDate($data.startedAt, 'MMMM DD, YYYY HH:mm')"></span>&nbsp;&nbsp;
-            <span class="fa fa-file-text-o"></span>
-            <span data-bind="text: $data.diagnose"></span>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="col-xs-3">
+    <a href="#" class="green pull-right" style="margin-top: 10px" data-bind="click: vm.onClickAddCheckUp"><i class="fa fa-plus-square"></i> Yangi tibbiy ko'rik</a>
+  </div>
 </div>
+<table class="table table-hover" style="margin-bottom: 0px;">
+  <tbody data-bind="foreach: vm.checkUps">
+    <tr data-bind="click: $root.vm.onCheckUpSelected, css: {'bg-danger': $root.vm.selected.checkUp.id() == $data.id}">
+      <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
+      <td width="93%" style="border: 0px!important;">
+        Onkolog - <span data-bind="text: $data.user.lastName"></span>&nbsp;
+        <span data-bind="text: $data.user.firstName"></span>&nbsp;
+        <span data-bind="text: $data.user.middleName"></span>
+        <span class="pull-right green">
+          <a href="#" class="orange"><i class="fa fa-pencil" data-toggle="sadfasdf"></i> Tahrirlash</a>&nbsp;&nbsp;
+          <a href="#" class="red"><i class="fa fa-check-circle"></i> Ko'rikni tugallash</a>&nbsp;&nbsp;
+          <a href="#" class="blue"><i class="fa fa-print"></i> Chop qilish</a>
+        </span>
+        <div class="text-muted">
+          <span class="fa fa-calendar"></span>
+          <span data-bind="text: $root.vm.formatDate($data.startedAt, 'MMMM DD, YYYY HH:mm')"></span>&nbsp;&nbsp;
+          <span class="fa fa-file-text-o"></span>
+          <span data-bind="text: $data.diagnose"></span>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 <div id="add-medical-check-modal" class="modal fade" role="dialog" data-backdrop="static">
   <div class="modal-dialog" role="document">
@@ -92,10 +90,10 @@
                   <label class="btn btn-inverse btn-white">
                     <span class="ace-icon fa fa-files-o icon-on-right bigger-110"></span>
                     Fayllarni yuklash
-                    <input type="file" style="display: none;" name="files[]" multiple>
+                    <input type="file" style="display: none;" name="files[]" data-bind="event:{ change: vm.onFileSelected }" multiple>
                   </label>
                 </span>
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" data-bind="value: vm.fileUploadedInfo" readonly>
               </div>
             </div>
           </div>
