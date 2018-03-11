@@ -1,102 +1,130 @@
 @()
-<span class="input-icon block" style="display: block;">
-  <input type="text" data-bind="value: vm.filters.lastName, valueUpdate: 'keyup keypress'" class="input-sm form-control">
-  <i class="ace-icon fa fa-search"></i>
-</span>
-<small class="text-muted">Bemorning familiyasini kiriting</small>
-<div style="margin-bottom: 5px">
-  <a href="#" class="blue" data-bind="click: vm.enableFilters">
-    <span class="fa fa-filter"></span>
-    Kengaytirilgan qidiruv
-  </a>
-  <div data-bind="visible: vm.isFiltersShown">
-    <div class="space-2"></div>
-    <div class="row">
-      <label for="by-gender" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Jins</label>
-      <div class="col-xs-9" id="by-gender">
-        <label class="inline">
-          <input type="checkbox" data-bind="checked: vm.filters.isMale"> Erkak
-        </label>&nbsp;&nbsp;&nbsp;
-        <label class="inline">
-          <input type="checkbox" data-bind="checked: vm.filters.isFemale"> Ayol
-        </label>
+<div class="col-sm-4 widget-container-col no-padding-left" id="widget-container-col-1">
+  <div class="widget-box transparent" id="widget-box-12">
+    <div class="widget-header">
+      <h4 class="widget-title lighter">BEMORLAR</h4>
+
+      <div class="widget-toolbar no-border">
+        <a href="#" data-action="settings">
+          <i class="ace-icon fa fa-cog"></i>
+        </a>
+
+        <a href="#" data-action="reload" data-bind="click: vm.onFilterPatients">
+          <i class="ace-icon fa fa-refresh"></i>
+        </a>
+
+        <a href="#" data-action="add" data-bind="click: vm.onClickAddPatient">
+          <i class="ace-icon fa fa-plus"></i>
+        </a>
       </div>
     </div>
-    <div class="space-2"></div>
-    <div class="row">
-      <label for="by-age" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Yosh</label>
-      <div class="col-xs-9 form-inline" id="by-age">
-        <div class="form-group">
-          <input type="number" data-bind="value: vm.filters.minAge, valueUpdate: 'keyup keypress'" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; dan &nbsp;
+
+    <div class="widget-body">
+      <div class="widget-main padding-6 no-padding-left no-padding-right">
+
+        <span class="input-icon block" style="display: block;">
+          <input type="text" data-bind="value: vm.filters.lastName, valueUpdate: 'keyup keypress'" class="input-sm form-control">
+          <i class="ace-icon fa fa-search"></i>
+        </span>
+        <small class="text-muted">Bemorning familiyasini kiriting</small>
+        <div style="margin-bottom: 5px">
+          <a href="#" class="blue" data-bind="click: vm.enableFilters">
+            <span class="fa fa-filter"></span>
+            Kengaytirilgan qidiruv
+          </a>
+          <div data-bind="visible: vm.isFiltersShown">
+            <div class="space-2"></div>
+            <div class="row">
+              <label for="by-gender" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Jins</label>
+              <div class="col-xs-9" id="by-gender">
+                <label class="inline">
+                  <input type="checkbox" data-bind="checked: vm.filters.isMale"> Erkak
+                </label>&nbsp;&nbsp;&nbsp;
+                <label class="inline">
+                  <input type="checkbox" data-bind="checked: vm.filters.isFemale"> Ayol
+                </label>
+              </div>
+            </div>
+            <div class="space-2"></div>
+            <div class="row">
+              <label for="by-age" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Yosh</label>
+              <div class="col-xs-9 form-inline" id="by-age">
+                <div class="form-group">
+                  <input type="number" data-bind="value: vm.filters.minAge, valueUpdate: 'keyup keypress'" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; dan &nbsp;
+                </div>
+                <div class="form-group">
+                  <input type="number" data-bind="value: vm.filters.maxAge, valueUpdate: 'keyup keypress'" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; gacha &nbsp;
+                </div>
+              </div>
+            </div>
+            <div class="space-2"></div>
+            <div class="row">
+              <label for="by-region" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Viloyat</label>
+              <div class="col-xs-9 form-inline" id="by-region">
+                <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
+                data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.filters.regionId, optionsCaption: ''">
+                </select>
+              </div>
+            </div>
+            <div class="space-2"></div>
+            <div class="row">
+              <label for="by-district" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Tuman</label>
+              <div class="col-xs-9 form-inline" id="by-district">
+                <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
+                data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.filters.districtId, optionsCaption: ''">
+                </select>
+              </div>
+            </div>
+            <div class="space-2"></div>
+            <div class="row">
+              <label for="by-client-group" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Klient guruhi</label>
+              <div class="col-xs-9 form-inline" id="by-client-group">
+                <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
+                data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
+                </select>
+              </div>
+            </div>
+            <div class="space-2"></div>
+            <div class="row">
+              <label for="by-passport-id" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Passport №</label>
+              <div class="col-xs-9 form-inline" id="by-passport-id">
+                <input type="text" class="form-control input-sm" data-bind="value: vm.filters.passportNumber, valueUpdate: 'keyup keypress'">
+              </div>
+            </div>
+            <div class="space-2"></div>
+            <div class="row">
+              <label for="by-province" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Mahalla</label>
+              <div class="col-xs-9 form-inline" id="by-province">
+                <input type="text" class="form-control input-sm" data-bind="value: vm.filters.province, valueUpdate: 'keyup keypress'">
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <input type="number" data-bind="value: vm.filters.maxAge, valueUpdate: 'keyup keypress'" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; gacha &nbsp;
+        <div data-bind="visible: vm.patients().length > 0">
+          <table class="table table-hover">
+            <tbody data-bind="foreach: vm.patients">
+              <tr data-bind="click: $root.vm.onPatientSelected, css: {'bg-info': $root.vm.selected.patient.id() == $data.id}">
+                <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
+                <td width="90%">
+                  <span data-bind="text: $data.lastName"></span>&nbsp;
+                  <span data-bind="text: $data.firstName"></span><br>
+                  <span data-bind="visible: $data.clientGroup.code"><span data-bind="text: $data.clientGroup.code"></span></span>,
+                  <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>,
+                  <span data-bind="text: $data.patientDataJson.passportNumber"></span>,
+                  <span data-bind="text: $data.district.name"></span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <ul id="pagination" style="margin: 0px!important;"></ul>
         </div>
-      </div>
-    </div>
-    <div class="space-2"></div>
-    <div class="row">
-      <label for="by-region" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Viloyat</label>
-      <div class="col-xs-9 form-inline" id="by-region">
-        <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
-        data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.filters.regionId, optionsCaption: ''">
-        </select>
-      </div>
-    </div>
-    <div class="space-2"></div>
-    <div class="row">
-      <label for="by-district" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Tuman</label>
-      <div class="col-xs-9 form-inline" id="by-district">
-        <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
-        data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.filters.districtId, optionsCaption: ''">
-        </select>
-      </div>
-    </div>
-    <div class="space-2"></div>
-    <div class="row">
-      <label for="by-client-group" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Klient guruhi</label>
-      <div class="col-xs-9 form-inline" id="by-client-group">
-        <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
-        data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
-        </select>
-      </div>
-    </div>
-    <div class="space-2"></div>
-    <div class="row">
-      <label for="by-passport-id" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Passport №</label>
-      <div class="col-xs-9 form-inline" id="by-passport-id">
-        <input type="text" class="form-control input-sm" data-bind="value: vm.filters.passportNumber, valueUpdate: 'keyup keypress'">
-      </div>
-    </div>
-    <div class="space-2"></div>
-    <div class="row">
-      <label for="by-province" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Mahalla</label>
-      <div class="col-xs-9 form-inline" id="by-province">
-        <input type="text" class="form-control input-sm" data-bind="value: vm.filters.province, valueUpdate: 'keyup keypress'">
+        <div class="alert alert-info" data-bind="visible: vm.patients().length == 0">
+          <span class="text-center text-info"><span class="fa fa-info-circle"></span> So'rov bo'yicha ma'lumot topilmadi!</span>
+        </div>
+
       </div>
     </div>
   </div>
-</div>
-<div data-bind="visible: vm.patients().length > 0">
-  <table class="table table-hover">
-    <tbody data-bind="foreach: vm.patients">
-      <tr data-bind="click: $root.vm.onPatientSelected, css: {'bg-info': $root.vm.selected.patient.id() == $data.id}">
-        <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>
-        <td width="90%">
-          <span data-bind="text: $data.lastName"></span>&nbsp;
-          <span data-bind="text: $data.firstName"></span><br>
-          <span data-bind="visible: $data.clientGroup.code"><span data-bind="text: $data.clientGroup.code"></span></span>,
-          <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>,
-          <span data-bind="text: $data.patientDataJson.passportNumber"></span>,
-          <span data-bind="text: $data.district.name"></span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <ul id="pagination" style="margin: 0px!important;"></ul>
-</div>
-<div class="alert alert-info" data-bind="visible: vm.patients().length == 0">
-  <span class="text-center text-info"><span class="fa fa-info-circle"></span> So'rov bo'yicha ma'lumot topilmadi!</span>
 </div>
 
 <div id="add-patient-modal" class="modal fade" role="dialog" data-backdrop="static">

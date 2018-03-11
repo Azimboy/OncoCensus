@@ -186,7 +186,7 @@ $ ->
     clientGroups: []
     bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
     checkUps: []
-    rightPage: 'empty'
+    rightPage: 'summary'
     selected:
       patient: defaultPatient
       checkUp: defaultCheckUp
@@ -254,6 +254,7 @@ $ ->
     vm.selected.patient.birthDate(vm.formatDate(patient.birthDate))
     vm.selected.patient.regionId(patient.district.regionId)
     getPatientsCheckUps(patient.id)
+    vm.rightPage('cardIndex')
 
   vm.onClickAddPatient = ->
     vm.isNewPatient(yes)
@@ -372,12 +373,6 @@ $ ->
   loadAllRegions()
   loadAllDistricts()
   loadAllClientGroups()
-
-  vm.getRightPageName = ->
-    switch vm.rightPage()
-      when 'empty' then 'AMBULATOR TIBBIY VARAQA'
-      when 'card_index' then 'AMBULATOR TIBBIY VARAQA'
-      when 'check_up' then 'TIBBIY KO\'RIK KO\'RSATMALARI'
 
   # CHECH UP
   vm.onClickAddCheckUp = ->
