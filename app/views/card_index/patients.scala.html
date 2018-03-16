@@ -37,11 +37,13 @@
             <div class="row">
               <label for="by-gender" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Jins</label>
               <div class="col-xs-9" id="by-gender">
-                <label class="inline">
-                  <input type="checkbox" data-bind="checked: vm.filters.isMale"> Erkak
+                <label>
+                  <input type="checkbox" data-bind="checked: vm.filters.isMale" class="ace">
+                  <span class="lbl"> Erkak</span>
                 </label>&nbsp;&nbsp;&nbsp;
-                <label class="inline">
-                  <input type="checkbox" data-bind="checked: vm.filters.isFemale"> Ayol
+                <label>
+                  <input type="checkbox" data-bind="checked: vm.filters.isFemale" class="ace">
+                  <span class="lbl"> Ayol</span>
                 </label>
               </div>
             </div>
@@ -199,9 +201,12 @@
         </div>
         <div class="col-xs-6">
           <label for="birthDate">Tug'ulgan yil</label>
-          <div class="input-group">
-            <input type="text" class="form-control date-picker" id="birthDate" name="birthDate" data-date-format="dd.mm.yyyy" data-bind="value: patient.birthDate"/>
-            <span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>
+          <div class="input-group" id="birthDate" name="birthDate" data-bind="datetimepicker: patient.birthDate,
+                  dateTimePickerOptions: {format: 'MM.DD.YYYY HH:mm', pickTime: false}">
+            <input type='text' class="form-control" data-bind="value: patient.birthDate"/>
+            <span class="input-group-addon">
+              <span class="fa fa-calendar"></span>
+            </span>
           </div>
         </div>
       </div>

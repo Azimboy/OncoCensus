@@ -10,15 +10,6 @@ $ ->
     clientGroups: '/card-index/client-groups'
     checkUps: '/card-index/check-ups'
 
-  handleError = (error) ->
-    vm.isLoading(no)
-    if error.status is 401
-      logout()
-    else if error.status is 200 or error.status is 400 and error.responseText
-      alert(error.responseText)
-    else
-      alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
-
   complaints = ['Umumiy holsizlik', 'Qabziyat', 'Bel-dumg\'aza sohasida og\'riq', 'Ishtaha pastligi', 'Epitsistostomik naycha borligi']
   statuses = ['Qorin simmetrik', 'Nafas aktida qatnashadi', 'Paypaslaganda yumshoq', 'Qorin pastki qismida epitsistostomik naycha', 'Funksiyasi saqlangan', 'Periferik l\tugunlari kattalashmagan']
 
@@ -26,9 +17,9 @@ $ ->
   $updatePatientModal = $('#update-patient-modal')
   $addCheckUpModal = $('#add-medical-check-modal')
 
-  $('.date-picker').datepicker
-    autoclose: true
-    todayHighlight: true
+#  $('.date-picker').datepicker
+#    autoclose: true
+#    todayHighlight: true
 
 #  $('.date-time-picker').datetimepicker
 ##    format: 'MM.DD.YYYY hh:mm:ss'
@@ -48,27 +39,23 @@ $ ->
     tagComplaint.after('<textarea id="'+tagComplaint.attr('id')+'" name="'+tagComplaint.attr('name')+'" rows="3">'+tagComplaint.val()+'</textarea>').remove()
     tagStatusLocalis.after('<textarea id="'+tagStatusLocalis.attr('id')+'" name="'+tagStatusLocalis.attr('name')+'" rows="3">'+tagStatusLocalis.val()+'</textarea>').remove()
 
+  startDateTime = moment().format('DD.MM.YYYY HH:mm')
+
+  initDatePicker = (selector, defaultDate) ->
+    $el = $(selector)
+    $el.on('dp.hide', () ->
+      $el.find('input').change()
+    )
+    $el.datetimepicker
+      format: 'DD.MM.YYYY HH:mm'
+      useCurrent: no
+      defaultDate: defaultDate
+
+  initDatePicker('#startedAt', startDateTime)
+
   pageSize = 8
   $pagination = {}
   $paginationEl = $('#pagination')
-
-  initPagination = (total, startPage = 1) ->
-    totalPages = Math.ceil(total / pageSize)
-    if totalPages < 1
-      return no
-    $paginationEl.show()
-    $paginationEl.twbsPagination(
-      startPage: Math.min(startPage, totalPages)
-      totalPages: totalPages
-      visiblePages: 5
-      first: ''
-      prev: 'Oldingi'
-      next: 'Keyingi'
-      last: ''
-      onPageClick: (event, page) ->
-        loadAllPatients(null, page)
-    )
-    $pagination = $paginationEl.data('twbsPagination')
 
 #  TODO Need to fix form redirect issue
   formData = {}
@@ -206,6 +193,33 @@ $ ->
     isLoading: no
     isNewPatient: no
 
+  handleError = (error) ->
+    vm.isLoading(no)
+    if error.status is 401
+      logout()
+    else if error.status is 200 or error.status is 400 and error.responseText
+      alert(error.responseText)
+    else
+      alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
+
+  initPagination = (total, startPage = 1) ->
+    totalPages = Math.ceil(total / pageSize)
+    if totalPages < 1
+      return no
+    $paginationEl.show()
+    $paginationEl.twbsPagination(
+      startPage: Math.min(startPage, totalPages)
+      totalPages: totalPages
+      visiblePages: 5
+      first: ''
+      prev: 'Oldingi'
+      next: 'Keyingi'
+      last: ''
+      onPageClick: (event, page) ->
+        loadAllPatients(null, page)
+    )
+    $pagination = $paginationEl.data('twbsPagination')
+
   vm.formatDate = (millis, format = 'DD.MM.YYYY') ->
     if millis
       moment(millis).format(format)
@@ -213,6 +227,9 @@ $ ->
   vm.getAge = (date) ->
     if date
       moment().diff(date, 'years')
+
+  vm.onClose = ->
+    vm.rightPage('summary')
 
   notvalid = (str) ->
     !$.trim(str)

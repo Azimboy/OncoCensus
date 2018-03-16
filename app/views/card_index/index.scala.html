@@ -4,6 +4,8 @@
 @()(implicit webJarsUtil: WebJarsUtil)
 
 @card_index.main("OncoCensus"){
+  <script src="@routes.Assets.versioned("/lib/eonasdan-datetimepicker.js")"></script>
+
   @Html(webJarsUtil.script("twbs-pagination/1.2.5/jquery.twbsPagination.min.js"))
   <script src="@routes.Assets.versioned("javascripts/card_index.js")"></script>
 

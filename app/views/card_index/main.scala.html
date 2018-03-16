@@ -14,16 +14,13 @@
     <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
 
     <!-- bootstrap & fontawesome -->
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap.min.css")" />
+    @Html(webJarsUtil.css("css/bootstrap.min.css"))
     <link rel="stylesheet" href="@routes.Assets.versioned("/font-awesome/4.5.0/css/font-awesome.min.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap-datepicker3.min.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap-datetimepicker.min.css")" />
-    @*<link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/bootstrap-editable.min.css")" />*@
     <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/jquery-ui.custom.min.css")" />
 
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/common.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/card_index.css")" />
     @Html(webJarsUtil.css("css/bootstrap-datetimepicker.min.css"))
+    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/card_index.css")" />
     <!-- page specific plugin styles -->
 
     <!-- text fonts -->
@@ -53,7 +50,7 @@
     <!-- basic scripts -->
     <!--[if !IE]> -->
     <script src="@routes.Assets.versioned("/javascripts/jquery-2.1.4.min.js")"></script>
-      <!-- <![endif]-->
+    <!-- <![endif]-->
 
       <!--[if IE]>
     <script src="@routes.Assets.versioned("/javascripts/jquery-1.11.3.min.js")"></script>
@@ -61,23 +58,20 @@
     <script type="text/javascript">
     if('ontouchstart' in document.documentElement) document.write("<script src='public/javascripts/jquery.mobile.custom.min.js'>"+"<"+"/script>");
     </script>
-    <script src="@routes.Assets.versioned("/javascripts/bootstrap.min.js")"></script>
-
     <!-- ace scripts -->
     <script src="@routes.Assets.versioned("/javascripts/ace-elements.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/ace.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/polyfills.js")"></script>
 
-    <script src="@routes.Assets.versioned("/javascripts/jquery.maskedinput.min.js")"></script>
+    @*<script src="@routes.Assets.versioned("/javascripts/jquery.maskedinput.min.js")"></script>*@
 
+    @Html(webJarsUtil.script("js/bootstrap.min.js"))
     @Html(webJarsUtil.script("knockout.js"))
     <script src="@routes.Assets.versioned("lib/knockout.mapping-latest.js")"></script>
     @Html(webJarsUtil.script("lodash.min.js"))
     @Html(webJarsUtil.script("min/moment.min.js"))
-    <script src="@routes.Assets.versioned("/javascripts/bootstrap-datepicker.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/bootstrap-tag.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/common.js")"></script>
-    @*<script src="@routes.Assets.versioned("/lib/eonasdan-datetimepicker.js")"></script>*@
+    <script src="@routes.Assets.versioned("/javascripts/bootstrap-tag.min.js")"></script>
     @Html(webJarsUtil.script("bootstrap-select.min.js"))
 
     @Html(webJarsUtil.script("build/toastr.min.js"))
@@ -87,8 +81,8 @@
 
     <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/jquery.ui.touch-punch.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/bootstrap-editable.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/ace-editable.min.js")"></script>
+    @*<script src="@routes.Assets.versioned("/javascripts/bootstrap-editable.min.js")"></script>*@
+    @*<script src="@routes.Assets.versioned("/javascripts/ace-editable.min.js")"></script>*@
 
   </head>
   <body style="background-color: white!important;">

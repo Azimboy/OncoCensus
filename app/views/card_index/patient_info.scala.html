@@ -20,6 +20,10 @@
         <a href="#" data-action="remove" data-bind="click: vm.onClickRemovePatient, enable: vm.selected.patient.id()">
           <i class="ace-icon fa fa-trash-o"></i>
         </a>
+
+        <a href="#" data-action="close" data-bind="click: vm.onClose">
+          <i class="ace-icon fa fa-close"></i>
+        </a>
       </div>
     </div>
 
@@ -156,10 +160,12 @@
           <div class="form-group row">
             <div class="col-xs-6">
               <label for="startedAt">Tekshiruv sanasi</label>
-              <div class="input-group">
-                <input type="text" id="startedAt" name="startedAt" data-bind="value: vm.selected.checkUp.startedAt"
-                class="form-control date-picker" />
-                <span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>
+              <div class="input-group date" id="startedAt" name="startAt" data-bind="datetimepicker: vm.selected.checkUp.startedAt,
+                dateTimePickerOptions: {pickTime: true}">
+                <input type='text' class="form-control" data-bind="value: vm.selected.checkUp.startedAt"/>
+                <span class="input-group-addon">
+                  <span class="fa fa-calendar"></span>
+                </span>
               </div>
             </div>
             <div class="col-xs-6">
