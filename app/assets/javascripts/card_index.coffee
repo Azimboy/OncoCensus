@@ -10,12 +10,21 @@ $ ->
     clientGroups: '/card-index/client-groups'
     checkUps: '/card-index/check-ups'
 
+  handleError = (error) ->
+    vm.isLoading(no)
+    if error.status is 401
+      logout()
+    else if error.status is 200 or error.status is 400 and error.responseText
+      alert(error.responseText)
+    else
+      alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
+
   complaints = ['Umumiy holsizlik', 'Qabziyat', 'Bel-dumg\'aza sohasida og\'riq', 'Ishtaha pastligi', 'Epitsistostomik naycha borligi']
   statuses = ['Qorin simmetrik', 'Nafas aktida qatnashadi', 'Paypaslaganda yumshoq', 'Qorin pastki qismida epitsistostomik naycha', 'Funksiyasi saqlangan', 'Periferik l\tugunlari kattalashmagan']
 
   $addPatientModal = $('#add-patient-modal')
   $updatePatientModal = $('#update-patient-modal')
-  $addCheckUpModal = $('#add-medical-check-modal')
+  $addCheckUpModal = $('#add-check-up-modal')
 
 #  $('.date-picker').datepicker
 #    autoclose: true
@@ -39,25 +48,42 @@ $ ->
     tagComplaint.after('<textarea id="'+tagComplaint.attr('id')+'" name="'+tagComplaint.attr('name')+'" rows="3">'+tagComplaint.val()+'</textarea>').remove()
     tagStatusLocalis.after('<textarea id="'+tagStatusLocalis.attr('id')+'" name="'+tagStatusLocalis.attr('name')+'" rows="3">'+tagStatusLocalis.val()+'</textarea>').remove()
 
-  startDateTime = moment().format('DD.MM.YYYY HH:mm')
-
-  initDatePicker = (selector, defaultDate) ->
-    $el = $(selector)
-    $el.on('dp.hide', () ->
-      $el.find('input').change()
-    )
-    $el.datetimepicker
-      format: 'DD.MM.YYYY HH:mm'
-      useCurrent: no
-      defaultDate: defaultDate
-
-  initDatePicker('#startedAt', startDateTime)
-
   pageSize = 8
   $pagination = {}
   $paginationEl = $('#pagination')
 
-#  TODO Need to fix form redirect issue
+  initPagination = (total, startPage = 1) ->
+    totalPages = Math.ceil(total / pageSize)
+    if totalPages < 1
+      return no
+    $paginationEl.show()
+    $paginationEl.twbsPagination(
+      startPage: Math.min(startPage, totalPages)
+      totalPages: totalPages
+      visiblePages: 5
+      first: ''
+      prev: 'Oldingi'
+      next: 'Keyingi'
+      last: ''
+      onPageClick: (event, page) ->
+        loadAllPatients(null, page)
+    )
+    $pagination = $paginationEl.data('twbsPagination')
+
+  now = moment().format('DD.MM.YYYY HH:mm')
+
+  initDatePicker = (selector, defaultDate, format) ->
+    $el = $(selector)
+    $el.on('dp.hide', () ->
+      $el.find('input').change()
+    )
+
+    $el.datetimepicker
+      format: format or 'DD.MM.YYYY HH:mm'
+      useCurrent: no
+      defaultDate: defaultDate
+
+  #  TODO Need to fix form redirect issue
   formData = {}
   $patientForm = $('#patient-form')
   $patientForm.fileupload
@@ -98,7 +124,7 @@ $ ->
       no
 
   checkUpData = null
-  $checkUpForm = $('#medical-check-form')
+  $checkUpForm = $('#check-up-form')
   $checkUpForm.fileupload
     dataType: 'text'
     autoUpload: no
@@ -192,33 +218,6 @@ $ ->
     checkUpFiles: []
     isLoading: no
     isNewPatient: no
-
-  handleError = (error) ->
-    vm.isLoading(no)
-    if error.status is 401
-      logout()
-    else if error.status is 200 or error.status is 400 and error.responseText
-      alert(error.responseText)
-    else
-      alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
-
-  initPagination = (total, startPage = 1) ->
-    totalPages = Math.ceil(total / pageSize)
-    if totalPages < 1
-      return no
-    $paginationEl.show()
-    $paginationEl.twbsPagination(
-      startPage: Math.min(startPage, totalPages)
-      totalPages: totalPages
-      visiblePages: 5
-      first: ''
-      prev: 'Oldingi'
-      next: 'Keyingi'
-      last: ''
-      onPageClick: (event, page) ->
-        loadAllPatients(null, page)
-    )
-    $pagination = $paginationEl.data('twbsPagination')
 
   vm.formatDate = (millis, format = 'DD.MM.YYYY') ->
     if millis
@@ -393,8 +392,11 @@ $ ->
 
   # CHECH UP
   vm.onClickAddCheckUp = ->
-    vm.selected.checkUp.startedAt(vm.formatDate(moment()))
+  #    vm.selected.checkUp.startedAt(vm.formatDate(moment()))
     $addCheckUpModal.modal('show')
+    initDatePicker('#startedAt', now)
+    vm.selected.checkUp.startedAt(now)
+    console.log(vm.selected.checkUp.startedAt())
 
   isCheckUpValid = (checkUp) ->
     warningText =

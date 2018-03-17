@@ -58,20 +58,17 @@
     <script type="text/javascript">
     if('ontouchstart' in document.documentElement) document.write("<script src='public/javascripts/jquery.mobile.custom.min.js'>"+"<"+"/script>");
     </script>
-    <!-- ace scripts -->
-    <script src="@routes.Assets.versioned("/javascripts/ace-elements.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/ace.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/polyfills.js")"></script>
 
     @*<script src="@routes.Assets.versioned("/javascripts/jquery.maskedinput.min.js")"></script>*@
 
     @Html(webJarsUtil.script("js/bootstrap.min.js"))
+    @Html(webJarsUtil.script("lodash.min.js"))
     @Html(webJarsUtil.script("knockout.js"))
     <script src="@routes.Assets.versioned("lib/knockout.mapping-latest.js")"></script>
-    @Html(webJarsUtil.script("lodash.min.js"))
-    @Html(webJarsUtil.script("min/moment.min.js"))
     <script src="@routes.Assets.versioned("/javascripts/common.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/bootstrap-tag.min.js")"></script>
+    @Html(webJarsUtil.script("min/moment.min.js"))
+    <script src="@routes.Assets.versioned("/lib/eonasdan-datetimepicker.js")"></script>
     @Html(webJarsUtil.script("bootstrap-select.min.js"))
 
     @Html(webJarsUtil.script("build/toastr.min.js"))
@@ -81,8 +78,12 @@
 
     <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/jquery.ui.touch-punch.min.js")"></script>
+    @*<script src="@routes.Assets.versioned("/javascripts/bootstrap-tag.min.js")"></script>*@
     @*<script src="@routes.Assets.versioned("/javascripts/bootstrap-editable.min.js")"></script>*@
-    @*<script src="@routes.Assets.versioned("/javascripts/ace-editable.min.js")"></script>*@
+    <script src="@routes.Assets.versioned("/javascripts/ace-editable.min.js")"></script>
+      <!-- ace scripts -->
+    <script src="@routes.Assets.versioned("/javascripts/ace-elements.min.js")"></script>
+    <script src="@routes.Assets.versioned("/javascripts/ace.min.js")"></script>
 
   </head>
   <body style="background-color: white!important;">

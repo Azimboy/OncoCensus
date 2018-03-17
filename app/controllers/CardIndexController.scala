@@ -150,7 +150,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   }
 
   private def parseDate(dateStr: String) = {
-    val dateFormat = new SimpleDateFormat("dd.MM.yyyy")
+    val dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm")
     dateFormat.parse(dateStr)
   }
 

@@ -147,7 +147,7 @@
   </div>
 </div>
 
-<div id="add-medical-check-modal" class="modal fade" role="dialog" data-backdrop="static">
+<div id="add-check-up-modal" class="modal fade" role="dialog" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -155,14 +155,14 @@
         <h4 class="modal-title">Tibbiy ko'rik</h4>
       </div>
       <div class="modal-body">
-        <form action="@controllers.routes.CardIndexController.addCheckUp" id="medical-check-form"
+        <form action="@controllers.routes.CardIndexController.addCheckUp" id="check-up-form"
         enctype="multipart/form-data" method="post">
           <div class="form-group row">
             <div class="col-xs-6">
               <label for="startedAt">Tekshiruv sanasi</label>
-              <div class="input-group date" id="startedAt" name="startAt" data-bind="datetimepicker: vm.selected.checkUp.startedAt,
+              <div class="input-group date" id="startedAt" data-bind="datetimepicker: vm.selected.checkUp.startedAt,
                 dateTimePickerOptions: {pickTime: true}">
-                <input type='text' class="form-control" data-bind="value: vm.selected.checkUp.startedAt"/>
+                <input type='text' name="startedAt" class="form-control" data-bind="value: vm.selected.checkUp.startedAt"/>
                 <span class="input-group-addon">
                   <span class="fa fa-calendar"></span>
                 </span>

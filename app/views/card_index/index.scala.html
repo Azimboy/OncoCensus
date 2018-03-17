@@ -4,22 +4,19 @@
 @()(implicit webJarsUtil: WebJarsUtil)
 
 @card_index.main("OncoCensus"){
-  <script src="@routes.Assets.versioned("/lib/eonasdan-datetimepicker.js")"></script>
-
   @Html(webJarsUtil.script("twbs-pagination/1.2.5/jquery.twbsPagination.min.js"))
   <script src="@routes.Assets.versioned("javascripts/card_index.js")"></script>
 
   <div class="row no-margin-left no-margin-right">
-    @card_index.patients()
+    @card_index.patients_list()
 
-    <div data-bind="if: vm.rightPage() == 'summary'">
+    <div data-bind="visible: vm.rightPage() == 'summary'">
       @card_index.summary()
     </div>
 
-    <div data-bind="if: vm.rightPage() == 'cardIndex'">
+    <div data-bind="visible: vm.rightPage() == 'cardIndex'">
       @card_index.patient_info()
     </div>
   </div>
-
 
 }

@@ -8,7 +8,7 @@ root = exports ? this
 $ ->
   if window.toastr
     toastr.options = {
-      'positionClass': 'toast-top-center'
+      'positionClass': 'toast-top-right'
       'closeButton': true
       'timeOut': 5000
     }
