@@ -13,7 +13,7 @@
           <i class="ace-icon fa fa-refresh"></i>
         </a>
 
-        <a href="#" data-action="edit" data-bind="click: vm.onClickUpdatePatient, enable: vm.selected.patient.id()">
+        <a href="#" data-action="edit" data-bind="click: vm.onClickEditPatient, enable: vm.selected.patient.id()">
           <i class="ace-icon fa fa-edit"></i>
         </a>
 
@@ -100,13 +100,13 @@
                 <span data-bind="text: $data.user.firstName"></span>&nbsp;
                 <span data-bind="text: $data.user.middleName"></span>
                 <span class="pull-right green">
-                  <a href="#" class="orange" data-bind="click: $root.vm.onCheckUpEdit(false)"><i class="fa fa-pencil"></i> Tahrirlash</a>&nbsp;&nbsp;
-                  <a href="#" class="red" data-bind="click: $root.vm.onCheckUpEdit(true), visible: !$data.finishedAt"><i class="fa fa-check-circle"></i> Ko'rikni tugallash</a>&nbsp;&nbsp;
+                  <a href="#" class="orange" data-bind="click: $root.vm.onCheckUpEdit(false)"><i class="fa fa-pencil"></i> Tahrirlash &nbsp;</a>
+                  <a href="#" class="red" data-bind="click: $root.vm.onCheckUpEdit(true), visible: !$data.finishedAt"><i class="fa fa-check-circle"></i> Ko'rikni tugallash &nbsp;</a>
                   <a href="#" class="blue"><i class="fa fa-print"></i> Chop qilish</a>
                 </span>
                 <div class="text-muted">
                   <span class="fa fa-calendar"></span>
-                  <span data-bind="text: $root.vm.formatDate($data.startedAt, 'MMMM DD, YYYY HH:mm')"></span>&nbsp;&nbsp;
+                  <span data-bind="text: $root.vm.formatDate($data.startedAt, 'MMMM DD, YYYY HH:mm')"></span> &nbsp;
                   <span class="fa fa-file-text-o"></span>
                   <span data-bind="text: $data.diagnose"></span>
                 </div>

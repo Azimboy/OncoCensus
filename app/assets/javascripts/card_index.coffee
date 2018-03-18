@@ -19,8 +19,7 @@ $ ->
     else
       alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
-  $addPatientModal = $('#add-patient-modal')
-  $updatePatientModal = $('#update-patient-modal')
+  $patientModal = $('#patient-modal')
   $checkUpModal = $('#check-up-modal')
 
   pageSize = 8
@@ -59,7 +58,7 @@ $ ->
       defaultDate: defaultDate
 
   #  TODO Need to fix form redirect issue
-  formData = {}
+  formData = null
   $patientForm = $('#patient-form')
   $patientForm.fileupload
     dataType: 'text'
@@ -76,27 +75,11 @@ $ ->
       result = data.result
       if result is 'OK'
         vm.isLoading(no)
-        if vm.isNewPatient()
-          toastr.success('Yangi ma\'lumotlar ro\'yhatga olindi.')
-          $addPatientModal.modal('hide')
-        else
-          toastr.success('Ma\'lumotlar o\'zgartirildi va saqlandi.')
-          $patientForm.modal('hide')
+        toastr.success('Ma\'lumotlar muvaffaqiyatli ro\'yhatga olindi.')
+        $patientModal.modal('hide')
         loadAllPatients()
-        vm.isNewPatient(no)
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
-
-  $patientForm.submit ->
-    vm.isLoading(yes)
-    if isPatientValid(vm.selected.patient)
-      if formData
-        formData.submit()
-      else
-        $patientForm.fileupload('send', {files: ''})
-      yes
-    else
-      no
 
   checkUpData = null
   $checkUpForm = $('#check-up-form')
@@ -192,7 +175,6 @@ $ ->
       province: undefined
     checkUpFiles: []
     isLoading: no
-    isNewPatient: no
 
   vm.formatDate = (millis, format = 'DD.MM.YYYY HH:mm') ->
     if millis
@@ -239,6 +221,17 @@ $ ->
     else
       yes
 
+  vm.onSubmitPatient = ->
+    if isPatientValid(vm.selected.patient)
+      vm.isLoading(yes)
+      if formData
+        formData.submit()
+      else
+        $patientForm.fileupload('send', {files: ''})
+      yes
+    else
+      no
+
   vm.onPatientSelected = (patient) ->
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
     vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
@@ -248,15 +241,14 @@ $ ->
     vm.rightPage('cardIndex')
 
   vm.onClickAddPatient = ->
-    vm.isNewPatient(yes)
     initDatePicker('#birthDate', '', 'DD.MM.YYYY')
     ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
-    $addPatientModal.modal('show')
+    $patientModal.modal('show')
 
-  vm.onClickUpdatePatient = ->
-    vm.isNewPatient(no)
+  vm.onClickEditPatient = ->
+    initDatePicker('#birthDate', '', 'DD.MM.YYYY')
     if vm.selected.patient.id()
-      $updatePatientModal.modal('show')
+      $patientModal.modal('show')
     else
       toastr.warning('Tahrirlash uchun bemorni tanlang!')
 

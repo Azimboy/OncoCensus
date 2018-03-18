@@ -67,7 +67,34 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   }
 
   def modifyPatient = Action.async(parse.multipartFormData) { implicit request =>
-    val (patient, photosPath) = getPatientData
+	  val patientId = getValue("patientId").map(_.toInt)
+
+	  val patientDataJs = Json.toJson(PatientData(
+		  passportNumber = "passportNumber",
+		  province = "province",
+		  street = "street",
+		  home = "home",
+		  work = "work",
+		  position = "position",
+		  bloodGroup = getValue("bloodGroup").map(BloodGroup.withName)
+	  ))
+
+	  val patient = Patient(
+		  id = patientId,
+		  firstName = "firstName",
+		  lastName = "lastName",
+		  middleName = "middleName",
+		  gender = getValue("gender").map(Gender.withShortName),
+		  birthDate = getValue("birthDate").map(d => parseDate(d, "dd.MM.yyyy")),
+		  districtId = getValue("districtId").map(_.toInt),
+		  clientGroupId = getValue("clientGroupId").map(_.toInt),
+		  email = "email",
+		  phoneNumber = "phoneNumber",
+		  patientDataJson = Some(patientDataJs)
+	  )
+
+	  val photosPath = request.body.file("patientsPhoto").map(file => Paths.get(file.ref.getAbsolutePath))
+
     (patientManager ? ModifyPatient(patient, photosPath)).mapTo[Int].map { _ =>
       Ok("OK")
     }.recover { case error =>
@@ -90,8 +117,8 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       id = getValue("checkUpId").map(_.toInt),
       patientId = getValue("patientId").map(_.toInt),
       userId = Some(1),
-      startedAt = getValue("startedAt").map(parseDate),
-      finishedAt = getValue("finishedAt").map(parseDate),
+      startedAt = getValue("startedAt").map(d => parseDate(d)),
+      finishedAt = getValue("finishedAt").map(d => parseDate(d)),
       complaint = "complaint",
       objInfo = "objInfo",
       objReview = "objReview",
@@ -119,40 +146,8 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     }
   }
 
-  private def getPatientData(implicit request: Request[MultipartFormData[TemporaryFile]]): (Patient, Option[Path]) = {
-    val patientId = getValue("patientId").map(_.toInt)
-
-    val patientDataJs = Json.toJson(PatientData(
-      passportNumber = "passportNumber",
-      province = "province",
-      street = "street",
-      home = "home",
-      work = "work",
-      position = "position",
-      bloodGroup = getValue("bloodGroup").map(BloodGroup.withName)
-    ))
-
-    val patient = Patient(
-      id = patientId,
-      firstName = "firstName",
-      lastName = "lastName",
-      middleName = "middleName",
-      gender = getValue("gender").map(Gender.withShortName),
-      birthDate = getValue("birthDate").map(parseDate),
-      districtId = getValue("districtId").map(_.toInt),
-      clientGroupId = getValue("clientGroupId").map(_.toInt),
-      email = "email",
-      phoneNumber = "phoneNumber",
-      patientDataJson = Some(patientDataJs)
-    )
-
-    val photosPath = request.body.file("patientsPhoto").map(file => Paths.get(file.ref.getAbsolutePath))
-    logger.info(s"Photo PATH = $photosPath")
-    (patient, None)
-  }
-
-  private def parseDate(dateStr: String) = {
-    val dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm")
+  private def parseDate(dateStr: String, format: String = "dd.MM.yyyy HH:mm") = {
+    val dateFormat = new SimpleDateFormat(format)
     dateFormat.parse(dateStr)
   }
 
