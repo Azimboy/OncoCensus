@@ -149,6 +149,10 @@ $ ->
     diagnose: ''
     recommendation: ''
 
+  PageName =
+    Summary: 'summary'
+    CardIndex: 'cardIndex'
+
   vm = ko.mapping.fromJS
     isFiltersShown: no
     patients: []
@@ -157,7 +161,7 @@ $ ->
     clientGroups: []
     bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
     checkUps: []
-    rightPage: 'summary'
+    rightPage: PageName.Summary
     selected:
       patient: defaultPatient
       checkUp: defaultCheckUp
@@ -176,6 +180,8 @@ $ ->
     checkUpFiles: []
     isLoading: no
 
+  vm.PageName = PageName
+
   vm.formatDate = (millis, format = 'DD.MM.YYYY HH:mm') ->
     if millis
       moment(millis).format(format)
@@ -184,7 +190,8 @@ $ ->
     if date
       moment().diff(date, 'years')
 
-  vm.onClose = ->
+  vm.onClosePatientInfoPage = ->
+    ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
     vm.rightPage('summary')
 
   notvalid = (str) ->
@@ -237,8 +244,9 @@ $ ->
     vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
     vm.selected.patient.birthDate(vm.formatDate(patient.birthDate, 'DD.MM.YYYY'))
     vm.selected.patient.regionId(patient.district.regionId)
+    vm.rightPage(PageName.CardIndex)
+    console.log(vm.rightPage())
     getPatientsCheckUps(patient.id)
-    vm.rightPage('cardIndex')
 
   vm.onClickAddPatient = ->
     initDatePicker('#birthDate', '', 'DD.MM.YYYY')

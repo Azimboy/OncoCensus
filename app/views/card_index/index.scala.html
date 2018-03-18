@@ -10,11 +10,11 @@
   <div class="row no-margin-left no-margin-right">
     @card_index.patients_list()
 
-    <div data-bind="visible: vm.rightPage() == 'summary'">
+    <div data-bind="visible: vm.rightPage() == vm.PageName.Summary">
       @card_index.summary()
     </div>
 
-    <div data-bind="visible: vm.rightPage() == 'cardIndex'">
+    <div data-bind="visible: vm.rightPage() == vm.PageName.CardIndex">
       @card_index.patient_info()
     </div>
   </div>
