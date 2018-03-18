@@ -91,6 +91,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       patientId = getValue("patientId").map(_.toInt),
       userId = Some(1),
       startedAt = getValue("startedAt").map(parseDate),
+      finishedAt = getValue("finishedAt").map(parseDate),
       complaint = "complaint",
       objInfo = "objInfo",
       objReview = "objReview",

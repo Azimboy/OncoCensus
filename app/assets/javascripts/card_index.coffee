@@ -115,7 +115,7 @@ $ ->
       result = data.result
       if result is 'OK'
         vm.isLoading(no)
-        toastr.success('Yangi ma\'lumotlar ro\'yhatga olindi.')
+        toastr.success('Ma\'lumotlar ro\'yhatga olindi.')
         if vm.selected.patient.id()
           getPatientsCheckUps(vm.selected.patient.id())
         $checkUpModal.modal('hide')
@@ -403,17 +403,21 @@ $ ->
       tagObj.remove(0)
 
   vm.onClickAddCheckUp = ->
+    removeAllTags(complaintTags)
+    removeAllTags(statusLocalisTags)
     initDatePicker('#startedAt', now)
     ko.mapping.fromJS(defaultCheckUp, {}, vm.selected.checkUp)
     vm.selected.checkUp.startedAt(now)
-    removeAllTags(complaintTags)
-    removeAllTags(statusLocalisTags)
     $checkUpModal.modal('show')
 
-  vm.onCheckUpEdit = (checkUp) ->
+  vm.onCheckUpEdit = (isFinished) -> (checkUp) ->
     refillTags(complaintTags, checkUp.complaint.split(', '))
     refillTags(statusLocalisTags, checkUp.statusLocalis.split(', '))
     ko.mapping.fromJS(checkUp, {}, vm.selected.checkUp)
+    if isFinished
+      initDatePicker('#finishedAt', now)
+      vm.selected.checkUp.finishedAt(now)
+    initDatePicker('#startedAt', checkUp.startedAt)
     vm.selected.checkUp.startedAt(vm.formatDate(checkUp.startedAt))
     $checkUpModal.modal('show')
 

@@ -91,15 +91,18 @@
         <table class="table table-hover" style="margin-bottom: 0px;">
           <tbody data-bind="foreach: vm.checkUps">
             <tr data-bind="css: {'bg-danger': $root.vm.selected.checkUp.id() == $data.id}">
-              <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
+              <td width="7%" class="text-center h3" style="border: 0px!important;">
+                <span class="fa fa-circle-thin purple" data-bind="visible: !$data.finishedAt"></span>
+                <span class="fa fa-circle purple" data-bind="visible: $data.finishedAt"></span>
+              </td>
               <td width="93%" style="border: 0px!important;">
                 Onkolog - <span data-bind="text: $data.user.lastName"></span>&nbsp;
                 <span data-bind="text: $data.user.firstName"></span>&nbsp;
                 <span data-bind="text: $data.user.middleName"></span>
                 <span class="pull-right green">
-                  <a href="#" class="orange" data-bind="click: $root.vm.onCheckUpEdit"><i class="fa fa-pencil"></i> Tahrirlash</a>&nbsp;&nbsp;
-                  <a href="#" class="red"><i class="fa fa-check-circle"></i> Ko'rikni tugallash</a>&nbsp;&nbsp;
-                  <a href="#" class="blue"><i class="fa fa-print"></i></a>
+                  <a href="#" class="orange" data-bind="click: $root.vm.onCheckUpEdit(false)"><i class="fa fa-pencil"></i> Tahrirlash</a>&nbsp;&nbsp;
+                  <a href="#" class="red" data-bind="click: $root.vm.onCheckUpEdit(true), visible: !$data.finishedAt"><i class="fa fa-check-circle"></i> Ko'rikni tugallash</a>&nbsp;&nbsp;
+                  <a href="#" class="blue"><i class="fa fa-print"></i> Chop qilish</a>
                 </span>
                 <div class="text-muted">
                   <span class="fa fa-calendar"></span>
@@ -234,6 +237,16 @@
               <label for="doctorName">Shifokor</label>
               <input type="text" id="doctorName" name="doctorName" class="form-control"/>
               <input type="hidden" id="userId" name="userId"/>
+            </div>
+            <div class="col-xs-6" data-bind="visible: vm.selected.checkUp.finishedAt()">
+              <label for="finishedAt">Tekshiruv yakunlanish sanasi</label>
+              <div class="input-group date" id="finishedAt" data-bind="datetimepicker: vm.selected.checkUp.finishedAt,
+                dateTimePickerOptions: {pickTime: true}">
+                <input type='text' name="finishedAt" class="form-control" data-bind="value: vm.selected.checkUp.finishedAt"/>
+                <span class="input-group-addon">
+                  <span class="fa fa-calendar"></span>
+                </span>
+              </div>
             </div>
           </div>
           <div class="row">
