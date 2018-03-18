@@ -28,6 +28,7 @@ trait CheckUpsComponent
 		def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 		def patientId = column[Int]("patient_id")
 		def userId = column[Int]("user_id")
+		def createdAt = column[Date]("created_at")
 		def startedAt = column[Date]("started_at")
 		def finishedAt = column[Date]("finished_at")
 		def complaint = column[String]("complaint")
@@ -37,15 +38,15 @@ trait CheckUpsComponent
 		def diagnose = column[String]("diagnose")
 		def recommendation = column[String]("recommendation")
 
-		def * = (id.?, patientId.?, userId.?, startedAt.?, finishedAt.?, complaint.?, objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?) <>
+		def * = (id.?, patientId.?, userId.?, createdAt.?, startedAt.?, finishedAt.?, complaint.?, objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?) <>
 			(t => {
 				val fields =
-					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, None, Nil)
+					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, None, Nil)
 				(CheckUp.apply _).tupled(fields)
 			},
 				(i: CheckUp) =>
 					CheckUp.unapply(i).map { t =>
-						(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11)
+						(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12)
 					}
 			)
 
@@ -57,6 +58,7 @@ trait CheckUpsComponent
 @ImplementedBy(classOf[CheckUpsDaoImpl])
 trait CheckUpsDao {
 	def create(checkUp: CheckUp): Future[Int]
+	def update(checkUp: CheckUp): Future[Int]
 	def findByPatientId(patientId: Int): Future[Seq[CheckUp]]
 	def findById(id: Int): Future[Option[CheckUp]]
 }
@@ -82,6 +84,10 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 				into ((r, id) => id)
 				) += checkUp
 		}
+	}
+
+	override def update(checkUp: CheckUp): Future[Int] = {
+		db.run(checkUps.filter(_.id === checkUp.id).update(checkUp))
 	}
 
 	override def findByPatientId(patientId: Int): Future[Seq[CheckUp]] = {

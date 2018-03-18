@@ -19,6 +19,7 @@ object CheckUpProtocol {
     id: Option[Int] = None,
     patientId: Option[Int] = None,
     userId: Option[Int] = None,
+    createdAt: Option[Date] = None,
     startedAt: Option[Date] = None,
     finishedAt: Option[Date] = None,
     complaint: Option[String] = None,
@@ -34,7 +35,7 @@ object CheckUpProtocol {
 	implicit val checkUpFileFormat = Json.format[CheckUpFile]
 	implicit val checkUpFormat = Json.format[CheckUp]
 
-	case class AddCheckUp(checkUp: CheckUp, filePaths: Seq[String])
+	case class ModifyCheckUp(checkUp: CheckUp, filePaths: Seq[String])
 
 	case class GetCheckUpsByPatientId(patientId: Int)
 

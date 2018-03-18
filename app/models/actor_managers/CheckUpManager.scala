@@ -1,12 +1,12 @@
 package models.actor_managers
 
+import java.util.Date
 import javax.inject.{Inject, Named, Singleton}
 
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.CheckUpProtocol.{AddCheckUp, CheckUp, GetCheckUpsByPatientId}
-import models.UserProtocol.{AddUser, GetAllUsers, User}
+import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp}
 import models.actor_managers.EncryptionManager._
 import models.daos.CheckUpsDao
 
@@ -24,8 +24,8 @@ class CheckUpManager @Inject()(@Named("encryption-manager") encryptionManager: A
 
 
 	override def receive: Receive = {
-		case AddCheckUp(checkUp, filePaths) =>
-			addCheckUp(checkUp, filePaths).pipeTo(sender())
+		case ModifyCheckUp(checkUp, filePaths) =>
+			modifyCheckUp(checkUp, filePaths).pipeTo(sender())
 
 		case GetCheckUpsByPatientId(patientId) =>
 			getCheckUpsByPatientId(patientId).pipeTo(sender())
@@ -38,13 +38,22 @@ class CheckUpManager @Inject()(@Named("encryption-manager") encryptionManager: A
 		} yield decrCheckUps
 	}
 
-	def addCheckUp(checkUp: CheckUp, filePaths: Seq[String]): Future[Int] = {
+	def modifyCheckUp(checkUp: CheckUp, filePaths: Seq[String]): Future[Int] = {
 		for {
 //			TODO save files
 			encrCheckUp <- (encryptionManager ? EncryptCheckUp(checkUp)).mapTo[CheckUp]
 			_ = log.info(s"Files Paths = $filePaths")
-			id <- checkUpsDao.create(encrCheckUp)
-		} yield id
+			dbAction <- (checkUp.id match {
+				case Some(checkUpId) =>
+					log.info(s"EDITING = $checkUpId")
+					checkUpsDao.findById(checkUpId).mapTo[Option[CheckUp]].map { checkUpInDb =>
+						checkUpsDao.update(encrCheckUp.copy(createdAt = checkUpInDb.get.createdAt))
+					}
+				case None =>
+					log.info("NEW CHECK UP")
+					Future.successful(checkUpsDao.create(encrCheckUp.copy(createdAt = Some(new Date))))
+			}).flatten
+		} yield dbAction
 	}
 
 //	def getAllCheckUps(): Future[Seq[CheckUp]] = {

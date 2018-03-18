@@ -85,18 +85,21 @@
             <a href="#" class="green pull-right" style="margin-top: 10px" data-bind="click: vm.onClickAddCheckUp"><i class="fa fa-plus-square"></i> Yangi tibbiy ko'rik</a>
           </div>
         </div>
+        <div class="alert alert-warning" data-bind="visible: vm.checkUps().length == 0">
+          <span class="text-center text-warning"><span class="fa fa-warning"></span> Tibbiy ko'rik ko'rsatmalari mavjud emas!</span>
+        </div>
         <table class="table table-hover" style="margin-bottom: 0px;">
           <tbody data-bind="foreach: vm.checkUps">
-            <tr data-bind="click: $root.vm.onCheckUpSelected, css: {'bg-danger': $root.vm.selected.checkUp.id() == $data.id}">
+            <tr data-bind="css: {'bg-danger': $root.vm.selected.checkUp.id() == $data.id}">
               <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-circle-thin purple" ></span></td>
               <td width="93%" style="border: 0px!important;">
                 Onkolog - <span data-bind="text: $data.user.lastName"></span>&nbsp;
                 <span data-bind="text: $data.user.firstName"></span>&nbsp;
                 <span data-bind="text: $data.user.middleName"></span>
                 <span class="pull-right green">
-                  <a href="#" class="orange"><i class="fa fa-pencil" data-toggle="sadfasdf"></i> Tahrirlash</a>&nbsp;&nbsp;
+                  <a href="#" class="orange" data-bind="click: $root.vm.onCheckUpEdit"><i class="fa fa-pencil"></i> Tahrirlash</a>&nbsp;&nbsp;
                   <a href="#" class="red"><i class="fa fa-check-circle"></i> Ko'rikni tugallash</a>&nbsp;&nbsp;
-                  <a href="#" class="blue"><i class="fa fa-print"></i> Chop qilish</a>
+                  <a href="#" class="blue"><i class="fa fa-print"></i></a>
                 </span>
                 <div class="text-muted">
                   <span class="fa fa-calendar"></span>
@@ -147,7 +150,7 @@
   </div>
 </div>
 
-<div id="add-check-up-modal" class="modal fade" role="dialog" data-backdrop="static">
+<div id="check-up-modal" class="modal fade" role="dialog" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -155,7 +158,7 @@
         <h4 class="modal-title">Tibbiy ko'rik</h4>
       </div>
       <div class="modal-body">
-        <form action="@controllers.routes.CardIndexController.addCheckUp" id="check-up-form"
+        <form action="@controllers.routes.CardIndexController.modifyCheckUp" id="check-up-form"
         enctype="multipart/form-data" method="post">
           <div class="form-group row">
             <div class="col-xs-6">
@@ -172,6 +175,7 @@
               <label for="patientName">Bemor</label>
               <input type="text" id="patientName" name="patientName" data-bind="value: vm.selected.patient.firstName() + ' ' + vm.selected.patient.lastName()" class="form-control"/>
               <input type="hidden" name="patientId" data-bind="value: vm.selected.patient.id">
+              <input type="hidden" name="checkUpId" data-bind="value: vm.selected.checkUp.id">
             </div>
           </div>
           <div class="form-group row">

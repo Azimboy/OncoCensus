@@ -9,7 +9,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.CheckUpProtocol.{AddCheckUp, CheckUp, GetCheckUpsByPatientId}
+import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp}
 import models.PatientProtocol._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -85,8 +85,9 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     }
   }
 
-  def addCheckUp = Action.async(parse.multipartFormData) { implicit request =>
+  def modifyCheckUp = Action.async(parse.multipartFormData) { implicit request =>
     val checkUp = CheckUp(
+      id = getValue("checkUpId").map(_.toInt),
       patientId = getValue("patientId").map(_.toInt),
       userId = Some(1),
       startedAt = getValue("startedAt").map(parseDate),
@@ -100,7 +101,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 
     val filePaths = request.body.files.map(_.ref.getAbsolutePath)
 
-    (checkUpManager ? AddCheckUp(checkUp, filePaths)).mapTo[Int].map { _ =>
+    (checkUpManager ? ModifyCheckUp(checkUp, filePaths)).mapTo[Int].map { _ =>
       Ok("OK")
     }.recover { case error =>
       logger.error(s"Error occurred during adding checkUp.", error)

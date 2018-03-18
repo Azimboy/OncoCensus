@@ -19,34 +19,9 @@ $ ->
     else
       alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
-  complaints = ['Umumiy holsizlik', 'Qabziyat', 'Bel-dumg\'aza sohasida og\'riq', 'Ishtaha pastligi', 'Epitsistostomik naycha borligi']
-  statuses = ['Qorin simmetrik', 'Nafas aktida qatnashadi', 'Paypaslaganda yumshoq', 'Qorin pastki qismida epitsistostomik naycha', 'Funksiyasi saqlangan', 'Periferik l\tugunlari kattalashmagan']
-
   $addPatientModal = $('#add-patient-modal')
   $updatePatientModal = $('#update-patient-modal')
-  $addCheckUpModal = $('#add-check-up-modal')
-
-#  $('.date-picker').datepicker
-#    autoclose: true
-#    todayHighlight: true
-
-#  $('.date-time-picker').datetimepicker
-##    format: 'MM.DD.YYYY hh:mm:ss'
-#    autoclose: true
-#    todayHighlight: true
-
-  tagComplaint = $('#complaint')
-  tagStatusLocalis = $('#statusLocalis')
-  try
-    tagComplaint.tag
-      placeholder: '...'
-      source: complaints
-    tagStatusLocalis.tag
-      placeholder: '...'
-      source: statuses
-  catch e
-    tagComplaint.after('<textarea id="'+tagComplaint.attr('id')+'" name="'+tagComplaint.attr('name')+'" rows="3">'+tagComplaint.val()+'</textarea>').remove()
-    tagStatusLocalis.after('<textarea id="'+tagStatusLocalis.attr('id')+'" name="'+tagStatusLocalis.attr('name')+'" rows="3">'+tagStatusLocalis.val()+'</textarea>').remove()
+  $checkUpModal = $('#check-up-modal')
 
   pageSize = 8
   $pagination = {}
@@ -143,7 +118,7 @@ $ ->
         toastr.success('Yangi ma\'lumotlar ro\'yhatga olindi.')
         if vm.selected.patient.id()
           getPatientsCheckUps(vm.selected.patient.id())
-        $addCheckUpModal.modal('hide')
+        $checkUpModal.modal('hide')
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
@@ -219,7 +194,7 @@ $ ->
     isLoading: no
     isNewPatient: no
 
-  vm.formatDate = (millis, format = 'DD.MM.YYYY') ->
+  vm.formatDate = (millis, format = 'DD.MM.YYYY HH:mm') ->
     if millis
       moment(millis).format(format)
 
@@ -267,13 +242,14 @@ $ ->
   vm.onPatientSelected = (patient) ->
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
     vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
-    vm.selected.patient.birthDate(vm.formatDate(patient.birthDate))
+    vm.selected.patient.birthDate(vm.formatDate(patient.birthDate, 'DD.MM.YYYY'))
     vm.selected.patient.regionId(patient.district.regionId)
     getPatientsCheckUps(patient.id)
     vm.rightPage('cardIndex')
 
   vm.onClickAddPatient = ->
     vm.isNewPatient(yes)
+    initDatePicker('#birthDate', '', 'DD.MM.YYYY')
     ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
     $addPatientModal.modal('show')
 
@@ -391,24 +367,68 @@ $ ->
   loadAllClientGroups()
 
   # CHECH UP
+  getPatientsCheckUps = (patientId) ->
+    $.get(apiUrl.checkUps + '/' + patientId)
+    .fail handleError
+    .done (checkUps) ->
+      vm.checkUps checkUps
+
+  complaints = ['Umumiy holsizlik', 'Qabziyat', 'Bel-dumg\'aza sohasida og\'riq', 'Ishtaha pastligi', 'Epitsistostomik naycha borligi']
+  statuses = ['Qorin simmetrik', 'Nafas aktida qatnashadi', 'Paypaslaganda yumshoq', 'Qorin pastki qismida epitsistostomik naycha', 'Funksiyasi saqlangan', 'Periferik l\tugunlari kattalashmagan']
+
+  complaintTags = $('#complaint')
+  statusLocalisTags = $('#statusLocalis')
+
+  initTagPicker = (selector, source) ->
+    $el = selector
+    try
+      $el.tag
+        placeholder: '...'
+        source: source
+    catch e
+      $el.after('<textarea id="'+$el.attr('id')+'" name="'+$el.attr('name')+'" rows="3">'+$el.val()+'</textarea>').remove()
+
+  initTagPicker(complaintTags, complaints)
+  initTagPicker(statusLocalisTags, statuses)
+
+  refillTags = (el, tags) ->
+    removeAllTags(el)
+    tagObj = el.data('tag')
+    for tag in tags
+      tagObj.add(tag)
+
+  removeAllTags = (el) ->
+    tagObj = el.data('tag')
+    while tagObj.values.length != 0
+      tagObj.remove(0)
+
   vm.onClickAddCheckUp = ->
-  #    vm.selected.checkUp.startedAt(vm.formatDate(moment()))
-    $addCheckUpModal.modal('show')
     initDatePicker('#startedAt', now)
+    ko.mapping.fromJS(defaultCheckUp, {}, vm.selected.checkUp)
     vm.selected.checkUp.startedAt(now)
-    console.log(vm.selected.checkUp.startedAt())
+    removeAllTags(complaintTags)
+    removeAllTags(statusLocalisTags)
+    $checkUpModal.modal('show')
+
+  vm.onCheckUpEdit = (checkUp) ->
+    refillTags(complaintTags, checkUp.complaint.split(', '))
+    refillTags(statusLocalisTags, checkUp.statusLocalis.split(', '))
+    ko.mapping.fromJS(checkUp, {}, vm.selected.checkUp)
+    vm.selected.checkUp.startedAt(vm.formatDate(checkUp.startedAt))
+    $checkUpModal.modal('show')
 
   isCheckUpValid = (checkUp) ->
+    complaintsArr = complaintTags.data('tag').values
+    statusLocalisArr = statusLocalisTags.data('tag').values
     warningText =
-#      if notvalid(checkUp.complaint())
-#        'Shikoyat maydonini to\'ldiring!'
-#      else
-      if notvalid(checkUp.objInfo())
+      if complaintsArr.length == 0
+        'Shikoyat maydonini to\'ldiring!'
+      else if notvalid(checkUp.objInfo())
         'Obyektiv ma\'lumotlarni kiriting!'
       else if notvalid(checkUp.objReview())
         'Obyektiv ko\'rikni kiriting!'
-#      else if notvalid(checkUp.statusLocalis())
-#        'Status localis maydonini to\'ldiring!'
+      else if statusLocalisArr.length == 0
+        'Status localis maydonini to\'ldiring!'
       else if notvalid(checkUp.diagnose())
         'Tashhis maydonini to\'ldiring!'
       else if notvalid(checkUp.recommendation())
@@ -438,15 +458,6 @@ $ ->
         checkUpData.submit()
       else
         $checkUpForm.fileupload('send', {files: ''})
-
-  getPatientsCheckUps = (patientId) ->
-    $.get(apiUrl.checkUps + '/' + patientId)
-    .fail handleError
-    .done (checkUps) ->
-      vm.checkUps checkUps
-
-  vm.onCheckUpSelected = (checkUp) ->
-    ko.mapping.fromJS(checkUp, {}, vm.selected.checkUp)
 
   vm.onFileSelected = (v, event) ->
     vm.checkUpFiles.removeAll()
