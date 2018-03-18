@@ -103,7 +103,7 @@
           </div>
         </div>
         <div data-bind="visible: vm.patients().length > 0">
-          <table class="table table-hover">
+          <table class="table table-hover items-list">
             <tbody data-bind="foreach: vm.patients">
               <tr data-bind="click: $root.vm.onPatientSelected, css: {'bg-info': $root.vm.selected.patient.id() == $data.id}">
                 <td width="10%" class="text-center h3"><span class="fa fa-user"></span></td>

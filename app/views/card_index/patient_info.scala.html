@@ -1,5 +1,5 @@
 @()
-<div class="col-sm-8 widget-container-col no-padding-right" id="widget-container-col-2">
+<div data-bind="visible: vm.rightPage() == vm.PageName.CardIndex" class="col-sm-8 widget-container-col no-padding-left no-padding-right" id="widget-container-col-2">
   <div class="widget-box transparent" id="widget-box-12">
     <div class="widget-header">
       <h4 class="widget-title lighter">AMBULATOR TIBBIY MA'LUMOTLAR</h4>
@@ -88,7 +88,7 @@
         <div class="alert alert-warning" data-bind="visible: vm.checkUps().length == 0">
           <span class="text-center text-warning"><span class="fa fa-warning"></span> Tibbiy ko'rik ko'rsatmalari mavjud emas!</span>
         </div>
-        <table class="table table-hover" style="margin-bottom: 0px;">
+        <table class="table table-hover items-list" style="margin-bottom: 0px;">
           <tbody data-bind="foreach: vm.checkUps">
             <tr data-bind="css: {'bg-danger': $root.vm.selected.checkUp.id() == $data.id}">
               <td width="7%" class="text-center h3" style="border: 0px!important;">
@@ -117,11 +117,11 @@
 
         @*UMUMIY MA'LUMOTLAR*@
         <h5 class="blue"><span class="fa fa-info-circle"></span> UMUMIY MA'LUMOTLAR</h5>
-        <table class="table table-hover">
+        <table class="table table-hover items-list">
           <tbody>
             <tr>
-              <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-line-chart purple" ></span></td>
-              <td width="93%" style="border: 0px!important;">
+              <td width="7%" class="text-center h3" ><span class="fa fa-line-chart purple" ></span></td>
+              <td width="93%" >
                 Kasallik tarixi
                 <div class="text-muted">
                   Qabul va ko'rik tahlillari natijalari
@@ -129,8 +129,8 @@
               </td>
             </tr>
             <tr>
-              <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-file purple" ></span></td>
-              <td width="93%" style="border: 0px!important;">
+              <td width="7%" class="text-center h3" ><span class="fa fa-file purple" ></span></td>
+              <td width="93%" >
                 Elektron hujjatlar
                 <div class="text-muted">
                   Tizimga yuklangan barcha elektron ma'lumotlar
@@ -138,8 +138,8 @@
               </td>
             </tr>
             <tr>
-              <td width="7%" class="text-center h3" style="border: 0px!important;"><span class="fa fa-info purple" ></span></td>
-              <td width="93%" style="border: 0px!important;">
+              <td width="7%" class="text-center h3" ><span class="fa fa-info purple" ></span></td>
+              <td width="93%" >
                 So'rov va shikoyatlar
                 <div class="text-muted">
                   Bemor to'g'risidagi qo'shimcha ma'lumotlar

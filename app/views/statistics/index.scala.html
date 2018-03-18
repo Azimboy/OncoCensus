@@ -4,378 +4,243 @@
 @()(implicit webJarsUtil: WebJarsUtil)
 
 @statistics.main("OncoCensus"){
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="row">
-                <div class="col-sm-5">
-                    <h3 class="header blue lighter smaller" style="margin-top: 0px">
-                        <i class="ace-icon fa fa-calendar-o smaller-90"></i>
-                        Shartli qidirish
-                    </h3>
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1-1"> Sana </label>
-
-                            <div class="col-sm-9">
-                                <div class="input-group">
-                                    <input class="form-control" type="text" name="date-range-picker" id="form-field-1-1" />
-                                    <span class="input-group-addon">
-                                        <i class="fa fa-calendar bigger-110"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1-2"> Davr </label>
-
-                            <div class="col-sm-9">
-                                <select name="davr" id="form-field-1-2" class="form-control">
-                                    <option value="kun">Kun</option>
-                                    <option value="hafta">Hafta</option>
-                                    <option value="oy">Oy</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-sm-12 col-sm-3 no-padding-right" for="food">Klient Guruhi</label>
-
-                            <div class="col-xs-12 col-sm-9">
-                                <select id="food" class="multiselect" multiple="">
-                                    <option value="Ia">I</option>
-                                    <option value="II">II</option>
-                                    <option value="III">III</option>
-                                    <option value="IV">IV</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div><!-- ./span -->
-
-                <div class="col-sm-7">
-                    <h3 class="header blue lighter smaller" style="margin-top: 0px">
-                        <i class="ace-icon fa fa-list-alt smaller-90"></i>
-                        Hududlar bo'yicha
-                    </h3>
-                    <form class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1-2"> Viloyat </label>
-
-                            <div class="col-sm-6">
-                                <select name="region" id="region" class="form-control">
-                                    <option value="Xorazm">Xorazm</option>
-                                    <option value="Toshkent">Toshkent</option>
-                                    <option value="Samarqand">Samarqand</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right" for="form-field-1-2"> Tuman/Shahar </label>
-
-                            <div class="col-sm-6">
-                                <select name="district" id="district" class="form-control">
-                                    <option value="Xonqa">Xonqa</option>
-                                    <option value="Urganch">Urganch</option>
-                                    <option value="Xazorasp">Xazorasp</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+  <div class="row no-margin-left no-margin-right">
+    <div class="col-sm-12">
+      <div class="row no-margin-left no-margin-right">
+        <div class="col-sm-6 widget-container-col no-padding-left" id="widget-container-col-2-1">
+          <div class="widget-box transparent" id="widget-box-12">
+            <div class="widget-header">
+              <h4 class="widget-title lighter">QIDIRISH SHARTI</h4>
             </div>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th rowspan="2" class="text-center">№</th>
-                        <th rowspan="2" class="text-center">Kasallik turi</th>
-                        <th rowspan="2" class="text-center">MKB</th>
-                        <th colspan="3" class="text-center">Ro'yhatga olingan kasalliklar</th>
-                        <th colspan="3" class="text-center">Birinchi marta tashxisi aniqlanganlar</th>
-                        <th rowspan="2" class="text-center">Dispanser nazoratiga olinganlar</th>
-                        <th rowspan="2" class="text-center">Ulardan birinchi marta <br> tashxis aniqlangan bemorlar</th>
-                        <th colspan="3" class="text-center">Dispanser nazoratidan chiqarilganlar</th>
-                        <th colspan="3" class="text-center">Hisobot davrining oxiriga dispanser nazoratida turganlar</th>
-                    </tr>
-                    <tr>
-                        <th>Jami</th>
-                        <th>K/a</th>
-                        <th>Ayollar</th>
-                        <th>Jami</th>
-                        <th>K/a</th>
-                        <th>Ayollar</th>
-                        <th>Jami</th>
-                        <th>Tuzalgandi</th>
-                        <th>Vafot etdi</th>
-                        <th>Jami</th>
-                        <th>K/a</th>
-                        <th>Ayollar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Labda</td>
-                        <td>C00</td>
-                        <td>7</td>
-                        <td>6</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>2</td>
-                        <td>2</td>
-                        <td>0</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Og'iz bo'shlig'i va yutqinda</td>
-                        <td>C01-14</td>
-                        <td>7</td>
-                        <td>4</td>
-                        <td>3</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>6</td>
-                        <td>3</td>
-                        <td>3</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Qizilo'ngachda</td>
-                        <td>C15</td>
-                        <td>26</td>
-                        <td>15</td>
-                        <td>11</td>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>2</td>
-                        <td>10</td>
-                        <td>7</td>
-                        <td>3</td>
-                        <td>11</td>
-                        <td>7</td>
-                        <td>4</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Milkda</td>
-                        <td>C03</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Og'iz bo'shlig'i tubida</td>
-                        <td>C04</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>Oshqozonda</td>
-                        <td>C16</td>
-                        <td>37</td>
-                        <td>25</td>
-                        <td>12</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>15</td>
-                        <td>5</td>
-                        <td>10</td>
-                        <td>15</td>
-                        <td>11</td>
-                        <td>4</td>
-                    </tr>
-                    <tr>
-                        <td>7</td>
-                        <td>Ingichka ichakda</td>
-                        <td>C17</td>
-                        <td>4</td>
-                        <td>3</td>
-                        <td>1</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>0</td>
-                        <td>2</td>
-                        <td>2</td>
-                        <td>0</td>
-                        <td>2</td>
-                        <td>2</td>
-                        <td>1</td>
-                        <td>1</td>
-                    </tr>
-                    <tr>
-                        <td>8</td>
-                        <td>Chambar ichakda</td>
-                        <td>C18</td>
-                        <td>12</td>
-                        <td>9</td>
-                        <td>3</td>
-                        <td>2</td>
-                        <td>2</td>
-                        <td>0</td>
-                        <td>2</td>
-                        <td>2</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>1</td>
-                        <td>6</td>
-                        <td>6</td>
-                        <td>0</td>
-                    </tr>
-                </tbody>
-            </table>
 
+            <div class="widget-body">
+              <div class="widget-main">
+                <div class="form-group row">
+                  <label for="date" class="col-sm-2 col-form-label">Sana</label>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control-plaintext" id="staticEmail">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <div class="col-sm-6 widget-container-col no-padding-left no-padding-right" id="widget-container-col-2-2">
+          <div class="widget-box transparent" id="widget-box-12">
+            <div class="widget-header">
+              <h4 class="widget-title lighter">HUDUD BO'YICHA</h4>
+            </div>
+
+            <div class="widget-body">
+              <div class="widget-main">
+                <div class="form-group row">
+                  <label for="staticEmail" class="col-sm-2 col-form-label">Email</label>
+                  <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" id="staticEmail">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+                  <div class="col-sm-10">
+                    <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th rowspan="2" class="text-center">№</th>
+            <th rowspan="2" class="text-center">Kasallik turi</th>
+            <th rowspan="2" class="text-center">MKB</th>
+            <th colspan="3" class="text-center">Ro'yhatga olingan kasalliklar</th>
+            <th colspan="3" class="text-center">Birinchi marta tashxisi aniqlanganlar</th>
+            <th rowspan="2" class="text-center">Dispanser nazoratiga olinganlar</th>
+            <th rowspan="2" class="text-center">Ulardan birinchi marta <br> tashxis aniqlangan bemorlar</th>
+            <th colspan="3" class="text-center">Dispanser nazoratidan chiqarilganlar</th>
+            <th colspan="3" class="text-center">Hisobot davrining oxiriga dispanser nazoratida turganlar</th>
+          </tr>
+          <tr>
+            <th>Jami</th>
+            <th>K/a</th>
+            <th>Ayollar</th>
+            <th>Jami</th>
+            <th>K/a</th>
+            <th>Ayollar</th>
+            <th>Jami</th>
+            <th>Tuzalgandi</th>
+            <th>Vafot etdi</th>
+            <th>Jami</th>
+            <th>K/a</th>
+            <th>Ayollar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Labda</td>
+            <td>C00</td>
+            <td>7</td>
+            <td>6</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>2</td>
+            <td>2</td>
+            <td>0</td>
+            <td>5</td>
+            <td>4</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Og'iz bo'shlig'i va yutqinda</td>
+            <td>C01-14</td>
+            <td>7</td>
+            <td>4</td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>1</td>
+            <td>0</td>
+            <td>1</td>
+            <td>6</td>
+            <td>3</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Qizilo'ngachda</td>
+            <td>C15</td>
+            <td>26</td>
+            <td>15</td>
+            <td>11</td>
+            <td>3</td>
+            <td>2</td>
+            <td>1</td>
+            <td>2</td>
+            <td>2</td>
+            <td>10</td>
+            <td>7</td>
+            <td>3</td>
+            <td>11</td>
+            <td>7</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Milkda</td>
+            <td>C03</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Og'iz bo'shlig'i tubida</td>
+            <td>C04</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Oshqozonda</td>
+            <td>C16</td>
+            <td>37</td>
+            <td>25</td>
+            <td>12</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>1</td>
+            <td>1</td>
+            <td>15</td>
+            <td>5</td>
+            <td>10</td>
+            <td>15</td>
+            <td>11</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td>Ingichka ichakda</td>
+            <td>C17</td>
+            <td>4</td>
+            <td>3</td>
+            <td>1</td>
+            <td>2</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>2</td>
+            <td>2</td>
+            <td>0</td>
+            <td>2</td>
+            <td>2</td>
+            <td>1</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td>Chambar ichakda</td>
+            <td>C18</td>
+            <td>12</td>
+            <td>9</td>
+            <td>3</td>
+            <td>2</td>
+            <td>2</td>
+            <td>0</td>
+            <td>2</td>
+            <td>2</td>
+            <td>5</td>
+            <td>4</td>
+            <td>1</td>
+            <td>6</td>
+            <td>6</td>
+            <td>0</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <script src="@routes.Assets.versioned("javascripts/bootstrap-datepicker.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/daterangepicker.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/jquery.knob.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/autosize.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/jquery.maskedinput.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/bootstrap-tag.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/jquery.bootstrap-duallistbox.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/jquery.raty.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/bootstrap-multiselect.min.js")"></script>
-    <script src="@routes.Assets.versioned("javascripts/select2.min.js")"></script>
-    <script type="text/javascript">
-            jQuery(function($){
-                var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
-                var container1 = demo1.bootstrapDualListbox('getContainer');
-                container1.find('.btn').addClass('btn-white btn-info btn-bold');
-
-                /**var setRatingColors = function() {
-					$(this).find('.star-on-png,.star-half-png').addClass('orange2').removeClass('grey');
-					$(this).find('.star-off-png').removeClass('orange2').addClass('grey');
-				}*/
-                $('.rating').raty({
-                    'cancel' : true,
-                    'half': true,
-                    'starType' : 'i'
-                    /**,
-
-                     'click': function() {
-						setRatingColors.call(this);
-					},
-                     'mouseover': function() {
-						setRatingColors.call(this);
-					},
-                     'mouseout': function() {
-						setRatingColors.call(this);
-					}*/
-                })//.find('i:not(.star-raty)').addClass('grey');
-
-
-
-                //////////////////
-                //select2
-                $('.select2').css('width','200px').select2({allowClear:true})
-                $('#select2-multiple-style .btn').on('click', function(e){
-                    var target = $(this).find('input[type=radio]');
-                    var which = parseInt(target.val());
-                    if(which == 2) $('.select2').addClass('tag-input-style');
-                    else $('.select2').removeClass('tag-input-style');
-                });
-
-                //////////////////
-                $('.multiselect').multiselect({
-                    enableFiltering: true,
-                    enableHTML: true,
-                    buttonClass: 'btn btn-white btn-primary',
-                    templates: {
-                        button: '<button type="button" class="multiselect dropdown-toggle" data-toggle="dropdown"><span class="multiselect-selected-text"></span> &nbsp;<b class="fa fa-caret-down"></b></button>',
-                        ul: '<ul class="multiselect-container dropdown-menu"></ul>',
-                        filter: '<li class="multiselect-item filter"><div class="input-group"><span class="input-group-addon"><i class="fa fa-search"></i></span><input class="form-control multiselect-search" type="text"></div></li>',
-                        filterClearBtn: '<span class="input-group-btn"><button class="btn btn-default btn-white btn-grey multiselect-clear-filter" type="button"><i class="fa fa-times-circle red2"></i></button></span>',
-                        li: '<li><a tabindex="0"><label></label></a></li>',
-                        divider: '<li class="multiselect-item divider"></li>',
-                        liGroup: '<li class="multiselect-item multiselect-group"><label></label></li>'
-                    }
-                });
-
-
-                ///////////////////
-
-                //typeahead.js
-                //example taken from plugin's page at: https://twitter.github.io/typeahead.js/examples/
-                var substringMatcher = function(strs) {
-                    return function findMatches(q, cb) {
-                        var matches, substringRegex;
-
-                        // an array that will be populated with substring matches
-                        matches = [];
-
-                        // regex used to determine if a string contains the substring `q`
-                        substrRegex = new RegExp(q, 'i');
-
-                        // iterate through the pool of strings and for any string that
-                        // contains the substring `q`, add it to the `matches` array
-                        $.each(strs, function(i, str) {
-                            if (substrRegex.test(str)) {
-                                // the typeahead jQuery plugin expects suggestions to a
-                                // JavaScript object, refer to typeahead docs for more info
-                                matches.push({ value: str });
-                            }
-                        });
-
-                        cb(matches);
-                    }
-                }
-
-
-                ///////////////
-
-
-                //in ajax mode, remove remaining elements before leaving page
-                $(document).one('ajaxloadstart.page', function(e) {
-                    $('[class*=select2]').remove();
-                    $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox('destroy');
-                    $('.rating').raty('destroy');
-                    $('.multiselect').multiselect('destroy');
-                });
-
-            });
-    </script>
+  </div>
 }
