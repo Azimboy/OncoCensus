@@ -119,7 +119,10 @@
                   <span class="fa fa-calendar"></span>
                   <span data-bind="text: $root.vm.formatDate($data.startedAt, 'MMMM DD, YYYY HH:mm')"></span> &nbsp;
                   <span class="fa fa-file-text-o"></span>
-                  <span data-bind="text: $data.diagnose"></span>
+                  <span data-bind="text: $data.diagnose"></span>&nbsp;
+                  <span class="fa fa-hospital-o"></span>
+                  <span data-bind="visible: $data.receiveInfoJson.receiveType == 'polyclinic'">Poliknikada ko'rik</span>
+                  <span data-bind="visible: $data.receiveInfoJson.receiveType == 'home'">Uyda ko'rik</span>
                 </div>
               </td>
             </tr>
