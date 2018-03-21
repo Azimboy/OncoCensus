@@ -82,6 +82,7 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 
 	val checkUps = TableQuery[CheckUps]
 	val patients = TableQuery[Patients]
+	val districts = TableQuery[Districts]
 	val users = TableQuery[Users]
 
 	override def create(checkUp: CheckUp): Future[Int] = {
@@ -112,15 +113,24 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 	}
 
 	override def getAllCheckUps(reportData: ReportData): Future[Seq[CheckUp]] = {
-		val checkUpWithPatients = checkUps.join(patients).on(_.patientId === _.id)
+		val withPatients = checkUps.join(patients).on(_.patientId === _.id)
+		val withDistricts = withPatients.join(districts).on(_._2.districtId === _.id)
+
+		val byStartDate = reportData.startDate.map(t => withDistricts.filter(_._1._1.createdAt >= t)).getOrElse(withDistricts)
+		val byEndDate = reportData.endDate.map(t => byStartDate.filter(_._1._1.createdAt <= t)).getOrElse(byStartDate)
+
+		val byRegion = reportData.regionId.map(r => byEndDate.filter(_._2.regionId === r)).getOrElse(byEndDate)
+		val byDistrict = reportData.districtId.map(d => byRegion.filter(_._2.id === d)).getOrElse(byRegion)
+
+		val byReceiveType = reportData.receiveType.map { r =>
+			byDistrict.filter(_._1._1.receiveInfoJson.+>>("receiveType") === r)
+		}.getOrElse {
+			byDistrict
+		}
 
 		db.run {
-			reportData.receiveType.map { r =>
-				checkUpWithPatients.filter(_._1.receiveInfoJson.+>>("receiveType") === r).result
-			}.getOrElse {
-				checkUpWithPatients.result
-			}
-		}.map(_.map { case (checkUp, patient) =>
+			byReceiveType.result
+		}.map(_.map { case ((checkUp, patient), _) =>
 			checkUp.copy(patient = Some(patient))
 		})
 	}

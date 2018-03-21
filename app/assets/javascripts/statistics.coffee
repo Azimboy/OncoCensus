@@ -64,6 +64,8 @@ $ ->
     districts: []
     reports: []
     reportData:
+      startDate: ''
+      endDate: ''
       regionId: ''
       districtId: ''
       receiveType: ''
@@ -120,7 +122,13 @@ $ ->
 #         = vm.getAge(patient.birthDate)
       vm.reports report.items
 
-  vm.reportData.receiveType.subscribe (value) ->
+  vm.reportData.receiveType.subscribe ->
+    getReport()
+
+  vm.reportData.startDate.subscribe ->
+    getReport()
+
+  vm.reportData.endDate.subscribe ->
     getReport()
 
   getReport()

@@ -1,9 +1,12 @@
 package models
 
+import java.text.SimpleDateFormat
 import java.util.Date
 
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, Json, __}
+import play.api.libs.json.{Format, Json, OFormat, __}
+
+import scala.util.Try
 
 object AppProtocol {
 
@@ -75,5 +78,25 @@ object AppProtocol {
 		districtId: Option[Int] = None
 	)
 
-	implicit val reportDataFormat = Json.format[ReportData]
+	implicit val reportDataFormat: Format[ReportData] = (
+		optDateFormat("startDate") ~
+		optDateFormat("endDate") ~
+		(__ \ "receiveType").formatNullable[String] ~
+		(__ \ "regionId").formatNullable[Int] ~
+		(__ \ "districtId").formatNullable[Int]
+	)(ReportData.apply, unlift(ReportData.unapply))
+
+	def dateFormat(fieldName: String, dateFormat: String = "dd.MM.yyyy HH:mm") = {
+		OFormat(
+			(__ \ fieldName).read[String].map(new SimpleDateFormat(dateFormat).parse),
+			(__ \ fieldName).write[Date]
+		)
+	}
+
+	def optDateFormat(fieldName: String, dateFormat: String = "dd.MM.yyyy HH:mm") = {
+		OFormat(
+			(__ \ fieldName).readNullable[String].map(_.flatMap(s => Try(new SimpleDateFormat(dateFormat).parse(s)).toOption)),
+			(__ \ fieldName).writeNullable[Date]
+		)
+	}
 }

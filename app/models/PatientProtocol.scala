@@ -1,15 +1,14 @@
 package models
 
 import java.nio.file.Path
-import java.text.SimpleDateFormat
 import java.util.Date
 
 import models.AppProtocol.Paging.PageReq
-import models.AppProtocol.{District, ReportData}
+import models.AppProtocol.{District, _}
 import models.utils.{EnumMappedToDb, EnumUtils}
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 object PatientProtocol {
 
@@ -131,12 +130,5 @@ object PatientProtocol {
   )(SupervisedOut.apply, unlift(SupervisedOut.unapply))
 
   case class PatientSupervisedOut(patientId: Int, supervisedOut: SupervisedOut)
-
-  private def dateFormat(fieldName: String, dateFormat: String = "dd.MM.yyyy HH:mm") = {
-    OFormat(
-      (__ \ fieldName).read[String].map(new SimpleDateFormat(dateFormat).parse),
-      (__ \ fieldName).write[Date]
-    )
-  }
 
 }
