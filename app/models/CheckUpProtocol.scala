@@ -51,17 +51,18 @@ object CheckUpProtocol {
 	}
 
 	object ReceiveReason extends EnumMappedToDb {
-		val Defined = Value("defined")
+		val Simple = Value("simple")
 		val Illness = Value("illness")
 
 		def withShortName: PartialFunction[String, ReceiveReason.Value] = {
-			case "defined" => Defined
+			case "simple" => Simple
 			case "illness" => Illness
 		}
 	}
 
 	implicit val receiveTypeFormat = EnumUtils.enumFormat(ReceiveType)
 	implicit val receiveReasonFormat = EnumUtils.enumFormat(ReceiveReason)
+	implicit val receiveInfoFormat = Json.format[ReceiveInfo]
 	implicit val checkUpFileFormat = Json.format[CheckUpFile]
 	implicit val checkUpFormat = Json.format[CheckUp]
 

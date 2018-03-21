@@ -10,7 +10,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp}
+import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp, ReceiveInfo, ReceiveReason, ReceiveType}
 import models.PatientProtocol._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
@@ -114,6 +114,11 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   }
 
   def modifyCheckUp = Action.async(parse.multipartFormData) { implicit request =>
+	  val receivedInfoJs = Json.toJson(ReceiveInfo(
+		  receiveType = getValue("receivedType").map(ReceiveType.withShortName).getOrElse(ReceiveType.Polyclinic),
+		  receiveReason = getValue("receivedReason").map(ReceiveReason.withShortName).getOrElse(ReceiveReason.Simple)
+	  ))
+
     val checkUp = CheckUp(
       id = getValue("checkUpId").map(_.toInt),
       patientId = getValue("patientId").map(_.toInt),
@@ -126,6 +131,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       statusLocalis = "statusLocalis",
       diagnose = "diagnose",
       recommendation = "recommendation",
+	    receiveInfoJson = Some(receivedInfoJs)
     )
 
     val filePaths = request.body.files.map(_.ref.getAbsolutePath)

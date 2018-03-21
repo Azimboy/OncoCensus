@@ -106,11 +106,6 @@ $ ->
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
-  defaultSuperviseData =
-    date: ''
-    reason: ''
-    comments: ''
-
   defaultPatient =
     id: ''
     createdAt: ''
@@ -141,7 +136,10 @@ $ ->
       work: ''
       position: ''
       bloodGroup: ''
-    supervisedOutJson: defaultSuperviseData
+    supervisedOutJson:
+      date: ''
+      reason: ''
+      comments: ''
 
   defaultCheckUp =
     id: ''
