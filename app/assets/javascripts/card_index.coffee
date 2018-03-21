@@ -250,9 +250,8 @@ $ ->
       no
 
   vm.onPatientSelected = (patient) ->
-    ko.mapping.fromJS(defaultSuperviseData, {}, vm.selected.patient.supervisedOutJson)
+    ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
-    vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
     vm.selected.patient.birthDate(vm.formatDate(patient.birthDate, 'DD.MM.YYYY'))
     vm.selected.patient.regionId(patient.district.regionId)
     vm.rightPage(PageName.CardIndex)
@@ -336,8 +335,8 @@ $ ->
       patients = result.items
       for patient in patients
         patient.age = vm.getAge(patient.birthDate)
-        if patient.supervisedOutJson?.date
-          patient.supervisedOutJson.date = vm.formatDate(parseInt(patient.supervisedOutJson.date))
+#        if patient.supervisedOutJson?.date
+#          patient.supervisedOutJson.date = vm.formatDate(parseInt(patient.supervisedOutJson.date))
 
       vm.patients patients
 

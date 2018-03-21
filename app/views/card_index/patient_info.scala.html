@@ -45,7 +45,7 @@
             <li class="no-margin-top">
               <div data-bind="if: !vm.selected.patient.supervisedOutJson.date()">
                 <i class="ace-icon fa fa-calendar-check-o bigger-110 green" style="padding-left: 2px;"></i>
-                Nazoratga olindi: <span data-bind="text: vm.selected.patient.createdAt"></span>
+                Nazoratga olindi: <span data-bind="text: vm.formatDate(vm.selected.patient.createdAt(), 'MMMM DD, YYYY HH:mm')"></span>
                 <a href="#" class="red pull-right" data-bind="click: vm.onSupervisedOutModalOpen">
                   <i class="fa fa-calendar-times-o"></i> Nazoratdan chiqarish
                 </a>
@@ -54,7 +54,7 @@
                 <i class="ace-icon fa fa-calendar-times-o bigger-110 red" style="padding-left: 2px;"></i>
                 <span data-bind="visible: vm.selected.patient.supervisedOutJson.reason() == 'recovery'">Tuzalganligi tufayli </span>
                 <span data-bind="visible: vm.selected.patient.supervisedOutJson.reason() == 'dead'">Vafot qilganligi tufayli </span>
-                nazoratdan chiqarilgan: <span data-bind="text: vm.selected.patient.supervisedOutJson.date"></span>
+                nazoratdan chiqarilgan: <span data-bind="text: vm.formatDate(parseInt(vm.selected.patient.supervisedOutJson.date()), 'MMMM DD, YYYY HH:mm')"></span>
               </div>
             </li>
             <li>
