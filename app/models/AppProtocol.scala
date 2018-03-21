@@ -70,8 +70,9 @@ object AppProtocol {
 	case class ReportData(
 		startDate: Option[Date] = None,
 		endDate: Option[Date] = None,
+		receiveType: Option[String] = None,
 		regionId: Option[Int] = None,
-		districtId: Option[Int] = None,
+		districtId: Option[Int] = None
 	)
 
 	implicit val reportDataFormat = Json.format[ReportData]

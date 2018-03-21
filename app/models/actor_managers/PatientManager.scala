@@ -9,8 +9,9 @@ import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.PatientProtocol
+import models.AppProtocol.ReportData
 import models.PatientProtocol.{ClientGroup, DeletePatientById, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient, PatientSupervisedOut, PatientsFilter, SupervisedOut}
+import models.StatisticsProtocol.GetDetailedReport
 import models.actor_managers.EncryptionManager.{DecryptPatient, DecryptPatients, EncryptPatient}
 import models.daos.{ClientGroupsDao, PatientsDao}
 import models.utils.FileUtils
@@ -53,6 +54,9 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 
 		case PatientSupervisedOut(patientId, supervisedOut) =>
 			patientSupervisedOut(patientId, supervisedOut).pipeTo(sender())
+
+		case GetDetailedReport(reportData, pageReq) =>
+			getPatientsDetailedReport(reportData, pageReq).pipeTo(sender())
 	}
 
 	def getAllPatients(pageReq: PageReq, patientsFilter: PatientsFilter): Future[PageRes[Patient]] = {
@@ -133,4 +137,9 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 			dbAction <- patientsDao.update(encrPatient)
 		} yield dbAction
 	}
+
+	def getPatientsDetailedReport(reportData: ReportData, pageReq: PageReq): Future[Unit] = {
+		Future.successful(())
+	}
+
 }

@@ -9,7 +9,7 @@ import javax.inject.Inject
 import akka.actor._
 import akka.util.Timeout
 import com.google.common.io.BaseEncoding
-import models.AppProtocol.Department
+import models.AppProtocol.{Department, ReportData}
 import models.CheckUpProtocol.CheckUp
 import models.PatientProtocol.Patient
 import models.UserProtocol.User
@@ -41,6 +41,8 @@ object EncryptionManager {
 	case class EncryptCheckUp(checkUp: CheckUp)
 	case class DecryptCheckUp(checkUp: CheckUp)
 	case class DecryptCheckUps(checkUps: Seq[CheckUp])
+
+	case class EncryptReportData(reportData: ReportData)
 }
 
 class EncryptionManager @Inject() (configuration: Configuration)
@@ -143,6 +145,8 @@ class EncryptionManager @Inject() (configuration: Configuration)
 		case DecryptCheckUps(checkUps) =>
 			sender() ! decryptCheckUps(checkUps)
 
+		case EncryptReportData(reportData) =>
+			sender() ! encryptReportData(reportData)
 	}
 
 	private def openKeystore(keystorePassword: String, keyPassword: String): Unit = {
@@ -317,7 +321,8 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			objReview = checkUp.objReview.map(encryptText),
 			statusLocalis = checkUp.statusLocalis.map(encryptText),
 			diagnose = checkUp.diagnose.map(encryptText),
-			recommendation = checkUp.recommendation.map(encryptText)
+			recommendation = checkUp.recommendation.map(encryptText),
+			receiveInfoJson = checkUp.receiveInfoJson.map(encryptSpecPartJson)
 		)
 	}
 
@@ -329,12 +334,24 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			statusLocalis = checkUp.statusLocalis.map(decryptText),
 			diagnose = checkUp.diagnose.map(decryptText),
 			recommendation = checkUp.recommendation.map(decryptText),
-			user = checkUp.user.map(decryptUser)
+			user = checkUp.user.map(decryptUser),
+			patient = checkUp.patient.map(decryptPatient),
+			receiveInfoJson = checkUp.receiveInfoJson.map(decryptSpecPartJson)
 		)
 	}
 
 	def decryptCheckUps(checkUps: Seq[CheckUp]): Seq[CheckUp] = {
 		checkUps.map(decryptCheckUp)
+	}
+
+	def encryptReportData(reportData: ReportData) = {
+		reportData.copy(
+			receiveType = if (reportData.receiveType.forall(_.isEmpty)) {
+				None
+			} else {
+				reportData.receiveType.map(encryptText)
+			}
+		)
 	}
 
 }

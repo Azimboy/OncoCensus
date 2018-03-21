@@ -5,7 +5,7 @@ $ ->
   apiUrl =
     regions: '/home/regions'
     districts: '/home/districts'
-    getReport: '/statistics/districts'
+    getReport: '/statistics/report'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -66,6 +66,7 @@ $ ->
     reportData:
       regionId: ''
       districtId: ''
+      receiveType: ''
     selected:
       districts: []
     isLoading: no
@@ -103,18 +104,28 @@ $ ->
       pageParam += "&page=#{page}"
 
     reportDataJs = ko.mapping.toJS(vm.reportData)
+    if notvalid(reportDataJs.regionId)
+      reportDataJs.regionId = undefined
+    if notvalid(reportDataJs.districtId)
+      reportDataJs.districtId = undefined
+    console.log(reportDataJs)
 
-    $.post(apiUrl.patients + "?#{pageParam}", JSON.stringify(reportDataJs))
+    $.post(apiUrl.getReport + "?#{pageParam}", JSON.stringify(reportDataJs))
     .fail handleError
     .done (report) ->
       $pagination.destroy?()
-      initPagination(result.total, page)
+      initPagination(report.total, page)
 #      reportItems = report.items
-#      for patient in patients
-#        patient.age = vm.getAge(patient.birthDate)
-#      vm.patients patients
+#      for item in reportItems
+#         = vm.getAge(patient.birthDate)
+      vm.reports report.items
 
-  vm.reportData.regionId.subscribe ->
+  vm.reportData.receiveType.subscribe (value) ->
+    getReport()
+
+  getReport()
+
+  vm.reportData.regionId.subscribe () ->
     getReport()
 
   vm.reportData.districtId.subscribe ->

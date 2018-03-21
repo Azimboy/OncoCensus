@@ -115,8 +115,8 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 
   def modifyCheckUp = Action.async(parse.multipartFormData) { implicit request =>
 	  val receivedInfoJs = Json.toJson(ReceiveInfo(
-		  receiveType = getValue("receivedType").map(ReceiveType.withShortName).getOrElse(ReceiveType.Polyclinic),
-		  receiveReason = getValue("receivedReason").map(ReceiveReason.withShortName).getOrElse(ReceiveReason.Simple)
+		  receiveType = getValue("receiveType").map(ReceiveType.withShortName).getOrElse(ReceiveType.Polyclinic),
+		  receiveReason = getValue("receiveReason").map(ReceiveReason.withShortName).getOrElse(ReceiveReason.Simple)
 	  ))
 
     val checkUp = CheckUp(

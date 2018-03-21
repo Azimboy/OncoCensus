@@ -32,6 +32,7 @@ object CheckUpProtocol {
     recommendation: Option[String] = None,
     receiveInfoJson: Option[JsValue] = None,
     user: Option[User] = None,
+    patient: Option[Patient] = None,
     files: Seq[CheckUpFile] = Nil
 	)
 

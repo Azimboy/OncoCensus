@@ -132,14 +132,6 @@ object PatientProtocol {
 
   case class PatientSupervisedOut(patientId: Int, supervisedOut: SupervisedOut)
 
-  case class GetPatientsDetailedReport(reportData: ReportData, pageReq: PageReq)
-
-  case class PatientsReport(
-    clientGroup: ClientGroup,
-    maleCount: Int,
-    femaleCount: Int
-  )
-
   private def dateFormat(fieldName: String, dateFormat: String = "dd.MM.yyyy HH:mm") = {
     OFormat(
       (__ \ fieldName).read[String].map(new SimpleDateFormat(dateFormat).parse),

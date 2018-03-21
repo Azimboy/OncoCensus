@@ -27,9 +27,9 @@
         <div class="widget-body">
           <div class="widget-main">
             <div class="form-group row">
-              <label for="dateRange" class="col-sm-2 col-form-label">Sana</label>
+              <label for="dateRange" class="col-sm-3 col-form-label">Sana</label>
 
-              <div class="col-sm-10">
+              <div class="col-sm-9">
                 <div class="controls form-inline" id="dateRange">
                   <div class="input-group date" id="startDate" data-bind="datetimepicker: vm.reportData.startDate,
                     dateTimePickerOptions: {pickTime: true}">
@@ -46,6 +46,16 @@
                     </span>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="receiveType" class="col-sm-3 col-form-label">Ko'rik bo'yicha</label>
+              <div class="col-sm-9">
+                <select name="receiveType" id="receiveType" data-bind="value: vm.reportData.receiveType">
+                  <option value>Hammasi</option>
+                  <option value="polyclinic">Poliknikada ko'rik</option>
+                  <option value="home">Uyda ko'rik</option>
+                </select>
               </div>
             </div>
           </div>
@@ -72,7 +82,7 @@
         <div class="widget-body">
           <div class="widget-main">
             <div class="form-group row">
-              <label for="region" class="col-sm-2">Viloyat</label>
+              <label for="region" class="col-sm-3">Viloyat</label>
               <div class="col-sm-5">
                 <select class="form-control" autocomplete="off" id="region"
                   data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.reportData.regionId, optionsCaption: 'Viloyat'">
@@ -80,7 +90,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label for="district" class="col-sm-2">Tuman</label>
+              <label for="district" class="col-sm-3">Tuman</label>
               <div class="col-sm-5">
                 <select class="form-control" autocomplete="off" id="district"
                   data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.reportData.districtId, optionsCaption: 'Tuman'">
@@ -92,7 +102,52 @@
       </div>
     </div>
   </div>
+  <div class="alert alert-warning" data-bind="visible: vm.reports().length == 0">
+    <span class="text-center text-warning"><span class="fa fa-warning"></span> So'rov bo'yicha ma'lumot topilmadi!</span>
+  </div>
+  <div data-bind="visible: vm.reports().length > 0">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th rowspan="2">Yaratildi</th>
+          <th rowspan="2">Bemor</th>
+          <th colspan="2" class="text-center">Sana</th>
+          <th rowspan="2">Ko'rik turi</th>
+          <th rowspan="2">Shikoyat</th>
+          <th rowspan="2">Obyektiv ma'lumot</th>
+          <th rowspan="2">Obyektiv ko'rik</th>
+          <th rowspan="2">Status lokalis</th>
+          <th rowspan="2">Tashxis</th>
+          <th rowspan="2">Tavsiya</th>
+        </tr>
+        <tr>
+          <th>Boshlandi</th>
+          <th>Tugallandi</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: vm.reports">
+        <tr>
+          <td data-bind="text: $root.vm.formatDate($data.createdAt)"></td>
+          <td data-bind="text: $data.patient.lastName + ' ' + $data.patient.firstName + ' ' + $data.patient.middleName"></td>
+          <td data-bind="text: $root.vm.formatDate($data.startedAt)"></td>
+          <td data-bind="text: $root.vm.formatDate($data.finishedAt)"></td>
+          <td>
+            <span data-bind="visible: $data.receiveInfoJson.receiveType == 'polyclinic'">Poliklinikada</span>
+            <span data-bind="visible: $data.receiveInfoJson.receiveType == 'home'">Uyda</span>
+          </td>
+          <td data-bind="text: $data.complaint"></td>
+          <td data-bind="text: $data.objInfo"></td>
+          <td data-bind="text: $data.objReview"></td>
+          <td data-bind="text: $data.statusLocalis"></td>
+          <td data-bind="text: $data.diagnose"></td>
+          <td data-bind="text: $data.recommendation"></td>
+        </tr>
+      </tbody>
+    </table>
+    <ul id="pagination" style="margin: 0px!important;"></ul>
+  </div>
 
+@*
   <table class="table table-bordered">
     <thead>
       <tr>
@@ -276,4 +331,5 @@
       </tr>
     </tbody>
   </table>
+*@
 }

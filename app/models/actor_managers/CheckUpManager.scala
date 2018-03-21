@@ -6,7 +6,10 @@ import javax.inject.{Inject, Named, Singleton}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
+import models.AppProtocol.Paging.{PageReq, PageRes}
+import models.AppProtocol.ReportData
 import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp}
+import models.StatisticsProtocol.GetDetailedReport
 import models.actor_managers.EncryptionManager._
 import models.daos.CheckUpsDao
 
@@ -22,13 +25,15 @@ class CheckUpManager @Inject()(@Named("encryption-manager") encryptionManager: A
 
 	implicit val defaultTimeout = Timeout(60.seconds)
 
-
 	override def receive: Receive = {
 		case ModifyCheckUp(checkUp, filePaths) =>
 			modifyCheckUp(checkUp, filePaths).pipeTo(sender())
 
 		case GetCheckUpsByPatientId(patientId) =>
 			getCheckUpsByPatientId(patientId).pipeTo(sender())
+
+		case GetDetailedReport(reportData, pageReq) =>
+			getCheckUpDetailedReport(reportData, pageReq).pipeTo(sender())
 	}
 
 	def getCheckUpsByPatientId(patientId: Int): Future[Seq[CheckUp]] = {
@@ -56,11 +61,13 @@ class CheckUpManager @Inject()(@Named("encryption-manager") encryptionManager: A
 		} yield dbAction
 	}
 
-//	def getAllCheckUps(): Future[Seq[CheckUp]] = {
-//		for {
-//			encrUsers <- checkUpsDao.findAl
-//			decrUsers <- (encryptionManager ? DecryptUsers(encrUsers)).mapTo[Seq[User]]
-//		} yield decrUsers
-//	}
+	def getCheckUpDetailedReport(reportData: ReportData, pageReq: PageReq): Future[PageRes[CheckUp]] = {
+		for {
+			encrReportData <- (encryptionManager ? EncryptReportData(reportData)).mapTo[ReportData]
+			encrCheckUps <- checkUpsDao.getAllCheckUps(encrReportData)
+			decrCheckUps <- (encryptionManager ? DecryptCheckUps(encrCheckUps)).mapTo[Seq[CheckUp]]
+			pageRes = pageReq.toPageRes(decrCheckUps)
+		} yield pageRes
+	}
 
 }

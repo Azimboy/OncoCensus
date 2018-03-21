@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
+import models.AppProtocol.ReportData
 import models.CheckUpProtocol.CheckUp
 import models.UserProtocol.User
 import models.utils.Date2SqlDate
@@ -44,7 +45,7 @@ trait CheckUpsComponent
 			objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?, receiveInfoJson.?) <>
 			(t => {
 				val fields =
-					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, None, Nil)
+					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, None, None, Nil)
 				(CheckUp.apply _).tupled(fields)
 			},
 				(i: CheckUp) =>
@@ -64,6 +65,7 @@ trait CheckUpsDao {
 	def update(checkUp: CheckUp): Future[Int]
 	def findByPatientId(patientId: Int): Future[Seq[CheckUp]]
 	def findById(id: Int): Future[Option[CheckUp]]
+	def getAllCheckUps(reportData: ReportData): Future[Seq[CheckUp]]
 }
 
 @Singleton
@@ -76,9 +78,10 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 		with HasDatabaseConfigProvider[JdbcProfile]
 		with LazyLogging {
 
-	import dbConfig.profile.api._
+	import models.utils.PostgresDriver.api._
 
 	val checkUps = TableQuery[CheckUps]
+	val patients = TableQuery[Patients]
 	val users = TableQuery[Users]
 
 	override def create(checkUp: CheckUp): Future[Int] = {
@@ -106,6 +109,20 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 		db.run {
 			checkUps.filter(_.id === id).result.headOption
 		}
+	}
+
+	override def getAllCheckUps(reportData: ReportData): Future[Seq[CheckUp]] = {
+		val checkUpWithPatients = checkUps.join(patients).on(_.patientId === _.id)
+
+		db.run {
+			reportData.receiveType.map { r =>
+				checkUpWithPatients.filter(_._1.receiveInfoJson.+>>("receiveType") === r).result
+			}.getOrElse {
+				checkUpWithPatients.result
+			}
+		}.map(_.map { case (checkUp, patient) =>
+			checkUp.copy(patient = Some(patient))
+		})
 	}
 
 }
