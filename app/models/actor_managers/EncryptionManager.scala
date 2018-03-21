@@ -289,7 +289,8 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			middleName = patient.middleName.map(encryptText),
 			email = patient.email.map(encryptText),
 			phoneNumber = patient.phoneNumber.map(encryptText),
-			patientDataJson = patient.patientDataJson.map(encryptSpecPartJson)
+			patientDataJson = patient.patientDataJson.map(encryptSpecPartJson),
+			supervisedOutJson = patient.supervisedOutJson.map(encryptSpecPartJson)
 		)
 	}
 
@@ -300,7 +301,8 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			middleName = patient.middleName.map(decryptText),
 			email = patient.email.map(decryptText),
 			phoneNumber = patient.phoneNumber.map(decryptText),
-			patientDataJson = patient.patientDataJson.map(decryptSpecPartJson)
+			patientDataJson = patient.patientDataJson.map(decryptSpecPartJson),
+			supervisedOutJson = patient.supervisedOutJson.map(decryptSpecPartJson)
 		)
 	}
 

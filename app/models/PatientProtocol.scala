@@ -1,12 +1,15 @@
 package models
 
 import java.nio.file.Path
+import java.text.SimpleDateFormat
 import java.util.Date
 
-import models.AppProtocol.District
 import models.AppProtocol.Paging.PageReq
+import models.AppProtocol.{District, ReportData}
 import models.utils.{EnumMappedToDb, EnumUtils}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Reads._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 object PatientProtocol {
 
@@ -23,10 +26,9 @@ object PatientProtocol {
     email: Option[String] = None,
     phoneNumber: Option[String] = None,
     avatarId: Option[String] = None,
-    patientDataJson: Option[JsValue] = None,
     clientGroupId: Option[Int] = None,
-    deadAt: Option[Date] = None,
-    deadReason: Option[String] = None,
+    patientDataJson: Option[JsValue] = None,
+    supervisedOutJson: Option[JsValue] = None,
     district: Option[District] = None,
     clientGroup: Option[ClientGroup] = None
   )
@@ -79,6 +81,16 @@ object PatientProtocol {
     }
   }
 
+  object SupervisedOutReason extends EnumMappedToDb {
+    val Recovery = Value("recovery")
+    val Dead = Value("dead")
+
+    def withShortName: PartialFunction[String, SupervisedOutReason.Value] = {
+      case "recovery" => Recovery
+      case "dead" => Dead
+    }
+  }
+
   case class PatientsFilter(
     lastName: Option[String],
     isMale: Boolean,
@@ -98,11 +110,41 @@ object PatientProtocol {
   implicit val clientGroupFormat = Json.format[ClientGroup]
   implicit val patientDataFormat = Json.format[PatientData]
   implicit val patientFormat = Json.format[Patient]
+  implicit val supervisedOutReasonFormat = EnumUtils.enumFormat(SupervisedOutReason)
 
-  case class ModifyPatient(patient: Patient, photosPath: Option[Path], isNewPatient: Boolean = false)
+  case class ModifyPatient(patient: Patient, photosPath: Option[Path])
   case class DeletePatientById(patientId: Int)
 
   case class GetAllPatients(pageReq: PageReq, patientsFilter: PatientsFilter)
   case object GetAllClientGroups
+
+  case class SupervisedOut(
+    date: Date,
+    reason: SupervisedOutReason.Value,
+    comments: Option[String] = None
+  )
+
+  implicit val supervisedOutFormat: Format[SupervisedOut] = (
+    dateFormat("date") ~
+    (__ \ "reason").format[SupervisedOutReason.Value] ~
+    (__ \ "comments").formatNullable[String]
+  )(SupervisedOut.apply, unlift(SupervisedOut.unapply))
+
+  case class PatientSupervisedOut(patientId: Int, supervisedOut: SupervisedOut)
+
+  case class GetPatientsDetailedReport(reportData: ReportData, pageReq: PageReq)
+
+  case class PatientsReport(
+    clientGroup: ClientGroup,
+    maleCount: Int,
+    femaleCount: Int
+  )
+
+  private def dateFormat(fieldName: String, dateFormat: String = "dd.MM.yyyy HH:mm") = {
+    OFormat(
+      (__ \ fieldName).read[String].map(new SimpleDateFormat(dateFormat).parse),
+      (__ \ fieldName).write[Date]
+    )
+  }
 
 }

@@ -2,6 +2,7 @@ package controllers
 
 import java.nio.file.{Path, Paths}
 import java.text.SimpleDateFormat
+import java.util.Date
 import javax.inject._
 
 import akka.actor.ActorRef
@@ -145,6 +146,15 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       InternalServerError
     }
   }
+
+	def supervisedOut(patientId: Int) = Action.async(parse.json[SupervisedOut]) { implicit request =>
+		(patientManager ? PatientSupervisedOut(patientId, request.body)).mapTo[Int].map { _ =>
+			Ok("OK")
+		}.recover { case error =>
+			logger.error(s"Error occurred during changing supervise status.", error)
+			InternalServerError
+		}
+	}
 
   private def parseDate(dateStr: String, format: String = "dd.MM.yyyy HH:mm") = {
     val dateFormat = new SimpleDateFormat(format)

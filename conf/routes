@@ -21,8 +21,10 @@ POST    /card-index/patient                                 @controllers.CardInd
 DELETE  /card-index/patient/:patientId                      @controllers.CardIndexController.deletePatient(patientId: Int)
 GET     /card-index/check-ups/:patientId                    @controllers.CardIndexController.getCheckUpsByPatientId(patientId: Int)
 POST    /card-index/check-up                                @controllers.CardIndexController.modifyCheckUp
+POST    /card-index/supervised-out/:patientId               @controllers.CardIndexController.supervisedOut(patientId: Int)
 
 GET     /statistics                                         @controllers.StatisticsController.index
+POST    /statistics/report                                  @controllers.StatisticsController.report(page: Int ?= 1, pageSize: Int ?= 15)
 
 GET     /settings                                           @controllers.SettingsController.index
 GET     /settings/departments                               @controllers.SettingsController.getDepartments

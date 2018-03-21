@@ -3,7 +3,9 @@ package models
 import java.util.Date
 
 import models.UserProtocol.User
-import play.api.libs.json.Json
+import models.PatientProtocol._
+import models.utils.{EnumMappedToDb, EnumUtils}
+import play.api.libs.json.{JsValue, Json}
 
 object CheckUpProtocol {
 
@@ -28,10 +30,38 @@ object CheckUpProtocol {
     statusLocalis: Option[String] = None,
     diagnose: Option[String] = None,
     recommendation: Option[String] = None,
+    receiveInfoJson: Option[JsValue] = None,
     user: Option[User] = None,
     files: Seq[CheckUpFile] = Nil
 	)
 
+	case class ReceiveInfo(
+    receiveType: ReceiveType.Value,
+    receiveReason: ReceiveReason.Value,
+  )
+
+	object ReceiveType extends EnumMappedToDb {
+		val Polyclinic = Value("polyclinic")
+		val Home = Value("home")
+
+		def withShortName: PartialFunction[String, ReceiveType.Value] = {
+			case "polyclinic" => Polyclinic
+			case "home" => Home
+		}
+	}
+
+	object ReceiveReason extends EnumMappedToDb {
+		val Defined = Value("defined")
+		val Illness = Value("illness")
+
+		def withShortName: PartialFunction[String, ReceiveReason.Value] = {
+			case "defined" => Defined
+			case "illness" => Illness
+		}
+	}
+
+	implicit val receiveTypeFormat = EnumUtils.enumFormat(ReceiveType)
+	implicit val receiveReasonFormat = EnumUtils.enumFormat(ReceiveReason)
 	implicit val checkUpFileFormat = Json.format[CheckUpFile]
 	implicit val checkUpFormat = Json.format[CheckUp]
 

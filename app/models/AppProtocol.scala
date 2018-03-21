@@ -67,4 +67,12 @@ object AppProtocol {
 		)(PageRes.apply, unapply(PageRes.unapply))
 	}
 
+	case class ReportData(
+		startDate: Option[Date] = None,
+		endDate: Option[Date] = None,
+		regionId: Option[Int] = None,
+		districtId: Option[Int] = None,
+	)
+
+	implicit val reportDataFormat = Json.format[ReportData]
 }

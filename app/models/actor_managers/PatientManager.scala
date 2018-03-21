@@ -9,10 +9,12 @@ import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.PatientProtocol.{ClientGroup, DeletePatientById, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient, PatientsFilter}
-import models.actor_managers.EncryptionManager.{DecryptPatients, EncryptPatient}
+import models.PatientProtocol
+import models.PatientProtocol.{ClientGroup, DeletePatientById, GetAllClientGroups, GetAllPatients, ModifyPatient, Patient, PatientSupervisedOut, PatientsFilter, SupervisedOut}
+import models.actor_managers.EncryptionManager.{DecryptPatient, DecryptPatients, EncryptPatient}
 import models.daos.{ClientGroupsDao, PatientsDao}
 import models.utils.FileUtils
+import play.api.libs.json.Json
 import play.api.{Configuration, Environment}
 
 import scala.concurrent.duration.DurationInt
@@ -43,12 +45,16 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		case GetAllClientGroups =>
 			getAllClientGroups().pipeTo(sender())
 
-		case ModifyPatient(patient, photosPath, isNewPatient) =>
-			modifyPatient(patient, photosPath, isNewPatient).pipeTo(sender())
+		case ModifyPatient(patient, photosPath) =>
+			modifyPatient(patient, photosPath).pipeTo(sender())
 
 		case DeletePatientById(patientId) =>
 			deletePatientById(patientId).pipeTo(sender())
+
+		case PatientSupervisedOut(patientId, supervisedOut) =>
+			patientSupervisedOut(patientId, supervisedOut).pipeTo(sender())
 	}
+
 	def getAllPatients(pageReq: PageReq, patientsFilter: PatientsFilter): Future[PageRes[Patient]] = {
 		for {
 			encrPatients <- patientsDao.findByFilter(patientsFilter)
@@ -79,7 +85,7 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		clientGroupsDao.getAllClientGroups()
 	}
 
-	def modifyPatient(patient: Patient, photosPath: Option[Path], isNewPatient: Boolean): Future[Int] = {
+	def modifyPatient(patient: Patient, photosPath: Option[Path]): Future[Int] = {
 		for {
 			encrPatient <- (encryptionManager ? EncryptPatient(patient)).mapTo[Patient]
 			encrPatientWithAvatar <- saveAvatarIfExists(photosPath, encrPatient)
@@ -115,4 +121,16 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		patientsDao.delete(patientId)
 	}
 
+	def patientSupervisedOut(patientId: Int, supervisedOut: SupervisedOut): Future[Int] = {
+		val supervisedOutJs = Json.toJson(supervisedOut)
+		for {
+			encrPatient <- patientsDao.findById(patientId).mapTo[Option[Patient]]
+			decrPatient <- (encryptionManager ? DecryptPatient(encrPatient.get)).mapTo[Patient]
+			editedPatient = decrPatient.copy(
+				supervisedOutJson = Some(supervisedOutJs)
+			)
+			encrPatient <- (encryptionManager ? EncryptPatient(editedPatient)).mapTo[Patient]
+			dbAction <- patientsDao.update(encrPatient)
+		} yield dbAction
+	}
 }

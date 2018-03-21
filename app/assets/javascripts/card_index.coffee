@@ -9,6 +9,7 @@ $ ->
     patients: '/card-index/patients'
     clientGroups: '/card-index/client-groups'
     checkUps: '/card-index/check-ups'
+    supervisedOut: '/card-index/supervised-out'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -21,6 +22,7 @@ $ ->
 
   $patientModal = $('#patient-modal')
   $checkUpModal = $('#check-up-modal')
+  $supervisedOutModal = $('#supervised-out-modal')
 
   pageSize = 8
   $pagination = {}
@@ -57,7 +59,6 @@ $ ->
       useCurrent: no
       defaultDate: defaultDate
 
-  #  TODO Need to fix form redirect issue
   formData = null
   $patientForm = $('#patient-form')
   $patientForm.fileupload
@@ -105,6 +106,11 @@ $ ->
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
+  defaultSuperviseData =
+    date: ''
+    reason: ''
+    comments: ''
+
   defaultPatient =
     id: ''
     createdAt: ''
@@ -135,6 +141,7 @@ $ ->
       work: ''
       position: ''
       bloodGroup: ''
+    supervisedOutJson: defaultSuperviseData
 
   defaultCheckUp =
     id: ''
@@ -148,6 +155,9 @@ $ ->
     statusLocalis: ''
     diagnose: ''
     recommendation: ''
+    receiveInfoJson:
+      receiveType: ''
+      receiveReason: ''
 
   PageName =
     Summary: 'summary'
@@ -240,12 +250,12 @@ $ ->
       no
 
   vm.onPatientSelected = (patient) ->
+    ko.mapping.fromJS(defaultSuperviseData, {}, vm.selected.patient.supervisedOutJson)
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
     vm.selected.patient.createdAt(vm.formatDate(patient.createdAt))
     vm.selected.patient.birthDate(vm.formatDate(patient.birthDate, 'DD.MM.YYYY'))
     vm.selected.patient.regionId(patient.district.regionId)
     vm.rightPage(PageName.CardIndex)
-    console.log(vm.rightPage())
     getPatientsCheckUps(patient.id)
 
   vm.onClickAddPatient = ->
@@ -275,6 +285,29 @@ $ ->
     else
       toastr.warning('O\'chirish uchun bemorni tanlang!')
 
+  vm.onSupervisedOutModalOpen = ->
+    initDatePicker('#superviseDate', now)
+    vm.selected.patient.supervisedOutJson.date(now)
+    $supervisedOutModal.modal('show')
+
+  vm.onSaveSupervisedOut = ->
+    supObj = ko.mapping.toJS(vm.selected.patient.supervisedOutJson)
+    errorText = if notvalid(supObj.date)
+      'Iltimos sanani kiriting!'
+    else if(notvalid(supObj.reason))
+      'Iltimos nazoratdan chiqarish sababini belgilang!'
+    else
+      undefined
+
+    if errorText
+      toastr.error(errorText)
+    else
+      $.post(apiUrl.supervisedOut + '/' + vm.selected.patient.id(), JSON.stringify(supObj))
+      .fail handleError
+      .done (result) ->
+        $supervisedOutModal.modal('hide')
+        loadAllPatients()
+
   vm.enableFilters = ->
     vm.isFiltersShown(!vm.isFiltersShown())
 
@@ -303,6 +336,9 @@ $ ->
       patients = result.items
       for patient in patients
         patient.age = vm.getAge(patient.birthDate)
+        if patient.supervisedOutJson?.date
+          patient.supervisedOutJson.date = vm.formatDate(parseInt(patient.supervisedOutJson.date))
+
       vm.patients patients
 
   vm.filters.lastName.subscribe ->

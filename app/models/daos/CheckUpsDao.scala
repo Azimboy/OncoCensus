@@ -9,6 +9,7 @@ import models.CheckUpProtocol.CheckUp
 import models.UserProtocol.User
 import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import play.api.libs.json.JsValue
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,7 +20,7 @@ trait CheckUpsComponent
 	with Date2SqlDate
 { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
-	import dbConfig.profile.api._
+	import models.utils.PostgresDriver.api._
 
 	class CheckUps(tag: Tag) extends Table[CheckUp](tag, "check_ups") {
 		val patients = TableQuery[Patients]
@@ -37,16 +38,18 @@ trait CheckUpsComponent
 		def statusLocalis = column[String]("status_localis")
 		def diagnose = column[String]("diagnose")
 		def recommendation = column[String]("recommendation")
+		def receiveInfoJson = column[JsValue]("receive_info_json")
 
-		def * = (id.?, patientId.?, userId.?, createdAt.?, startedAt.?, finishedAt.?, complaint.?, objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?) <>
+		def * = (id.?, patientId.?, userId.?, createdAt.?, startedAt.?, finishedAt.?, complaint.?,
+			objInfo.?, objReview.?, statusLocalis.?, diagnose.?, recommendation.?, receiveInfoJson.?) <>
 			(t => {
 				val fields =
-					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, None, Nil)
+					(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, None, Nil)
 				(CheckUp.apply _).tupled(fields)
 			},
 				(i: CheckUp) =>
 					CheckUp.unapply(i).map { t =>
-						(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12)
+						(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13)
 					}
 			)
 
