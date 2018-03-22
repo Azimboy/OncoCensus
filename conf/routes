@@ -23,8 +23,9 @@ GET     /card-index/check-ups/:patientId                    @controllers.CardInd
 POST    /card-index/check-up                                @controllers.CardIndexController.modifyCheckUp
 POST    /card-index/supervised-out/:patientId               @controllers.CardIndexController.supervisedOut(patientId: Int)
 
-GET     /statistics                                         @controllers.StatisticsController.index
-POST    /statistics/report                                  @controllers.StatisticsController.report(page: Int ?= 1, pageSize: Int ?= 15)
+GET     /statistics/patient                                 @controllers.ReportsController.patientIndex
+GET     /statistics/check-up                                @controllers.ReportsController.checkUpIndex
+POST    /statistics/report                                  @controllers.ReportsController.report(page: Int ?= 1, pageSize: Int ?= 15)
 
 GET     /settings                                           @controllers.SettingsController.index
 GET     /settings/departments                               @controllers.SettingsController.getDepartments

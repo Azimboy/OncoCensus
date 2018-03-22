@@ -250,7 +250,7 @@
           </a>
         </li>
 
-        <li data-bind="css: {'active': vm.selected.page.link() == 'statistics'}">
+        <li data-bind="css: {'active': vm.selected.page.link() == 'checkUpReports'}">
           <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-bar-chart"></i>
             <span class="menu-text"> Statistika </span>
@@ -260,8 +260,8 @@
 
           <b class="arrow"></b>
           <ul class="submenu">
-            <li>
-              <a href="#">
+            <li data-bind="css: {'active': vm.selected.page.link() == 'patientReports'}">
+              <a href="#" data-bind="click: vm.openPage('patientReports')">
                 <i class="menu-icon fa fa-caret-right"></i>
                 Bemorlar
               </a>
@@ -269,8 +269,8 @@
               <b class="arrow"></b>
             </li>
 
-            <li data-bind="css: {'active': vm.selected.page.link() == 'statistics'}">
-              <a href="#" data-bind="click: vm.openPage('statistics')">
+            <li data-bind="css: {'active': vm.selected.page.link() == 'checkUpReports'}">
+              <a href="#" data-bind="click: vm.openPage('checkUpReports')">
                 <i class="menu-icon fa fa-caret-right"></i>
                 Tibbiy ko'riklar
               </a>
@@ -321,7 +321,7 @@
             <b class="arrow"></b>
           </a>
         </li>
-      </ul><!-- /.nav-list -->
+      </ul>
 
       <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
         <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
@@ -331,12 +331,12 @@
     <div class="main-content">
       <div class="main-content-inner">
         <div class="breadcrumbs ace-save-state" id="breadcrumbs">
-          <ul class="breadcrumb">
+          <ul class="breadcrumb" data-bind="foreach: vm.selected.page.name">
             <li>
-              <i class="ace-icon fa fa-pie-chart"></i>
-              <a href="#" data-bind="text: vm.selected.page.name"></a>
+              <i data-bind="visible: $index() == 0" class="ace-icon fa fa-home home-icon"></i>
+              <a href="#"><span data-bind="text: $data"></span></a>
             </li>
-          </ul><!-- /.breadcrumb -->
+          </ul>
 
           <div class="nav-search" id="nav-search">
             <form class="form-search">

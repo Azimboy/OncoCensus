@@ -1,0 +1,335 @@
+@import views.html.reports
+@import org.webjars.play.WebJarsUtil
+
+@()(implicit webJarsUtil: WebJarsUtil)
+
+@reports.main("OncoCensus"){
+  @Html(webJarsUtil.script("twbs-pagination/1.2.5/jquery.twbsPagination.min.js"))
+  <script src="@routes.Assets.versioned("javascripts/statistics.js")"></script>
+
+  <div class="row no-margin-left no-margin-right">
+    <div class="col-sm-6 widget-container-col no-padding-left" id="widget-container-col-1">
+      <div class="widget-box transparent" id="widget-box-1">
+        <div class="widget-header">
+          <h4 class="widget-title lighter">QIDIRISH SHARTI</h4>
+
+          <div class="widget-toolbar no-border">
+            <a href="#" data-action="settings">
+              <i class="ace-icon fa fa-cog"></i>
+            </a>
+
+            <a href="#" data-action="reload">
+              <i class="ace-icon fa fa-refresh"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="widget-body">
+          <div class="widget-main">
+            <div class="form-group row">
+              <label for="dateRange" class="col-sm-3 col-form-label">Sana</label>
+
+              <div class="col-sm-9">
+                <div class="controls form-inline" id="dateRange">
+                  <div class="input-group date" id="startDate" data-bind="datetimepicker: vm.reportData.startDate,
+                    dateTimePickerOptions: {pickTime: true}">
+                    <input type='text' class="form-control" data-bind="value: vm.reportData.startDate"/>
+                    <span class="input-group-addon">
+                      <span class="fa fa-calendar"></span>
+                    </span>
+                  </div>
+                  <div class="input-group date" id="endDate" data-bind="datetimepicker: vm.reportData.endDate,
+                    dateTimePickerOptions: {pickTime: true}">
+                    <input type='text' class="form-control" data-bind="value: vm.reportData.endDate"/>
+                    <span class="input-group-addon">
+                      <span class="fa fa-calendar"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="receiveType" class="col-sm-3 col-form-label">Ko'rik bo'yicha</label>
+              <div class="col-sm-9">
+                <select name="receiveType" id="receiveType" data-bind="value: vm.reportData.receiveType">
+                  <option value>Hammasi</option>
+                  <option value="polyclinic">Poliknikada ko'rik</option>
+                  <option value="home">Uyda ko'rik</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 widget-container-col no-padding-left no-padding-right" id="widget-container-col-2">
+      <div class="widget-box transparent" id="widget-box-2">
+        <div class="widget-header">
+          <h4 class="widget-title lighter">HUDUD BO'YICHA</h4>
+
+          <div class="widget-toolbar no-border">
+            <a href="#" data-action="settings">
+              <i class="ace-icon fa fa-cog"></i>
+            </a>
+
+            <a href="#" data-action="reload">
+              <i class="ace-icon fa fa-refresh"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="widget-body">
+          <div class="widget-main">
+            <div class="form-group row">
+              <label for="region" class="col-sm-3">Viloyat</label>
+              <div class="col-sm-5">
+                <select class="form-control" autocomplete="off" id="region"
+                  data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.reportData.regionId, optionsCaption: 'Viloyat'">
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="district" class="col-sm-3">Tuman</label>
+              <div class="col-sm-5">
+                <select class="form-control" autocomplete="off" id="district"
+                  data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.reportData.districtId, optionsCaption: 'Tuman'">
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="alert alert-warning" data-bind="visible: vm.reports().length == 0">
+    <span class="text-center text-warning"><span class="fa fa-warning"></span> So'rov bo'yicha ma'lumot topilmadi!</span>
+  </div>
+  <div data-bind="visible: vm.reports().length > 0">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th rowspan="2">Yaratildi</th>
+          <th rowspan="2">Bemor</th>
+          <th colspan="2" class="text-center">Sana</th>
+          <th rowspan="2">Ko'rik turi</th>
+          <th rowspan="2">Shikoyat</th>
+          <th rowspan="2">Obyektiv ma'lumot</th>
+          <th rowspan="2">Obyektiv ko'rik</th>
+          <th rowspan="2">Status lokalis</th>
+          <th rowspan="2">Tashxis</th>
+          <th rowspan="2">Tavsiya</th>
+        </tr>
+        <tr>
+          <th>Boshlandi</th>
+          <th>Tugallandi</th>
+        </tr>
+      </thead>
+      <tbody data-bind="foreach: vm.reports">
+        <tr>
+          <td data-bind="text: $root.vm.formatDate($data.createdAt)"></td>
+          <td data-bind="text: $data.patient.lastName + ' ' + $data.patient.firstName + ' ' + $data.patient.middleName"></td>
+          <td data-bind="text: $root.vm.formatDate($data.startedAt)"></td>
+          <td data-bind="text: $root.vm.formatDate($data.finishedAt)"></td>
+          <td>
+            <span data-bind="visible: $data.receiveInfoJson.receiveType == 'polyclinic'">Poliklinikada</span>
+            <span data-bind="visible: $data.receiveInfoJson.receiveType == 'home'">Uyda</span>
+          </td>
+          <td data-bind="text: $data.complaint"></td>
+          <td data-bind="text: $data.objInfo"></td>
+          <td data-bind="text: $data.objReview"></td>
+          <td data-bind="text: $data.statusLocalis"></td>
+          <td data-bind="text: $data.diagnose"></td>
+          <td data-bind="text: $data.recommendation"></td>
+        </tr>
+      </tbody>
+    </table>
+    <ul id="pagination" style="margin: 0px!important;"></ul>
+  </div>
+
+@*
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th rowspan="2" class="text-center">№</th>
+        <th rowspan="2" class="text-center">Kasallik turi</th>
+        <th rowspan="2" class="text-center">MKB</th>
+        <th colspan="3" class="text-center">Ro'yhatga olingan kasalliklar</th>
+        <th colspan="3" class="text-center">Birinchi marta tashxisi aniqlanganlar</th>
+        <th rowspan="2" class="text-center">Dispanser nazoratiga olinganlar</th>
+        <th rowspan="2" class="text-center">Ulardan birinchi marta <br> tashxis aniqlangan bemorlar</th>
+        <th colspan="3" class="text-center">Dispanser nazoratidan chiqarilganlar</th>
+        <th colspan="3" class="text-center">Hisobot davrining oxiriga dispanser nazoratida turganlar</th>
+      </tr>
+      <tr>
+        <th>Jami</th>
+        <th>K/a</th>
+        <th>Ayollar</th>
+        <th>Jami</th>
+        <th>K/a</th>
+        <th>Ayollar</th>
+        <th>Jami</th>
+        <th>Tuzalgandi</th>
+        <th>Vafot etdi</th>
+        <th>Jami</th>
+        <th>K/a</th>
+        <th>Ayollar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Labda</td>
+        <td>C00</td>
+        <td>7</td>
+        <td>6</td>
+        <td>1</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>0</td>
+        <td>5</td>
+        <td>4</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Og'iz bo'shlig'i va yutqinda</td>
+        <td>C01-14</td>
+        <td>7</td>
+        <td>4</td>
+        <td>3</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>1</td>
+        <td>0</td>
+        <td>1</td>
+        <td>6</td>
+        <td>3</td>
+        <td>3</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Qizilo'ngachda</td>
+        <td>C15</td>
+        <td>26</td>
+        <td>15</td>
+        <td>11</td>
+        <td>3</td>
+        <td>2</td>
+        <td>1</td>
+        <td>2</td>
+        <td>2</td>
+        <td>10</td>
+        <td>7</td>
+        <td>3</td>
+        <td>11</td>
+        <td>7</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Milkda</td>
+        <td>C03</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Og'iz bo'shlig'i tubida</td>
+        <td>C04</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+        <td>0</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>Oshqozonda</td>
+        <td>C16</td>
+        <td>37</td>
+        <td>25</td>
+        <td>12</td>
+        <td>1</td>
+        <td>1</td>
+        <td>0</td>
+        <td>1</td>
+        <td>1</td>
+        <td>15</td>
+        <td>5</td>
+        <td>10</td>
+        <td>15</td>
+        <td>11</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Ingichka ichakda</td>
+        <td>C17</td>
+        <td>4</td>
+        <td>3</td>
+        <td>1</td>
+        <td>2</td>
+        <td>1</td>
+        <td>1</td>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>1</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Chambar ichakda</td>
+        <td>C18</td>
+        <td>12</td>
+        <td>9</td>
+        <td>3</td>
+        <td>2</td>
+        <td>2</td>
+        <td>0</td>
+        <td>2</td>
+        <td>2</td>
+        <td>5</td>
+        <td>4</td>
+        <td>1</td>
+        <td>6</td>
+        <td>6</td>
+        <td>0</td>
+      </tr>
+    </tbody>
+  </table>
+*@
+}

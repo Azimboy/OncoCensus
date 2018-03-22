@@ -14,25 +14,29 @@ import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc._
-import views.html.statistics
+import views.html.reports
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
 
 @Singleton
-class StatisticsController @Inject()(val controllerComponents: ControllerComponents,
-                                     @Named("patient-manager") val patientManager: ActorRef,
-                                     @Named("check-up-manager") val checkUpManager: ActorRef,
-                                     val configuration: Configuration,
-                                     implicit val webJarsUtil: WebJarsUtil)
-                                    (implicit val ec: ExecutionContext)
+class ReportsController @Inject()(val controllerComponents: ControllerComponents,
+                                  @Named("patient-manager") val patientManager: ActorRef,
+                                  @Named("check-up-manager") val checkUpManager: ActorRef,
+                                  val configuration: Configuration,
+                                  implicit val webJarsUtil: WebJarsUtil)
+                                 (implicit val ec: ExecutionContext)
   extends BaseController
   with LazyLogging {
 
   implicit val defaultTimeout = Timeout(60.seconds)
 
-  def index = Action {
-    Ok(statistics.index())
+  def patientIndex = Action {
+    Ok(reports.patient())
+  }
+
+  def checkUpIndex = Action {
+    Ok(reports.checkUp())
   }
 
   def report(page: Int, pageSize: Int) = Action.async(parse.json[ReportData]) { implicit request => {

@@ -5,31 +5,37 @@ $ ->
   Pages = {
     'indicator': {
       link: 'indicator'
-      name: 'Ko\'rsatkichlar'
+      name: ['Ko\'rsatkichlar']
       title: 'Xonqa'
       desc: 'tuman bo\'yicha umumiy kasallik ko\'rsatkichlari'
     }
     'reception': {
       link: 'reception'
-      name: 'Qabul'
+      name: ['Qabul']
       title: 'Qabul jurnali'
       desc: 'bemorlar ko\'rigi va ko\'rsatmalar'
     }
     'cardIndex': {
       link: 'cardIndex'
-      name: 'Bemorlar'
+      name: ['Bemorlar']
       title: 'Bemorlar'
       desc: 'kasallik kartalari va bemorlar to\'g\'risidagi batafsil ma\'lumotlar'
     }
-    'statistics': {
-      link: 'statistics'
-      name: 'Statistika'
-      title: 'Statistika'
-      desc: 'umumiy hisobotlar'
+    'patientReports': {
+      link: 'patientReports'
+      name: ['Hisobotlar', 'Bemorlar']
+      title: 'Bemorlar'
+      desc: 'umumiy ma\'lumotlar'
+    }
+    'checkUpReports': {
+      link: 'checkUpReports'
+      name: ['Hisobotlar', 'Tibbiy ko\'riklar']
+      title: 'Tibbiy ko\'rik'
+      desc: 'umumiy ma\'lumotlar'
     }
     'settings': {
       link: 'settings'
-      name: 'Sozlash'
+      name: ['Sozlash']
       title: 'Sozlash'
       desc: '...'
     }

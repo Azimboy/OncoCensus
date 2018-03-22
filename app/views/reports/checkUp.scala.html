@@ -1,9 +1,9 @@
-@import views.html.statistics
+@import views.html.reports
 @import org.webjars.play.WebJarsUtil
 
 @()(implicit webJarsUtil: WebJarsUtil)
 
-@statistics.main("OncoCensus"){
+@reports.main("OncoCensus"){
   @Html(webJarsUtil.script("twbs-pagination/1.2.5/jquery.twbsPagination.min.js"))
   <script src="@routes.Assets.versioned("javascripts/statistics.js")"></script>
 
