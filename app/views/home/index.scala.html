@@ -214,8 +214,8 @@
       </div><!-- /.sidebar-shortcuts -->
 
       <ul class="nav nav-list">
-        <li class="active" data-bind="click: vm.clickLink(vm.Links.indicator)">
-          <a href="">
+        <li class="active" >
+          <a href="#" data-bind="click: vm.openPage('indicator')">
             <i class="menu-icon fa fa-pie-chart"></i>
             <span class="menu-text"> Ko'rsatkichlar </span>
           </a>
@@ -223,8 +223,8 @@
           <b class="arrow"></b>
         </li>
 
-        <li class="" data-bind="click: vm.clickLink(vm.Links.reception)">
-          <a href="">
+        <li>
+          <a href="#" data-bind="click: vm.openPage('reception')">
             <i class="menu-icon fa fa-calendar"></i>
             <span class="menu-text"> Qabul </span>
           </a>
@@ -232,29 +232,25 @@
           <b class="arrow"></b>
         </li>
 
-        <li class="" data-bind="click: vm.clickLink(vm.Links.cardIndex)">
-          <a href="#">
+        <li>
+          <a href="#" data-bind="click: vm.openPage('cardIndex')">
             <i class="menu-icon fa fa-users"></i>
-            <span class="menu-text">
-              <span class="menu-text"> Bemorlar </span>
-            </span>
+            <span class="menu-text"> Bemorlar </span>
 
             <b class="arrow"></b>
           </a>
         </li>
 
-        <li class="">
+        <li>
           <a href="#">
             <i class="menu-icon fa fa-flask"></i>
-            <span class="menu-text">
-              <span class="menu-text"> Resurslar </span>
-            </span>
+            <span class="menu-text"> Resurslar </span>
 
             <b class="arrow fa fa-angle-down"></b>
           </a>
         </li>
 
-        <li class="" data-bind="click: vm.clickLink(vm.Links.statistics)">
+        <li>
           <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-bar-chart"></i>
             <span class="menu-text"> Statistika </span>
@@ -264,28 +260,28 @@
 
           <b class="arrow"></b>
           <ul class="submenu">
-            <li class="">
-              <a href="tables.html">
+            <li>
+              <a href="#">
                 <i class="menu-icon fa fa-caret-right"></i>
-                Oylik hisobot
+                Bemorlar
               </a>
 
               <b class="arrow"></b>
             </li>
 
-            <li class="">
-              <a href="jqgrid.html">
+            <li>
+              <a href="#" data-bind="click: vm.openPage('statistics')">
                 <i class="menu-icon fa fa-caret-right"></i>
-                3 oylik hisobot
+                Tibbiy ko'riklar
               </a>
 
               <b class="arrow"></b>
             </li>
 
-            <li class="">
-              <a href="jqgrid.html">
+            <li>
+              <a href="#">
                 <i class="menu-icon fa fa-caret-right"></i>
-                Yillik hisobot
+                Umumiy
               </a>
 
               <b class="arrow"></b>
@@ -293,7 +289,7 @@
           </ul>
         </li>
 
-        <li class="">
+        <li>
           <a href="#">
             <i class="menu-icon fa fa-table"></i>
             <span class="menu-text">
@@ -304,7 +300,7 @@
           </a>
         </li>
 
-        <li class="" data-bind="click: vm.clickLink(vm.Links.settings)">
+        <li data-bind="click: vm.openPage('settings')">
           <a href="#">
             <i class="menu-icon fa fa-cogs"></i>
             <span class="menu-text">
@@ -315,7 +311,7 @@
           </a>
         </li>
 
-        <li class="">
+        <li>
           <a href="#">
             <i class="menu-icon fa fa-question"></i>
             <span class="menu-text">
@@ -338,7 +334,7 @@
           <ul class="breadcrumb">
             <li>
               <i class="ace-icon fa fa-pie-chart"></i>
-              <a href="#" data-bind="text: vm.selectedName"></a>
+              <a href="#" data-bind="text: vm.selected.page.name"></a>
             </li>
           </ul><!-- /.breadcrumb -->
 
@@ -355,10 +351,10 @@
         <div class="page-content">
           <div class="page-header" style="margin-bottom: 0px">
             <h1>
-              <span data-bind="text: vm.selectedTitle"></span>
+              <span data-bind="text: vm.selected.page.title"></span>
               <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
-                <span data-bind="text: vm.selectedDesc"></span>
+                <span data-bind="text: vm.selected.page.desc"></span>
               </small>
             </h1>
           </div><!-- /.page-header -->
@@ -366,7 +362,7 @@
           <div class="row no-margin-left no-margin-right">
             <div class="col-xs-12 no-padding-left no-padding-right">
               <iframe class="form-frame" src="" frameborder="0" style="width: 100%; height: 1000px"
-              data-bind="attr: {src: 'redirect/' + vm.selectedLink()}"></iframe>
+              data-bind="attr: {src: 'redirect/' + vm.selected.page.link()}"></iframe>
             </div><!-- /.col -->
           </div><!-- /.row -->
         </div><!-- /.page-content -->
