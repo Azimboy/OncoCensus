@@ -250,10 +250,10 @@
           </a>
         </li>
 
-        <li data-bind="css: {'active': vm.selected.page.link() == 'checkUpReports'}">
+        <li data-bind="css: {'active': vm.selected.page.link() == 'patientReports' || vm.selected.page.link() == 'checkUpReports'}">
           <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-bar-chart"></i>
-            <span class="menu-text"> Statistika </span>
+            <span class="menu-text"> Hisobotlar </span>
 
             <b class="arrow fa fa-angle-down"></b>
           </a>

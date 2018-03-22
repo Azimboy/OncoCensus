@@ -29,8 +29,8 @@ $ ->
     }
     'checkUpReports': {
       link: 'checkUpReports'
-      name: ['Hisobotlar', 'Tibbiy ko\'riklar']
-      title: 'Tibbiy ko\'rik'
+      name: ['Hisobotlar', 'Tibbiy ko\'rik ko\'rsatmalari']
+      title: 'Tibbiy ko\'rik ko\'rsatmalari'
       desc: 'umumiy ma\'lumotlar'
     }
     'settings': {
