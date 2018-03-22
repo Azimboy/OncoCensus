@@ -114,7 +114,7 @@ object PatientProtocol {
   case class ModifyPatient(patient: Patient, photosPath: Option[Path])
   case class DeletePatientById(patientId: Int)
 
-  case class GetAllPatients(pageReq: PageReq, patientsFilter: PatientsFilter)
+  case class GetAllPatients(patientsFilter: PatientsFilter, pageReq: PageReq)
   case object GetAllClientGroups
 
   case class SupervisedOut(

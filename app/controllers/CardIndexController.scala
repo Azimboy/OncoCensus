@@ -50,7 +50,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   def getPatients(page: Int, pageSize: Int) = Action.async(parse.json[PatientsFilter]) { implicit request =>
 	  val pageReq = PageReq(page = page, size = pageSize)
     val patientsFilter = request.body
-    (patientManager ? GetAllPatients(pageReq, patientsFilter)).mapTo[PageRes[Patient]].map { pageRes =>
+    (patientManager ? GetAllPatients(patientsFilter, pageReq)).mapTo[PageRes[Patient]].map { pageRes =>
       Ok(Json.toJson(pageRes))
     }.recover { case error =>
       logger.error("Error occurred during getting patients", error)

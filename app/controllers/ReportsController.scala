@@ -7,9 +7,8 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.AppProtocol.ReportData
+import models.AppProtocol.{GetDetailedReport, ReportData}
 import models.CheckUpProtocol.CheckUp
-import models.StatisticsProtocol.GetDetailedReport
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json

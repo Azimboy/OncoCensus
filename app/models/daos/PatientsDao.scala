@@ -5,6 +5,7 @@ import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
+import models.AppProtocol.ReportData
 import models.PatientProtocol.{Gender, Patient, PatientsFilter}
 import models.utils.{Date2SqlDate, DateUtils}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
@@ -74,7 +75,7 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   with Date2SqlDate
   with LazyLogging {
 
-  import dbConfig.profile.api._
+  import models.utils.PostgresDriver.api._
 
   val patients = TableQuery[Patients]
   val districts = TableQuery[Districts]

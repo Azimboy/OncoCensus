@@ -7,7 +7,6 @@ import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.ReportData
 import models.CheckUpProtocol.CheckUp
-import models.UserProtocol.User
 import models.utils.Date2SqlDate
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.JsValue

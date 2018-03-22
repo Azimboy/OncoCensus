@@ -7,9 +7,8 @@ import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.AppProtocol.ReportData
+import models.AppProtocol.{GetDetailedReport, ReportData}
 import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp}
-import models.StatisticsProtocol.GetDetailedReport
 import models.actor_managers.EncryptionManager._
 import models.daos.CheckUpsDao
 

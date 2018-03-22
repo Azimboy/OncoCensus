@@ -3,6 +3,8 @@ package models
 import java.text.SimpleDateFormat
 import java.util.Date
 
+import models.AppProtocol.Paging.PageReq
+import models.PatientProtocol.{ClientGroup, PatientsFilter}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat, __}
 
@@ -77,6 +79,14 @@ object AppProtocol {
 		regionId: Option[Int] = None,
 		districtId: Option[Int] = None
 	)
+
+	case class PatientsReport(
+    clientGroup: ClientGroup,
+    maleCount: Int,
+    femaleCount: Int
+  )
+
+	case class GetDetailedReport(reportData: ReportData, pageReq: PageReq)
 
 	implicit val reportDataFormat: Format[ReportData] = (
 		optDateFormat("startDate") ~
