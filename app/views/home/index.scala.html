@@ -124,7 +124,7 @@
               </li>
 
               <li class="dropdown-footer">
-                <a href="inbox.html">
+                <a href="#">
                   Hamma habarlarni ko'rish
                   <i class="ace-icon fa fa-arrow-right"></i>
                 </a>
@@ -214,7 +214,7 @@
       </div><!-- /.sidebar-shortcuts -->
 
       <ul class="nav nav-list">
-        <li class="active" >
+        <li data-bind="css: {'active': vm.selected.page.link() == 'indicator'}">
           <a href="#" data-bind="click: vm.openPage('indicator')">
             <i class="menu-icon fa fa-pie-chart"></i>
             <span class="menu-text"> Ko'rsatkichlar </span>
@@ -223,7 +223,7 @@
           <b class="arrow"></b>
         </li>
 
-        <li>
+        <li data-bind="css: {'active': vm.selected.page.link() == 'reception'}">
           <a href="#" data-bind="click: vm.openPage('reception')">
             <i class="menu-icon fa fa-calendar"></i>
             <span class="menu-text"> Qabul </span>
@@ -232,7 +232,7 @@
           <b class="arrow"></b>
         </li>
 
-        <li>
+        <li data-bind="css: {'active': vm.selected.page.link() == 'cardIndex'}">
           <a href="#" data-bind="click: vm.openPage('cardIndex')">
             <i class="menu-icon fa fa-users"></i>
             <span class="menu-text"> Bemorlar </span>
@@ -250,7 +250,7 @@
           </a>
         </li>
 
-        <li>
+        <li data-bind="css: {'active': vm.selected.page.link() == 'statistics'}">
           <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-bar-chart"></i>
             <span class="menu-text"> Statistika </span>
@@ -269,7 +269,7 @@
               <b class="arrow"></b>
             </li>
 
-            <li>
+            <li data-bind="css: {'active': vm.selected.page.link() == 'statistics'}">
               <a href="#" data-bind="click: vm.openPage('statistics')">
                 <i class="menu-icon fa fa-caret-right"></i>
                 Tibbiy ko'riklar
@@ -300,8 +300,8 @@
           </a>
         </li>
 
-        <li data-bind="click: vm.openPage('settings')">
-          <a href="#">
+        <li data-bind="css: {'active': vm.selected.page.link() == 'settings'}">
+          <a href="#" data-bind="click: vm.openPage('settings')">
             <i class="menu-icon fa fa-cogs"></i>
             <span class="menu-text">
               <span class="menu-text"> Sozlash </span>
