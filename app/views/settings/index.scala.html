@@ -8,46 +8,32 @@
 
   <div class="row no-margin-left no-margin-right">
     <div class="col-xs-12 widget-container-col no-padding-left no-padding-right">
-      <div class="widget-box transparent">
-        <div class="widget-header">
-          <h4 class="widget-title lighter">Tibbiy bo'limlar</h4>
+      <div class="tabbable">
+        <ul class="nav nav-tabs" id="myTab">
+          <li class="active">
+            <a data-toggle="tab" href="#departments">
+              <i class="green ace-icon fa fa-hospital-o bigger-150"></i>
+              Tibbiy bo'limlar
+            </a>
+          </li>
 
-          <div class="widget-toolbar no-border">
-            <ul class="nav nav-tabs" id="myTab">
-              <li class="active">
-                <a data-toggle="tab" href="#departments">Tibbiy bo'limlar</a>
-              </li>
-
-              <li>
-                <a data-toggle="tab" href="#users">Foydalanuvchilar</a>
-              </li>
-
-              <li>
-                <a data-toggle="tab" href="#report">Hisobot</a>
-              </li>
-            </ul>
+          <li>
+            <a data-toggle="tab" href="#users">
+              <i class="green ace-icon fa fa-user-md bigger-150"></i>
+              Foydalanuvchilar
+              <span class="badge badge-danger">1</span>
+            </a>
+          </li>
+        </ul>
+        <div class="tab-content" style="padding: 15px 0px 0px 0px!important;">
+          <div id="departments" class="tab-pane fade in active">
+            <div class="scrollable" data-size="800">
+            @settings.departments()
+            </div>
           </div>
-        </div>
-
-        <div class="widget-body">
-          <div class="widget-main padding-12 no-padding-left no-padding-right">
-            <div class="tab-content padding-4">
-              <div id="departments" class="tab-pane in active">
-                <div class="scrollable" data-size="800">
-                  @settings.departments()
-                </div>
-              </div>
-              <div id="users" class="tab-pane">
-                <div class="scrollable" data-size="800">
-                  @settings.users()
-                </div>
-              </div>
-              <div id="report" class="tab-pane">
-                <div class="scrollable" data-size="100">
-                  <b>Hisobot</b>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque commodo massa sed ipsum porttitor facilisis. Nullam interdum massa vel nisl fringilla sed viverra erat tincidunt. Phasellus in ipsum velit. Maecenas id erat vel sem convallis blandit. Nunc aliquam enim ut arcu aliquet adipiscing. Fusce dignissim volutpat justo non consectetur.
-                </div>
-              </div>
+          <div id="users" class="tab-pane">
+            <div class="scrollable" data-size="800">
+            @settings.users()
             </div>
           </div>
         </div>
