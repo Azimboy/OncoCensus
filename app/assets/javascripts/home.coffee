@@ -6,8 +6,8 @@ $ ->
     'indicator': {
       link: 'indicator'
       name: ['Ko\'rsatkichlar']
-      title: 'Xonqa'
-      desc: 'tuman bo\'yicha umumiy kasallik ko\'rsatkichlari'
+      title: 'Ko\'rsatkichlar'
+      desc: 'viloyatlar va tumanlar bo\'yicha umumiy kasallik ko\'rsatkichlari'
     }
     'reception': {
       link: 'reception'

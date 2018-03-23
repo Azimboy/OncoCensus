@@ -26,18 +26,12 @@
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-part2.min.css")" class="ace-main-stylesheet" />
     <![endif]-->
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-skins.min.css")" />
-    <link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-rtl.min.css")" />
 
     <!--[if lte IE 9]>
 		<link rel="stylesheet" href="@routes.Assets.versioned("/stylesheets/ace-ie.min.css")" />
     <![endif]-->
 
     <!-- inline styles related to this page -->
-
-    <!-- ace settings handler -->
-    <script src="@routes.Assets.versioned("/javascripts/ace-extra.min.js")"></script>
-    <!-- HTML5shiv and Respond.js for IE8 to support HTML5 elements and media queries -->
 
     <!--[if lte IE 8]>
 		<script src="@routes.Assets.versioned("/javascripts/html5shiv.min.js")"></script>
@@ -52,27 +46,17 @@
       <!--[if IE]>
     <script src="@routes.Assets.versioned("/javascripts/jquery-1.11.3.min.js")"></script>
     <![endif]-->
-    <script type="text/javascript">
-    if('ontouchstart' in document.documentElement) document.write("<script src='public/javascripts/jquery.mobile.custom.min.js'>"+"<"+"/script>");
-    </script>
     <script src="@routes.Assets.versioned("/javascripts/bootstrap.min.js")"></script>
 
       <!-- page specific plugin scripts -->
 
-      <!--[if lte IE 8]>
-    <script src="@routes.Assets.versioned("/javascripts/excanvas.min.js")"></script>
-    <![endif]-->
     <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/jquery.ui.touch-punch.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.easypiechart.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.sparkline.index.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery-ui.custom.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.flot.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.flot.pie.min.js")"></script>
-    <script src="@routes.Assets.versioned("/javascripts/jquery.flot.resize.min.js")"></script>
+
       <!-- ace scripts -->
     <script src="@routes.Assets.versioned("/javascripts/ace-elements.min.js")"></script>
     <script src="@routes.Assets.versioned("/javascripts/ace.min.js")"></script>
+    <script src="@routes.Assets.versioned("/javascripts/canvasjs.min.js")"></script>
     <script src="@routes.Assets.versioned("javascripts/polyfills.js")"></script>
 
     @Html(webJarsUtil.script("knockout.js"))
