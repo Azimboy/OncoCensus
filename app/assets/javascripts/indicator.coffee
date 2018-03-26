@@ -99,7 +99,7 @@ $ ->
 #          indexLabelLineColor: "darkgrey"
           toolTipContent: "{legendText}: <strong>{y}%</strong>"
           dataPoints: [
-            { y: 51.04, expanded: true, legendText: "Bog'ot", indexLabel: "Bog'ot {y}%" }
+            { y: 51.04, exploded: true, legendText: "Bog'ot", indexLabel: "Bog'ot {y}%" }
             { y: 40.83, legendText: "Gurlan", indexLabel: "Gurlan {y}%" }
             { y: 3.20, legendText: "Xonqa", indexLabel: "Xonqa {y}%" }
             { y: 1.11, legendText: "Hazorasp", indexLabel: "Hazorasp {y}%" }
