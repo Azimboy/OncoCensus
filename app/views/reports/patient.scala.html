@@ -29,21 +29,25 @@
             <div class="form-group row">
               <label for="dateRange" class="col-sm-3 col-form-label">Sana</label>
 
-              <div class="col-sm-9">
-                <div class="controls form-inline" id="dateRange">
-                  <div class="input-group date" id="startDate" data-bind="datetimepicker: vm.reportData.startDate,
+              <div class="col-sm-9" id="dateRange">
+                <div class="row">
+                  <div class="col-xs-6">
+                    <div class="input-group date" id="startDate" data-bind="datetimepicker: vm.reportData.startDate,
                     dateTimePickerOptions: {pickTime: true}">
-                    <input type='text' class="form-control" data-bind="value: vm.reportData.startDate"/>
-                    <span class="input-group-addon">
-                      <span class="fa fa-calendar"></span>
-                    </span>
+                      <input type='text' class="form-control" data-bind="value: vm.reportData.startDate"/>
+                      <span class="input-group-addon">
+                        <span class="fa fa-calendar"></span>
+                      </span>
+                    </div>
                   </div>
-                  <div class="input-group date" id="endDate" data-bind="datetimepicker: vm.reportData.endDate,
+                  <div class="col-xs-6">
+                    <div class="input-group date" id="endDate" data-bind="datetimepicker: vm.reportData.endDate,
                     dateTimePickerOptions: {pickTime: true}">
-                    <input type='text' class="form-control" data-bind="value: vm.reportData.endDate"/>
-                    <span class="input-group-addon">
-                      <span class="fa fa-calendar"></span>
-                    </span>
+                      <input type='text' class="form-control" data-bind="value: vm.reportData.endDate"/>
+                      <span class="input-group-addon">
+                        <span class="fa fa-calendar"></span>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
