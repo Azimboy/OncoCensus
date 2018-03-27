@@ -10,22 +10,22 @@ GET     /redirect/:menuName                                 @controllers.HomeCon
 
 GET     /home/regions                                       @controllers.HomeController.getRegions
 GET     /home/districts                                     @controllers.HomeController.getDistricts
+GET     /home/client-groups                                 @controllers.HomeController.getClientGroups
 
 GET     /indicator                                          @controllers.IndicatorController.index
 GET     /reception                                          @controllers.ReceptionController.index
 
 GET     /card-index                                         @controllers.CardIndexController.index
 POST    /card-index/patients                                @controllers.CardIndexController.getPatients(page: Int ?= 1, pageSize: Int ?= 15)
-GET     /card-index/client-groups                           @controllers.CardIndexController.getClientGroups
 POST    /card-index/patient                                 @controllers.CardIndexController.modifyPatient
 DELETE  /card-index/patient/:patientId                      @controllers.CardIndexController.deletePatient(patientId: Int)
 GET     /card-index/check-ups/:patientId                    @controllers.CardIndexController.getCheckUpsByPatientId(patientId: Int)
 POST    /card-index/check-up                                @controllers.CardIndexController.modifyCheckUp
 POST    /card-index/supervised-out/:patientId               @controllers.CardIndexController.supervisedOut(patientId: Int)
 
-GET     /statistics/patient                                 @controllers.ReportsController.patientIndex
-GET     /statistics/check-up                                @controllers.ReportsController.checkUpIndex
-POST    /statistics/report                                  @controllers.ReportsController.report(page: Int ?= 1, pageSize: Int ?= 15)
+GET     /reports/patient                                    @controllers.ReportsController.patientIndex
+GET     /reports/check-up                                   @controllers.ReportsController.checkUpIndex
+POST    /reports/patients                                   @controllers.ReportsController.getPatients(page: Int ?= 1, pageSize: Int ?= 15)
 
 GET     /settings                                           @controllers.SettingsController.index
 GET     /settings/departments                               @controllers.SettingsController.getDepartments

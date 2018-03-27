@@ -7,6 +7,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, Region}
+import models.PatientProtocol.{ClientGroup, GetAllClientGroups}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -20,6 +21,7 @@ import scala.concurrent.duration.DurationInt
 class HomeController @Inject()(val controllerComponents: ControllerComponents,
                                val configuration: Configuration,
                                @Named("department-manager") val departmentManager: ActorRef,
+                               @Named("patient-manager") val patientManager: ActorRef,
                                implicit val webJarsUtil: WebJarsUtil)
                               (implicit val ec: ExecutionContext)
   extends BaseController with LazyLogging {
@@ -55,6 +57,15 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
   def getDistricts = Action.async { implicit request =>
     (departmentManager ? GetAllDistricts).mapTo[Seq[District]].map { districts =>
       Ok(Json.toJson(districts))
+    }
+  }
+
+  def getClientGroups = Action.async { implicit request =>
+    (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
+      Ok(Json.toJson(clientGroups))
+    }.recover { case error =>
+      logger.error("Error occurred during getting client groups", error)
+      InternalServerError
     }
   }
 

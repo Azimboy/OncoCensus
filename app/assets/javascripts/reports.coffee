@@ -5,7 +5,8 @@ $ ->
   apiUrl =
     regions: '/home/regions'
     districts: '/home/districts'
-    getReport: '/statistics/report'
+    clientGroups: '/home/client-groups'
+    patients: '/reports/patients'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -63,6 +64,8 @@ $ ->
     regions: []
     districts: []
     reports: []
+    clientGroups: []
+    patients: []
     reportData:
       startDate: ''
       endDate: ''
@@ -71,11 +74,24 @@ $ ->
       receiveType: ''
     selected:
       districts: []
+    filters:
+      lastName: undefined
+      isMale: yes
+      isFemale: yes
+      minAge: undefined
+      maxAge: undefined
+      clientGroupId: undefined
+      passportNumber: undefined
+      province: undefined
     isLoading: no
 
   vm.formatDate = (millis, format = 'DD.MM.YYYY HH:mm') ->
     if millis
       moment(millis).format(format)
+
+  vm.getAge = (date) ->
+    if date
+      moment().diff(date, 'years')
 
   notvalid = (str) ->
     !$.trim(str)
@@ -93,51 +109,50 @@ $ ->
       vm.selected.districts districts
       vm.districts districts
 
+  loadAllClientGroups = ->
+    $.get(apiUrl.clientGroups)
+    .fail handleError
+    .done (clientGroups) ->
+      vm.clientGroups clientGroups
+
   vm.reportData.regionId.subscribe (regionId) ->
     if regionId
       vm.selected.districts(ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId))
 
   loadAllRegions()
   loadAllDistricts()
+  loadAllClientGroups()
 
-  getReport = (event, page) ->
+  loadAllPatients = (event, page) ->
     pageParam = "pageSize=#{pageSize}"
     if page
       pageParam += "&page=#{page}"
 
-    reportDataJs = ko.mapping.toJS(vm.reportData)
-    if notvalid(reportDataJs.regionId)
-      reportDataJs.regionId = undefined
-    if notvalid(reportDataJs.districtId)
-      reportDataJs.districtId = undefined
-    console.log(reportDataJs)
+    filtersJs = ko.mapping.toJS(vm.filters)
+    minAge = filtersJs.minAge
+    maxAge = filtersJs.maxAge
 
-    $.post(apiUrl.getReport + "?#{pageParam}", JSON.stringify(reportDataJs))
+    if minAge
+      filtersJs.minAge = parseInt(minAge)
+    if maxAge
+      filtersJs.maxAge = parseInt(maxAge)
+
+    $.post(apiUrl.patients + "?#{pageParam}", JSON.stringify(filtersJs))
     .fail handleError
-    .done (report) ->
+    .done (result) ->
       $pagination.destroy?()
-      initPagination(report.total, page)
-#      reportItems = report.items
-#      for item in reportItems
-#         = vm.getAge(patient.birthDate)
-      vm.reports report.items
+      initPagination(result.total, page)
+      patients = result.items
+      for patient in patients
+        patient.age = vm.getAge(patient.birthDate)
+        if patient.supervisedOutJson?.date
+          patient.supervisedOutAt = vm.formatDate(parseInt(patient.supervisedOutJson.date))
+      #        if patient.supervisedOutJson?.date
+      #          patient.supervisedOutJson.date = vm.formatDate(parseInt(patient.supervisedOutJson.date))
 
-  vm.reportData.receiveType.subscribe ->
-    getReport()
+      vm.patients patients
 
-  vm.reportData.startDate.subscribe ->
-    getReport()
-
-  vm.reportData.endDate.subscribe ->
-    getReport()
-
-  getReport()
-
-  vm.reportData.regionId.subscribe () ->
-    getReport()
-
-  vm.reportData.districtId.subscribe ->
-    getReport()
+  loadAllPatients()
 
   Glob.vm = vm
 

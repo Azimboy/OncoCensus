@@ -7,8 +7,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Paging.{PageReq, PageRes}
-import models.AppProtocol.{GetDetailedReport, ReportData}
-import models.CheckUpProtocol.CheckUp
+import models.PatientProtocol.{GetAllPatients, Patient, PatientsFilter}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -38,15 +37,15 @@ class ReportsController @Inject()(val controllerComponents: ControllerComponents
     Ok(reports.checkUp())
   }
 
-  def report(page: Int, pageSize: Int) = Action.async(parse.json[ReportData]) { implicit request => {
+  def getPatients(page: Int, pageSize: Int) = Action.async(parse.json[PatientsFilter]) { implicit request =>
     val pageReq = PageReq(page = page, size = pageSize)
-    (checkUpManager ? GetDetailedReport(request.body, pageReq)).mapTo[PageRes[CheckUp]].map { pageRes =>
+    val patientsFilter = request.body
+    (patientManager ? GetAllPatients(patientsFilter, pageReq)).mapTo[PageRes[Patient]].map { pageRes =>
       Ok(Json.toJson(pageRes))
-    }.recover {
-      case error =>
-        logger.error(s"Get report error", error)
-        InternalServerError
+    }.recover { case error =>
+      logger.error("Error occurred during getting patients", error)
+      InternalServerError
     }
-  }}
+  }
 
 }

@@ -1,8 +1,7 @@
 package controllers
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.Paths
 import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject._
 
 import akka.actor.ActorRef
@@ -54,15 +53,6 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       Ok(Json.toJson(pageRes))
     }.recover { case error =>
       logger.error("Error occurred during getting patients", error)
-      InternalServerError
-    }
-  }
-
-  def getClientGroups = Action.async { implicit request =>
-    (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
-      Ok(Json.toJson(clientGroups))
-    }.recover { case error =>
-      logger.error("Error occurred during getting client groups", error)
       InternalServerError
     }
   }
