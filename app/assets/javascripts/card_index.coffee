@@ -5,9 +5,9 @@ $ ->
   apiUrl =
     regions: '/home/regions'
     districts: '/home/districts'
+    clientGroups: '/home/client-groups'
     patient: '/card-index/patient'
     patients: '/card-index/patients'
-    clientGroups: '/card-index/client-groups'
     checkUps: '/card-index/check-ups'
     supervisedOut: '/card-index/supervised-out'
 
