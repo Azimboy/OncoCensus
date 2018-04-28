@@ -85,16 +85,19 @@
       </div>
 
       <div class="modal-body">
-        <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}" class="form-condensed row"></div>
-        <div class="col-xs-offset-4 col-xs-6">
-          <button type="submit" class="pull-left btn btn-primary add-user" data-bind="click: vm.createUser, disable: vm.isLoading">Qo'shish</button>
-          <div class="pull-left">&nbsp; &nbsp;</div>
-          <button type="button" class="pull-left btn btn-danger" data-dismiss="modal">Bekor qilish</button> &nbsp;
-          <div class="pull-left">&nbsp; &nbsp;</div>
-          <div class="pull-left busy-loader" data-bl-selector=".add-user, .app-select" data-bl-url="settings/user"></div>
-        </div>
-        <br>
-        <br>
+        <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}"></div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-primary pull-left add-user" data-bind="click: vm.createUser, disable: vm.isLoading">
+          <i class="ace-icon fa fa-save"></i>
+          Saqlash
+        </button>
+        <div class="busy-loader pull-left" data-bl-selector=".add-user" data-bl-url="settings/user"></div>
+        <button class="btn btn-sm pull-right" data-dismiss="modal">
+          <i class="ace-icon fa fa-times"></i>
+          Bekor qilish
+        </button>
       </div>
     </div>
   </div>
@@ -109,77 +112,61 @@
       </div>
 
       <div class="modal-body">
-        <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}" class="form-condensed row"></div>
-        <div class="text-center">
-          <button type="submit" class="btn btn-primary" data-bind="click: vm.editManager, disable: vm.isLoading">Saqlash</button> &nbsp;
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Bekor qilish</button>
-        </div>
+        <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}"></div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-sm btn-primary pull-left edit-user" data-bind="click: vm.editManager, disable: vm.isLoading">
+          <i class="ace-icon fa fa-save"></i>
+          Saqlash
+        </button>
+        <div class="busy-loader pull-left" data-bl-selector=".edit-user" data-bl-url="settings/user"></div>
+        <button class="btn btn-sm pull-right" data-dismiss="modal">
+          <i class="ace-icon fa fa-times"></i>
+          Bekor qilish
+        </button>
       </div>
     </div>
   </div>
 </div>
 
 <script type="text/html" id="form-fields-template">
-  <form class="form-horizontal">
-    <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="inputLogin">Login</label>
-      <div class="col-xs-6">
-        <input type="text" class="form-control" id="inputLogin" data-bind="value: $data.login" name="login1">
-        <input type="text" class="hidden" name="login1">
-      </div>
+  <div class="form-group row">
+    <div class="col-xs-6">
+      <label for="login">Login</label>
+      <input type="text" class="form-control" id="login" data-bind="value: $data.login" name="login">
     </div>
-    <div class="hr hr-15 hr-dotted"></div>
-    <div class="clearfix"></div>
-
-    <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="input2">Familiya</label>
-      <div class="col-xs-6">
-        <input type="text" class="form-control" id="input2" data-bind="value: $data.lastName" name="lastname1">
-        <input type="text" class="hidden" name="lastname1">
-      </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-xs-4">
+      <label for="lastName">Familiya</label>
+      <input type="text" class="form-control" id="lastName" data-bind="value: $data.lastName" name="lastName">
     </div>
-
-    <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="input3">Ism</label>
-      <div class="col-xs-6">
-        <input type="text" class="form-control" id="input3" data-bind="value: $data.firstName" name="firstname1">
-        <input type="text" class="hidden" name="firstname1">
-      </div>
+    <div class="col-xs-4">
+      <label for="firstName">Ism</label>
+      <input type="text" class="form-control" id="firstName" data-bind="value: $data.firstName" name="firstName">
     </div>
-
-    <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="input4">Otasining ismi</label>
-      <div class="col-xs-6">
-        <input type="text" class="form-control" id="input4" data-bind="value: $data.middleName" name="middlename1">
-        <input type="text" class="hidden" name="middlename1">
-      </div>
+    <div class="col-xs-4">
+      <label for="middleName">Otasining ismi</label>
+      <input type="text" class="form-control" id="middleName" data-bind="value: $data.middleName" name="middleName">
     </div>
-
-    <div class="hr hr-15 hr-dotted"></div>
-
-    <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="input7">Tibbiy bo'lim</label>
-      <div class="col-xs-6">
-        <select class="form-control" autocomplete="off" name="department" id="department"
-          data-bind="options: $root.vm.departments, optionsText: 'name', optionsValue: 'id', value: $data.departmentId, optionsCaption: 'Tibbiy bo\'lim'">
-        </select>
-      </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-xs-12">
+      <label for="department">Tibbiy bo'lim</label>
+      <select class="form-control" autocomplete="off" name="department" id="department"
+        data-bind="options: $root.vm.departments, optionsText: 'name', optionsValue: 'id', value: $data.departmentId, optionsCaption: 'Tibbiy bo\'lim'">
+      </select>
     </div>
-
-    <div class="hr hr-15 hr-dotted"></div>
-
-    <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="input8">Email</label>
-      <div class="col-xs-6">
-        <input type="text" class="form-control" id="input8" data-bind="value: $data.email">
-      </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-xs-6">
+      <label for="email">Email</label>
+      <input type="text" class="form-control" id="email" data-bind="value: $data.email">
     </div>
-
-    <div class="form-group col-xs-12">
-      <label class="col-xs-3 control-label no-padding-right" for="input9">Telefon raqam</label>
-      <div class="col-xs-6">
-        <input type="text" class="form-control" id="input9" data-bind="value: $data.phoneNumber">
-      </div>
+    <div class="col-xs-6">
+      <label for="phoneNumber">Telefon raqam</label>
+      <input type="text" class="form-control" id="phoneNumber" data-bind="value: $data.phoneNumber">
     </div>
-  </form>
+  </div>
 </script>

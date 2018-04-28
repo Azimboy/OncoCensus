@@ -28,7 +28,6 @@ object UserProtocol {
 		blockedAt: Option[Date] = None,
 		department: Option[Department] = None
 	) {
-
 		def isBlocked = blockedAt match {
 			case Some(blockedDate) =>
 				val currentTime = new DateTime()
@@ -38,9 +37,18 @@ object UserProtocol {
 			case None => false
 		}
 	}
-	implicit val userFormat = Json.format[User]
 
 	case class AddUser(user: User)
 	case object GetAllUsers
+	sealed case class Role(code: String, name: String)
+
+	object Administrator extends Role("administrator", "Administrator")
+	object Role1 extends Role("role1", "Role 1")
+	object Role2 extends Role("role2", "Role 2")
+
+	val roles = Seq(Administrator, Role1, Role2)
+
+	implicit val roleFormat = Json.format[Role]
+	implicit val userFormat = Json.format[User]
 
 }

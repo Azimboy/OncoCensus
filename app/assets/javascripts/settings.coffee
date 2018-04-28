@@ -9,6 +9,7 @@ $ ->
     districts: '/home/districts'
     departments: '/settings/departments'
     department: '/settings/department'
+    roles: '/settings/roles'
 
   handleError = (error) ->
     vm.isLoading(no)
@@ -46,6 +47,7 @@ $ ->
     regions: []
     districts: []
     departments: []
+    roles: []
     selected:
       user: defaultUser
       department: defaultDepartment
@@ -173,6 +175,12 @@ $ ->
           department.districtName = department.district.name
       vm.departments departments
 
+  loadAllRoles = ->
+    $.get(apiUrl.roles)
+    .fail handleError
+    .done (roles) ->
+      vm.roles roles
+
   vm.selected.department.regionId.subscribe (regionId) ->
     if regionId
       vm.selected.districts(ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId))
@@ -252,6 +260,7 @@ $ ->
   loadAllRegions()
   loadAllDistricts()
   loadAllDepartments()
+  loadAllRoles()
 
   Glob.vm = vm
 

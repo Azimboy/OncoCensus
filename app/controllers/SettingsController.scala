@@ -1,15 +1,15 @@
 package controllers
 
 import java.util.Date
-import javax.inject.{Inject, Named, Singleton}
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
+import javax.inject.{Inject, Named, Singleton}
 import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
-import models.UserProtocol.{AddUser, GetAllUsers, User}
+import models.UserProtocol.{AddUser, GetAllUsers, User, roles}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -144,5 +144,9 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 			logger.error("Update department error", error)
 			InternalServerError
 		}
+	}
+
+	def getRoles() = Action { implicit request =>
+		Ok(Json.toJson(roles))
 	}
 }
