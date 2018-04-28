@@ -52,6 +52,8 @@ $ ->
 
   loadRegionsChart = ->
     chart = new CanvasJS.Chart("regionsChart", {
+#      title:
+#        text: "Viloyatlar bo'yicha kasallik ko'rsatkichlari"
       exportFileName: "Viloyatlar bo'yicha"
       exportEnabled: true
       animationEnabled: true
@@ -62,20 +64,28 @@ $ ->
         {
           type: "pie"
           showInLegend: true
-          toolTipContent: "{legendText}: <strong>{y}%</strong>"
-          indexLabel: "{label} {y}%"
+          toolTipContent: "{legendText}: <strong>{y}%</strong><br>
+                           Jami: <b>155</b><br>
+                           Absolyut soni: <b>20</b><br>
+                           Shundan:
+                           <ul>
+                             <li>0 - 14: <b>2</b></li>
+                             <li>15 - 17: <b>5</b></li>
+                             <li>18 - va undan kattalar: <b>6</b></li>
+                           </ul>"
+          indexLabel: "{legendText} 655/{y}%"
           dataPoints: [
-            { y: 35, legendText: "Andijon", exploded: true, label: "Andijon" }
-            { y: 20, legendText: "Buxoro", label: "Buxoro" }
-            { y: 18, legendText: "Farg'ona", label: "Farg'ona" }
-            { y: 15, legendText: "Jizzax", label: "Jizzax" }
-            { y: 5, legendText: "Xorazm", label: "Xorazm" }
-            { y: 7, legendText: "Namangan", label: "Namangan" }
-            { y: 7, legendText: "Navoiy", label: "Navoiy" }
-            { y: 7, legendText: "Qashqadaryo", label: "Qashqadaryo" }
-            { y: 7, legendText: "Qoraqalpog'iston Respublikasi", label: "Qoraqalpog'iston Respublikasi" }
-            { y: 7, legendText: "Samarqand", label: "Samarqand" }
-            { y: 7, legendText: "Toshkent", label: "Toshkent" }
+            { y: 35, legendText: "Andijon", exploded: true }
+            { y: 20, legendText: "Buxoro" }
+            { y: 18, legendText: "Farg'ona" }
+            { y: 15, legendText: "Jizzax" }
+            { y: 5, legendText: "Xorazm" }
+            { y: 7, legendText: "Namangan" }
+            { y: 7, legendText: "Navoiy" }
+            { y: 7, legendText: "Qashqadaryo" }
+            { y: 7, legendText: "Qoraqalpog'iston Respublikasi" }
+            { y: 7, legendText: "Samarqand" }
+            { y: 7, legendText: "Toshkent" }
           ]
         }
       ]
@@ -84,6 +94,8 @@ $ ->
 
   loadDistricsChart = ->
     chart = new CanvasJS.Chart("districtsChart", {
+#      title:
+#        text: "Tumanlar bo'yicha kasallik ko'rsatkichlari"
       exportFileName: "Tumanlar bo'yicha"
       exportEnabled: true
       animationEnabled: true
@@ -97,18 +109,62 @@ $ ->
 #          startAngle: 0
 #          indexLabelFontColor: "dimgrey"
 #          indexLabelLineColor: "darkgrey"
-          toolTipContent: "{legendText}: <strong>{y}%</strong>"
+          toolTipContent: "{legendText}: <strong>{y}%</strong><br>
+                           Jami: <b>155</b><br>
+                           Absolyut soni: <b>20</b><br>
+                           Shundan:
+                           <ul>
+                             <li>0 - 14: <b>2</b></li>
+                             <li>15 - 17: <b>5</b></li>
+                             <li>18 - va undan kattalar: <b>6</b></li>
+                           </ul>"
+          indexLabel: "{legendText} 156/{y}%"
           dataPoints: [
-            { y: 51.04, exploded: true, legendText: "Bog'ot", indexLabel: "Bog'ot {y}%" }
-            { y: 40.83, legendText: "Gurlan", indexLabel: "Gurlan {y}%" }
-            { y: 3.20, legendText: "Xonqa", indexLabel: "Xonqa {y}%" }
-            { y: 1.11, legendText: "Hazorasp", indexLabel: "Hazorasp {y}%" }
-            { y: 2.29, legendText: "Xiva", indexLabel: "Xiva {y}%" }
-            { y: 4.53, legendText: "Qo'shko'pir", indexLabel: "Qo'shko'pir {y}%" }
-            { y: 1.53, legendText: "Shovot", indexLabel: "Shovot {y}%" }
-            { y: 6.53, legendText: "Urganch", indexLabel: "Urganch {y}%" }
-            { y: 7.53, legendText: "Yangiariq", indexLabel: "Yangiariq {y}%" }
-            { y: 9.53, legendText: "Yangibozor", indexLabel: "Yangibozor {y}%" }
+            { y: 51.04, exploded: true, legendText: "Bog'ot" }
+            { y: 40.83, legendText: "Gurlan" }
+            { y: 3.20, legendText: "Xonqa" }
+            { y: 1.11, legendText: "Hazorasp" }
+            { y: 2.29, legendText: "Xiva" }
+            { y: 4.53, legendText: "Qo'shko'pir" }
+            { y: 1.53, legendText: "Shovot" }
+            { y: 6.53, legendText: "Urganch" }
+            { y: 7.53, legendText: "Yangiariq" }
+            { y: 9.53, legendText: "Yangibozor" }
+          ]
+        }
+      ]
+    })
+    chart.render()
+
+  loadPatientsStatsChart = ->
+    chart = new CanvasJS.Chart("patientsStatsChart", {
+      title:
+        text: "Tuman bo'yicha oylik kasallik ko'rsatkichlari"
+      theme: "theme2"
+      animationEnabled: true
+      axisX:
+        valueFormatString: "MMMM",
+        interval: 1
+        intervalType: "month"
+      axisY:
+        includeZero: false
+      data: [
+        {
+          type: "line"
+          lineThickness: 3
+          dataPoints: [
+            { x: new Date(2018, 0, 1), y: 450 },
+            { x: new Date(2018, 1, 1), y: 414 },
+            { x: new Date(2018, 2, 1), y: 520, markerColor: "red", markerType: "triangle" },
+            { x: new Date(2018, 3, 1), y: 460 },
+            { x: new Date(2018, 4, 1), y: 450 },
+            { x: new Date(2018, 5, 1), y: 500 },
+            { x: new Date(2018, 6, 1), y: 480 },
+            { x: new Date(2018, 7, 1), y: 480 },
+            { x: new Date(2018, 8, 1), y: 410, markerColor: "DarkSlateGrey", markerType: "cross" },
+            { x: new Date(2018, 9, 1), y: 500 },
+            { x: new Date(2018, 10, 1), y: 480 },
+            { x: new Date(2018, 11, 1), y: 510 }
           ]
         }
       ]
@@ -117,5 +173,6 @@ $ ->
 
   loadRegionsChart()
   loadDistricsChart()
+  loadPatientsStatsChart()
 
   ko.applyBindings {vm}
