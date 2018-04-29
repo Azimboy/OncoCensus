@@ -1,5 +1,7 @@
 package models.actor_managers
 
+import java.util.Date
+
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
@@ -34,7 +36,7 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 			id <- user.id match {
 				case Some(userId) =>
 					log.info(s"Updating existing user. ID: $userId")
-					usersDao.update(encryptedUser)
+					usersDao.update(encryptedUser.copy(updatedAt = Some(new Date)))
 				case None => usersDao.create(encryptedUser)
 			}
 		} yield id
@@ -44,7 +46,7 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 		for {
 			encrUsers <- usersDao.findAll
 			decrUsers <- (encryptionManager ? DecryptUsers(encrUsers)).mapTo[Seq[User]]
-		} yield decrUsers
+		} yield decrUsers.map(_.copy(passwordHash = ""))
 	}
 
 }

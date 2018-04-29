@@ -16,9 +16,10 @@
     <thead>
       <tr>
         <th>
-          <span>Sana</span><br>
-          <span class="nowrap">Yaratildi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow"></span></span><br>
-          <span class="nowrap">O'zgardi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow" title="Sort by Updated Date"></span></span>
+          <span class="nowrap">Yaratildi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow"></span></span>
+        </th>
+        <th>
+          <span class="nowrap">O'zgardi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow"></span></span>
         </th>
         <th class="medium-col">
           Login&nbsp;<span class="glyphicon glyphicon-sort sort-arrow" title="Sort column"></span>
@@ -45,10 +46,8 @@
 
     <tbody data-bind="foreach: vm.users">
       <tr>
-        <td>
-          <span class="nowrap" data-bind="text: $root.vm.formatDate($data.createdAt)"></span><br>
-          <span class="nowrap" data-bind="text: $root.vm.formatDate($data.updatedAt)"></span>
-        </td>
+        <td data-bind="text: $root.vm.formatDate($data.createdAt)"></td>
+        <td data-bind="text: $root.vm.formatDate($data.updatedAt)"></td>
         <td class="break-word medium-col"><span data-bind="text: $data.login"></span></td>
         <td class="medium-col" data-bind="text: $data.roleCodesArr"></td>
         <td><span data-bind="text: $data.firstName"></span></td>

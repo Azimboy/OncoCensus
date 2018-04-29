@@ -13,6 +13,8 @@ import models.UserProtocol.{GetAllUsers, ModifyUser, User, roles}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
+import models.utils.StringUtils.createHash
+
 import play.api.mvc.{BaseController, ControllerComponents}
 import views.html.settings
 
@@ -22,6 +24,7 @@ import scala.concurrent.duration.DurationInt
 object SettingsController {
 	case class UserWeb(
 		id: Option[Int],
+		createdAt: Option[Date],
 	  login: String,
 		password: String,
 	  firstName: Option[String] = None,
@@ -70,8 +73,8 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 		val newUser = User(
 			id = userWeb.id,
 			login = userWeb.login,
-			passwordHash = userWeb.password,
-			createdAt = Some(new Date),
+			passwordHash = createHash(userWeb.password),
+			createdAt = Some(userWeb.createdAt.getOrElse(new Date)),
 			firstName = userWeb.firstName,
 			lastName = userWeb.lastName,
 			middleName = userWeb.middleName,

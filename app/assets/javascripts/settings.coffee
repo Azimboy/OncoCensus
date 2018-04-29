@@ -109,6 +109,7 @@ $ ->
     $userModal.modal('show')
 
   vm.onClickEditUserButton = (user) ->
+    ko.mapping.fromJS(defaultUser, {}, vm.selected.user)
     ko.mapping.fromJS(user, {}, vm.selected.user)
     $userModal.modal('show')
 
@@ -133,7 +134,7 @@ $ ->
         loadAllUsers()
         $userModal.modal('hide')
 
-  vm.formatDate = (millis, format = 'MMM DD YYYY') ->
+  vm.formatDate = (millis, format = 'DD.MM.YYYY HH:mm') ->
     if millis
       moment(millis).format(format)
 
@@ -147,44 +148,6 @@ $ ->
 #      for field in userProperties
 #        user[field] ?= undefined
     rawUsers
-
-  loadAllUsers = ->
-    $.get(apiUrl.users)
-    .fail handleError
-    .done (users) ->
-      vm.users prettifyUsers(users)
-
-  loadAllRegions = ->
-    $.get(apiUrl.regions)
-    .fail handleError
-    .done (regions) ->
-      vm.regions regions
-
-  loadAllDistricts = ->
-    $.get(apiUrl.districts)
-    .fail handleError
-    .done (districts) ->
-      vm.selected.districts districts
-      vm.districts districts
-
-  loadAllDepartments = ->
-    $.get(apiUrl.departments)
-    .fail handleError
-    .done (departments) ->
-      for department in departments
-        if department.region
-          department.regionId = department.region.id
-          department.regionName = department.region.name
-        if department.district
-          department.districtId = department.district.id
-          department.districtName = department.district.name
-      vm.departments departments
-
-  loadAllRoles = ->
-    $.get(apiUrl.roles)
-    .fail handleError
-    .done (roles) ->
-      vm.roles roles
 
   vm.selected.department.regionId.subscribe (regionId) ->
     if regionId
@@ -260,6 +223,44 @@ $ ->
       .done () ->
         vm.departments.remove(department)
         toastr.success('Muvaffaqiyatli o\'chirildi')
+
+  loadAllUsers = ->
+    $.get(apiUrl.users)
+    .fail handleError
+    .done (users) ->
+      vm.users prettifyUsers(users)
+
+  loadAllRegions = ->
+    $.get(apiUrl.regions)
+    .fail handleError
+    .done (regions) ->
+      vm.regions regions
+
+  loadAllDistricts = ->
+    $.get(apiUrl.districts)
+    .fail handleError
+    .done (districts) ->
+      vm.selected.districts districts
+      vm.districts districts
+
+  loadAllDepartments = ->
+    $.get(apiUrl.departments)
+    .fail handleError
+    .done (departments) ->
+      for department in departments
+        if department.region
+          department.regionId = department.region.id
+          department.regionName = department.region.name
+        if department.district
+          department.districtId = department.district.id
+          department.districtName = department.district.name
+      vm.departments departments
+
+  loadAllRoles = ->
+    $.get(apiUrl.roles)
+    .fail handleError
+    .done (roles) ->
+      vm.roles roles
 
   loadAllUsers()
   loadAllRegions()
