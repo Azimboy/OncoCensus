@@ -57,7 +57,7 @@ trait UsersDao {
   def findById(id: Int): Future[Option[User]]
   def create(user: User): Future[Int]
   def findAll: Future[Seq[User]]
-  def updateUser(user: User): Future[Int]
+  def update(user: User): Future[Int]
   def updateUserPasswordHashEncr(userId: Int, passwordHashEncr: String): Future[Int]
   def updateUserPasswordHashEncrAndExpiresDate(userId: Int, passwordHashEncr: String, expiresAt: Date): Future[Int]
   def checkLoginUser(loginEncr: String, passwordHashEncr: String): Future[Option[User]]
@@ -100,7 +100,7 @@ class UsersImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
     })
   }
 
-  override def updateUser(user: User): Future[Int] = {
+  override def update(user: User): Future[Int] = {
     db.run {
       users.filter(_.id === user.id).update(user)
     }

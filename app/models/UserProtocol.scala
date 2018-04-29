@@ -38,7 +38,7 @@ object UserProtocol {
 		}
 	}
 
-	case class AddUser(user: User)
+	case class ModifyUser(user: User)
 	case object GetAllUsers
 	sealed case class Role(code: String, name: String)
 

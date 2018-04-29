@@ -1,11 +1,10 @@
 package models.actor_managers
 
-import javax.inject.{Inject, Named, Singleton}
-
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.UserProtocol.{AddUser, GetAllUsers, User}
+import javax.inject.{Inject, Named, Singleton}
+import models.UserProtocol.{GetAllUsers, ModifyUser, User}
 import models.actor_managers.EncryptionManager.{DecryptUsers, EncryptUser}
 import models.daos.UsersDao
 
@@ -22,17 +21,22 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 	implicit val defaultTimeout = Timeout(60.seconds)
 
 	override def receive: Receive = {
-		case AddUser(user) =>
-			addUser(user).pipeTo(sender())
+		case ModifyUser(user) =>
+			modifyUser(user).pipeTo(sender())
 
 		case GetAllUsers =>
 			getAllUsers().pipeTo(sender())
 	}
 
-	def addUser(newUser: User): Future[Int] = {
+	def modifyUser(user: User): Future[Int] = {
 		for {
-			encryptedUser <- (encryptionManager ? EncryptUser(newUser)).mapTo[User]
-			id <- usersDao.create(encryptedUser)
+			encryptedUser <- (encryptionManager ? EncryptUser(user)).mapTo[User]
+			id <- user.id match {
+				case Some(userId) =>
+					log.info(s"Updating existing user. ID: $userId")
+					usersDao.update(encryptedUser)
+				case None => usersDao.create(encryptedUser)
+			}
 		} yield id
 	}
 

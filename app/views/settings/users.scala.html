@@ -9,28 +9,22 @@
     </a>
   </div>
 </div>
-
 <div class="clearfix"></div>
 
 <div>
-  <!-- ko template: {name: 'users-table-template', data: {users: vm.users, vm: vm}} -->
-  <!-- /ko -->
-</div>
-
-<script type="text/html" id="users-table-template">
   <table class="table table-bordered table-hover users-table no-margin-bottom">
     <thead>
       <tr>
         <th>
-        <span>Sana</span><br>
-        <span class="nowrap">Yaratildi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow"></span></span><br>
-        <span class="nowrap">O'zgardi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow" title="Sort by Updated Date"></span></span>
+          <span>Sana</span><br>
+          <span class="nowrap">Yaratildi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow"></span></span><br>
+          <span class="nowrap">O'zgardi&nbsp;<span class="glyphicon glyphicon-sort sort-arrow" title="Sort by Updated Date"></span></span>
         </th>
         <th class="medium-col">
-        Login&nbsp;<span class="glyphicon glyphicon-sort sort-arrow" title="Sort column"></span>
+          Login&nbsp;<span class="glyphicon glyphicon-sort sort-arrow" title="Sort column"></span>
         </th>
         <th width="260px">
-        <div class="pull-left">Foydalanuvchi Role</div>
+          <div class="pull-left">Foydalanuvchi Role</div>
         </th>
         <th>Familiya<span class="nowrap">&nbsp;<span class="glyphicon glyphicon-sort sort-arrow"
         title="Familiya bo'yicha saralash"></span></span>
@@ -49,14 +43,14 @@
       </tr>
     </thead>
 
-    <tbody data-bind="foreach: $data.users">
+    <tbody data-bind="foreach: vm.users">
       <tr>
         <td>
-        <span class="nowrap" data-bind="text: $root.vm.formatDate($data.createdAt)"></span><br>
-        <span class="nowrap" data-bind="text: $root.vm.formatDate($data.updatedAt)"></span>
+          <span class="nowrap" data-bind="text: $root.vm.formatDate($data.createdAt)"></span><br>
+          <span class="nowrap" data-bind="text: $root.vm.formatDate($data.updatedAt)"></span>
         </td>
         <td class="break-word medium-col"><span data-bind="text: $data.login"></span></td>
-        <td class="medium-col"></td>
+        <td class="medium-col" data-bind="text: $data.roleCodesArr"></td>
         <td><span data-bind="text: $data.firstName"></span></td>
         <td><span data-bind="text: $data.lastName"></span></td>
         <td><span data-bind="text: $data.middleName"></span></td>
@@ -74,26 +68,81 @@
       </tr>
     </tbody>
   </table>
-</script>
+</div>
 
-<div id="add-user-modal" class="modal fade" role="dialog" data-backdrop="static">
+<div id="user-modal" class="modal fade" role="dialog" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Yangi foydalanuvchi yaratish</h4>
+        <h4 class="modal-title">Foydalanuvchi ma'lumotlarini tahrirlash</h4>
       </div>
 
       <div class="modal-body">
-        <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}"></div>
+        <form action="">
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="login">Login</label>
+              <input type="text" class="form-control" id="login" data-bind="value: vm.selected.user.login" name="login">
+            </div>
+            <div class="col-xs-6">
+              <label for="role">Foydalanuvchi tipi</label><br>
+              <select class="form-control" name="role" id="role"
+              data-bind="options: vm.roles, optionsText: 'name', optionsValue: 'code', value: vm.selected.user.roleCodes, optionsCaption: ''">
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="password">Parol</label>
+              <input type="password" class="form-control" id="password" data-bind="value: vm.selected.user.password" name="password">
+            </div>
+            <div class="col-xs-6">
+              <label for="passwordConfirm">Parolni tasdiqlash</label><br>
+              <input type="password" class="form-control" id="passwordConfirm" data-bind="value: vm.selected.user.passwordConfirm" name="passwordConfirm">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-4">
+              <label for="lastName">Familiya</label>
+              <input type="text" class="form-control" id="lastName" data-bind="value: vm.selected.user.lastName" name="lastName">
+            </div>
+            <div class="col-xs-4">
+              <label for="firstName">Ism</label>
+              <input type="text" class="form-control" id="firstName" data-bind="value: vm.selected.user.firstName" name="firstName">
+            </div>
+            <div class="col-xs-4">
+              <label for="middleName">Otasining ismi</label>
+              <input type="text" class="form-control" id="middleName" data-bind="value: vm.selected.user.middleName" name="middleName">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-12">
+              <label for="departmentId">Tibbiy bo'lim</label>
+              <select class="form-control" autocomplete="off" name="departmentId" id="departmentId"
+              data-bind="options: vm.departments, optionsText: 'name', optionsValue: 'id', value: vm.selected.user.departmentId, optionsCaption: ''">
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-xs-6">
+              <label for="email">Email</label>
+              <input type="text" class="form-control" id="email" data-bind="value: vm.selected.user.email">
+            </div>
+            <div class="col-xs-6">
+              <label for="phoneNumber">Telefon raqam</label>
+              <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.user.phoneNumber">
+            </div>
+          </div>
+        </form>
         <div class="clearfix"></div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-sm btn-primary pull-left add-user" data-bind="click: vm.createUser, disable: vm.isLoading">
+        <button class="btn btn-sm btn-primary pull-left save-user" data-bind="click: vm.onSubmitUser, disable: vm.isLoading">
           <i class="ace-icon fa fa-save"></i>
           Saqlash
         </button>
-        <div class="busy-loader pull-left" data-bl-selector=".add-user" data-bl-url="settings/user"></div>
+        <div class="busy-loader pull-left" data-bl-selector=".save-user" data-bl-url="settings/user"></div>
         <button class="btn btn-sm pull-right" data-dismiss="modal">
           <i class="ace-icon fa fa-times"></i>
           Bekor qilish
@@ -102,71 +151,3 @@
     </div>
   </div>
 </div>
-
-<div id="edit-user-modal" class="modal fade" role="dialog" data-backdrop="static">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Foydalanuvchini tahrirlash</h4>
-      </div>
-
-      <div class="modal-body">
-        <div data-bind="template: {name: 'form-fields-template', data: vm.selected.user}"></div>
-        <div class="clearfix"></div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-sm btn-primary pull-left edit-user" data-bind="click: vm.editManager, disable: vm.isLoading">
-          <i class="ace-icon fa fa-save"></i>
-          Saqlash
-        </button>
-        <div class="busy-loader pull-left" data-bl-selector=".edit-user" data-bl-url="settings/user"></div>
-        <button class="btn btn-sm pull-right" data-dismiss="modal">
-          <i class="ace-icon fa fa-times"></i>
-          Bekor qilish
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script type="text/html" id="form-fields-template">
-  <div class="form-group row">
-    <div class="col-xs-6">
-      <label for="login">Login</label>
-      <input type="text" class="form-control" id="login" data-bind="value: $data.login" name="login">
-    </div>
-  </div>
-  <div class="form-group row">
-    <div class="col-xs-4">
-      <label for="lastName">Familiya</label>
-      <input type="text" class="form-control" id="lastName" data-bind="value: $data.lastName" name="lastName">
-    </div>
-    <div class="col-xs-4">
-      <label for="firstName">Ism</label>
-      <input type="text" class="form-control" id="firstName" data-bind="value: $data.firstName" name="firstName">
-    </div>
-    <div class="col-xs-4">
-      <label for="middleName">Otasining ismi</label>
-      <input type="text" class="form-control" id="middleName" data-bind="value: $data.middleName" name="middleName">
-    </div>
-  </div>
-  <div class="form-group row">
-    <div class="col-xs-12">
-      <label for="department">Tibbiy bo'lim</label>
-      <select class="form-control" autocomplete="off" name="department" id="department"
-        data-bind="options: $root.vm.departments, optionsText: 'name', optionsValue: 'id', value: $data.departmentId, optionsCaption: 'Tibbiy bo\'lim'">
-      </select>
-    </div>
-  </div>
-  <div class="form-group row">
-    <div class="col-xs-6">
-      <label for="email">Email</label>
-      <input type="text" class="form-control" id="email" data-bind="value: $data.email">
-    </div>
-    <div class="col-xs-6">
-      <label for="phoneNumber">Telefon raqam</label>
-      <input type="text" class="form-control" id="phoneNumber" data-bind="value: $data.phoneNumber">
-    </div>
-  </div>
-</script>

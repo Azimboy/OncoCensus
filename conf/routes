@@ -34,7 +34,7 @@ PUT     /settings/department/:id                            @controllers.Setting
 DELETE  /settings/department/:id                            @controllers.SettingsController.deleteDepartment(id: Int)
 
 GET     /settings/users                                     @controllers.SettingsController.getUsers
-POST    /settings/user                                      @controllers.SettingsController.createUser
+POST    /settings/user                                      @controllers.SettingsController.modifyUser
 GET     /settings/roles                                     @controllers.SettingsController.getRoles
 
 # Map static resources from the /public folder to the /assets URL path

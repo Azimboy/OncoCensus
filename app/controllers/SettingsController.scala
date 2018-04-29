@@ -9,7 +9,7 @@ import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
 import javax.inject.{Inject, Named, Singleton}
 import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
-import models.UserProtocol.{AddUser, GetAllUsers, User, roles}
+import models.UserProtocol.{GetAllUsers, ModifyUser, User, roles}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
@@ -21,7 +21,9 @@ import scala.concurrent.duration.DurationInt
 
 object SettingsController {
 	case class UserWeb(
+		id: Option[Int],
 	  login: String,
+		password: String,
 	  firstName: Option[String] = None,
 	  lastName: Option[String] = None,
 	  middleName: Option[String] = None,
@@ -62,12 +64,13 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 		}
 	}
 
-	def createUser = Action.async(parse.json[UserWeb]) { implicit request =>
+	def modifyUser = Action.async(parse.json[UserWeb]) { implicit request =>
 		val userWeb = request.body
 
 		val newUser = User(
+			id = userWeb.id,
 			login = userWeb.login,
-			passwordHash = "123",
+			passwordHash = userWeb.password,
 			createdAt = Some(new Date),
 			firstName = userWeb.firstName,
 			lastName = userWeb.lastName,
@@ -78,31 +81,7 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 			phoneNumber = userWeb.phoneNumber
 		)
 
-		(userManager ? AddUser(newUser)).mapTo[Int].map { id =>
-			Ok(Json.toJson(id))
-		}.recover { case error =>
-			logger.error("Add user error", error)
-			InternalServerError
-		}
-	}
-// TODO fix User update
-	def updateUser(id: Int) = Action.async(parse.json[UserWeb]) { implicit request =>
-		val userWeb = request.body
-
-		val newUser = User(
-			login = userWeb.login,
-			passwordHash = "123",
-			createdAt = Some(new Date),
-			firstName = userWeb.firstName,
-			lastName = userWeb.lastName,
-			middleName = userWeb.middleName,
-			departmentId = userWeb.departmentId,
-			roleCodes = userWeb.roleCodes,
-			email = userWeb.email,
-			phoneNumber = userWeb.phoneNumber
-		)
-
-		(userManager ? AddUser(newUser)).mapTo[Int].map { id =>
+		(userManager ? ModifyUser(newUser)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
 			logger.error("Add user error", error)

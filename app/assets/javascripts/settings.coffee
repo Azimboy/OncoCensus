@@ -20,9 +20,20 @@ $ ->
     else
       alert('Something went wrong! Please try again.')
 
-  $addUserModal = $('#add-user-modal')
-  $editUserModal = $('#edit-user-modal')
-  $changePasswordModal = $('#change-password-modal')
+#  $('.multiselect').multiselect(
+#    nonSelectedText: 'Role tanlang'
+#    allSelectedText: 'Hammasi tanlandi'
+#    enableHTML: true
+#    buttonClass: 'btn btn-white btn-primary'
+#    templates:
+#      button: '<button type="button" class="multiselect dropdown-toggle" data-toggle="dropdown"><span class="multiselect-selected-text"></span> &nbsp;<b class="fa fa-caret-down"></b></button>'
+#      ul: '<ul class="multiselect-container dropdown-menu"></ul>'
+#      li: '<li><a tabindex="0"><label></label></a></li>'
+#      divider: '<li class="multiselect-item divider"></li>'
+#      liGroup: '<li class="multiselect-item multiselect-group"><label></label></li>'
+#  )
+
+  $userModal = $('#user-modal')
 
   $addDepartmentModal = $('#add-department-modal')
   $editDepartmentModal = $('#edit-department-modal')
@@ -33,14 +44,17 @@ $ ->
     name: ''
 
   defaultUser =
+    id: undefined
     login: ''
+    password: ''
+    passwordConfirm: ''
     firstName: ''
     lastName: ''
     middleName: ''
     departmentId: ''
     email: ''
     phoneNumber: ''
-    roleCodes: 'super.user'
+    roleCodes: ''
 
   vm = ko.mapping.fromJS
     users: []
@@ -61,12 +75,18 @@ $ ->
     warningText =
       if notvalid(user.login)
         'Login maydonini to\'ldiring'
+      else if notvalid(user.password)
+        'Parol maydonini to\'ldiring'
+      else if notvalid(user.passwordConfirm)
+        'Parolni takroran kiriting'
       else if notvalid(user.firstName)
         'Ism maydonini to\'ldiring'
       else if notvalid(user.lastName)
         'Familiya maydonini to\'ldiring'
       else if notvalid(user.middleName)
         'Otasining ismi maydonini to\'ldiring'
+      else if notvalid(user.roleCodes)
+        'Foydalanuvchi tipini tanglang'
       else if !user.departmentId
         'Tibbiy bo\'lim maydonini to\'ldiring'
       else if user.login.indexOf(' ') isnt -1
@@ -75,6 +95,8 @@ $ ->
         'Haqiqiy email manzilini kiriting'
       else if user.phoneNumber and !my.isValidPhone(user.phoneNumber)
         'Haqiqiy telefon raqamni kiriting'
+      else if user.password != user.passwordConfirm
+        "Parollar bir-biriga mos kelmaydi! Iltimos parolni qaytadan kiriting"
 
     if warningText
       toastr.error(warningText)
@@ -84,11 +106,15 @@ $ ->
 
   vm.onClickAddUserButton = ->
     ko.mapping.fromJS(defaultUser, {}, vm.selected.user)
-    $addUserModal.modal('show')
+    $userModal.modal('show')
 
-  vm.createUser = ->
+  vm.onClickEditUserButton = (user) ->
+    ko.mapping.fromJS(user, {}, vm.selected.user)
+    $userModal.modal('show')
+
+  vm.onSubmitUser = ->
     userObj = ko.mapping.toJS(vm.selected.user)
-
+    console.log(userObj)
     if isUserValid(userObj)
       vm.isLoading(yes)
       $.ajax
@@ -98,35 +124,14 @@ $ ->
         dataType: "json"
         contentType: 'application/json'
       .fail handleError
-      .done (id) ->
+      .done (result) ->
         vm.isLoading(no)
-        userObj.id = id
-        userObj.createdAt = +new Date
-        toastr.success('Yangi foydalanuvchi muvaffaqiyatli yaratildi')
+        if userObj.id
+          toastr.success("Foydalanuvchi ma'lumotlari muvaffaqiyatli saqlandi.")
+        else
+          toastr.success("Foydalanuvchi ma'lumotlari muvaffaqiyatli yaratildi.")
         loadAllUsers()
-        $addUserModal.modal('hide')
-
-  vm.onClickEditUserButton = (user) ->
-    ko.mapping.fromJS(user, {}, vm.selected.user)
-    $editUserModal.modal('show')
-
-  vm.updateUser = () ->
-    userObj = ko.mapping.toJS(vm.selected.user)
-
-    if isUserValid(userObj)
-      vm.isLoading(yes)
-      $.ajax
-        url: apiUrl.user + "/#{userObj.id}"
-        data: JSON.stringify(userObj)
-        type: 'PUT'
-        dataType: "json"
-        contentType: 'application/json'
-      .fail handleError
-      .done () ->
-        vm.isLoading(no)
-        toastr.success('Muvaffaqiyatli saqlandi')
-        loadAllUsers()
-        $editUserModal.modal('hide')
+        $userModal.modal('hide')
 
   vm.formatDate = (millis, format = 'MMM DD YYYY') ->
     if millis
@@ -134,7 +139,7 @@ $ ->
 
   prettifyUsers = (rawUsers) ->
     for user in rawUsers
-      user.roleCodesArr = []
+      user.roleCodesArr = ''
       if user.roleCodes
         user.roleCodesArr = user.roleCodes.split(',')
       if user.department
