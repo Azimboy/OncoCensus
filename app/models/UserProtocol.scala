@@ -38,6 +38,14 @@ object UserProtocol {
 		}
 	}
 
+	sealed trait LoginAttemptsFailure
+	case object BlockedUserAccount extends LoginAttemptsFailure
+	case object LoginDoesNotMatch extends LoginAttemptsFailure
+	case object RoleDoesNotMatch extends LoginAttemptsFailure
+	case class WrongPassword(failedAttemptsCount: Int) extends LoginAttemptsFailure
+
+	case class CheckUserLogin(login: String, password: String)
+
 	case class ModifyUser(user: User)
 	case object GetAllUsers
 	sealed case class Role(code: String, name: String)

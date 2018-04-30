@@ -6,6 +6,8 @@
 # An example controller showing a sample home page
 GET     /                                                   @controllers.HomeController.index
 GET     /login                                              @controllers.HomeController.login
+POST    /login                                              @controllers.HomeController.loginPost
+GET     /logout                                             @controllers.HomeController.logout
 GET     /redirect/:menuName                                 @controllers.HomeController.redirectTo(menuName)
 
 GET     /home/regions                                       @controllers.HomeController.getRegions
