@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.Date
+
 import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
@@ -9,7 +11,7 @@ import javax.inject._
 import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, Region}
 import models.PatientProtocol.{ClientGroup, GetAllClientGroups}
 import models.SimpleAuth
-import models.UserProtocol.{BlockedUserAccount, CheckUserLogin, LoginAttemptsFailure, LoginDoesNotMatch, RoleDoesNotMatch, User, WrongPassword}
+import models.UserProtocol.{BlockedUser, CheckUserLogin, FailedAttemptsCountForBlockUser, LoginAttemptsFailure, UserNotFound, UpdateUsersBlockStatus, User, WrongPassword}
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.data.Form
@@ -100,42 +102,26 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
   def checkLogin(login: String, password: String)(implicit request: RequestHeader): Future[Either[(Result, String), (Result, User)]]  = {
     def redirectWithParams(userAccount: Either[LoginAttemptsFailure, User]) = userAccount match {
       case Right(user) =>
-        val result =
-//          if (user.isExpired) {
-//            logger.info(s"Password expired")
-//            val metaJson = MetaJson(code = CieloAccountCode, Json.stringify(Json.toJson(UserId(user.id.get))))
-//            for {
-//              token <- (tokenManager ? AddToken(metaJson, UserTokenExpiresInHours)).mapTo[String]
-//              result <- Redirect(controllers.cielome.routes.CieloAccountController.resetPassword(user.isFirstLogin, user.clientCode.getOrElse(""))).addingToSession(
-//                authInit(SessionKeyUserToken, token, loginParams.sessionDuration) ++
-//                  authInit(sessionAttr.redirectKey, uri, loginParams.sessionDuration): _*
-//              )
-//            } yield result
-//          } else {
-            Future.successful(Redirect(redirectUrl).addingToSession(
-              authInit(sessionKey, login, Some(sessionDuration)) ++
-                authInit(roleSessionKey, user.roleCodes.getOrElse(""), Some(sessionDuration)): _*
-            ))
-//          }
-       result.map(Right(_, user))
+        Future.successful(Redirect(redirectUrl).addingToSession(
+          authInit(sessionKey, login, Some(sessionDuration)) ++
+            authInit(roleSessionKey, user.roleCodes.getOrElse(""), Some(sessionDuration)): _*
+        )).map(Right(_, user))
 
       case Left(loginFailure) =>
         (loginFailure match {
-          case BlockedUserAccount =>
-            Future.successful("Your account is temporarily locked. Your account will automatically be unlocked in 12 hours or please see your Banking Services application administrator.")
-          case LoginDoesNotMatch =>
-            Future.successful("Login yoki parol noto'g'ri")
-          case RoleDoesNotMatch =>
-            Future.successful("You are not authorized to access this application. Please see your Banking Services application administrator.")
-          case WrongPassword(_) =>
-//            if (failedAttemptsCount >= FailedAttemptsCountForBlockUser) {
-//              val blockedAt = Some(new Date)
-//              (userManager ? UpdateUserAccountBlockStatus(login, blockedAt)).mapTo[Unit].map { _ =>
-//                "Your account has been blocked. Your account will automatically be unlocked in 12 hours or please see your Banking Services application administrator."
-//              }
-//            } else {
-              Future.successful("Parol noto'g'ri")
-//            }
+          case BlockedUser =>
+            Future.successful("BlockedUser")
+          case UserNotFound =>
+            Future.successful("UserNotFound")
+          case WrongPassword(failedAttemptsCount) =>
+            if (failedAttemptsCount >= FailedAttemptsCountForBlockUser) {
+              val blockedAt = Some(new Date)
+              (userManager ? UpdateUsersBlockStatus(login, blockedAt)).mapTo[Unit].map { _ =>
+                "UserHasBeenBlocked"
+              }
+            } else {
+              Future.successful("WrongPassword")
+            }
         }).map { failReason =>
           logger.info(s"LoginFailed, reason: $failReason")
           Left(Redirect(redirectUrl).flashing("error" -> failReason), failReason)

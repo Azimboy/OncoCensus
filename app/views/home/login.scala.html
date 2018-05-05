@@ -6,6 +6,16 @@
 @import helper._
 @import home.simple._
 
+
+@getErrorMessage = @{
+  Map(
+    "BlockedUser" -> "Foydalanuvchi vaqtinchalik bloklangan va 6 soat ichida avtomatik tarzda ochiladi. Qo'shimcha ma'lumotlar uchun tizim bo'yicha administratorga murojat qiling.",
+    "UserNotFound" -> "Foydalanuvchi tizimda mavjud emas.",
+    "UserHasBeenBlocked" -> "Foydalanuvchi vaqtinchalik bloklandi va 6 soatdan keyin avtomatik tarzda ochiladi. Qo'shimcha ma'lumotlar uchun tizim bo'yicha administratorga murojat qiling.",
+    "WrongPassword" -> "Parol noto'g'ri kiritildi."
+  )
+}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -91,10 +101,9 @@
                                 <i class="ace-icon fa fa-lock"></i>
                               </span>
                               @flash.get("error").map { errorMessage =>
-                                <small class="red">@errorMessage</small>
+                                <small class="red">@getErrorMessage.getOrElse(errorMessage, "")</small>
                               }
                             </label>
-
 
                             <div class="space"></div>
 

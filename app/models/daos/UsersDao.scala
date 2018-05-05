@@ -63,6 +63,7 @@ trait UsersDao {
   def checkLoginUser(loginEncr: String, passwordHashEncr: String): Future[Option[User]]
   def checkPasswordWithCurrent(userId: Int, passwordHashEncr: String): Future[Option[User]]
   def updateUserBlockStatusByLogin(loginEncr: String, blockedAt: Option[Date]): Future[Int]
+  def updateFailedAttemptsCountByLogin(loginEncr: String, failedAttemptsCount: Int): Future[Int]
 }
 
 @Singleton
@@ -138,6 +139,13 @@ class UsersImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
     db.run {
       users.filter(_.loginEncr === loginEncr)
         .map(_.blockedAt).update(blockedAt)
+    }
+  }
+
+  override def updateFailedAttemptsCountByLogin(loginEncr: String, failedAttemptsCount: Int): Future[Int] = {
+    db.run {
+      users.filter(u => u.loginEncr === loginEncr)
+        .map(_.failedAttemptsCount).update(failedAttemptsCount)
     }
   }
 

@@ -9,6 +9,7 @@ import play.api.libs.json.Json
 object UserProtocol {
 
 	private val UserUnlocksInHours = 12
+	val FailedAttemptsCountForBlockUser = 5
 
 	case class User(
 		id: Option[Int] = None,
@@ -39,12 +40,12 @@ object UserProtocol {
 	}
 
 	sealed trait LoginAttemptsFailure
-	case object BlockedUserAccount extends LoginAttemptsFailure
-	case object LoginDoesNotMatch extends LoginAttemptsFailure
-	case object RoleDoesNotMatch extends LoginAttemptsFailure
+	case object BlockedUser extends LoginAttemptsFailure
+	case object UserNotFound extends LoginAttemptsFailure
 	case class WrongPassword(failedAttemptsCount: Int) extends LoginAttemptsFailure
 
 	case class CheckUserLogin(login: String, password: String)
+	case class UpdateUsersBlockStatus(login: String, blockedAt: Option[Date])
 
 	case class ModifyUser(user: User)
 	case object GetAllUsers

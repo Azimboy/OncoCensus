@@ -7,9 +7,10 @@ import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import javax.inject.{Inject, Named, Singleton}
 import models.UserProtocol._
-import models.actor_managers.EncryptionManager.{DecryptUsers, EncryptUser}
+import models.actor_managers.EncryptionManager.{DecryptText, DecryptUsers, EncryptText, EncryptUser}
 import models.daos.UsersDao
 import models.utils.StringUtils.createHash
+
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,6 +32,9 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 
 		case CheckUserLogin(login, password) =>
 			checkUserLogin(login, password).pipeTo(sender())
+
+		case UpdateUsersBlockStatus(login, blockedAt) =>
+			updateUsersBlockStatus(login, blockedAt).pipeTo(sender())
 	}
 
 	def modifyUser(user: User): Future[Int] = {
@@ -53,82 +57,67 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 	}
 
 	def checkUserLogin(login: String, password: String): Future[Either[LoginAttemptsFailure, User]] = {
-		getDecrUserByLogin(login.toLowerCase, password)
-//			.map {
-//			case Right(decrUserAccount) =>
-//				userAccountBaseWithFailure(
-//					userRoleCodeSet.intersect(appRoleCodeSet).nonEmpty || userManagedAppCodeSet.contains(app.code),
-//					decrUserAccount
-//				)
-//			case l @ Left(_) => Left(l.left.get)
-//		}
+		getAllUsers().flatMap(users => checkForFailedAttempts(users, login, createHash(password)))
 	}
 
-//	val userAccountBaseWithFailure = (f: Boolean, userAccount: UserAccount) => if (f) {
-//		Right(createUserAccountBase(userAccount))
-//	} else {
-//		log.warning(s"Login failed [userAccountId=${userAccount.id}, ManagedApps=${userAccount.managedAppCodes}, RoleCodes=${userAccount.roleCodes}, reason: Role does not match]")
-//		Left(RoleDoesNotMatch)
-//	}
-
-	private def getDecrUserByLogin(login: String, password: String): Future[Either[LoginAttemptsFailure, User]] = {
-		(for {
-			encrUsers <- usersDao.findAll
-			decrUsers <- (encryptionManager ? DecryptUsers(encrUsers)).mapTo[Seq[User]]
-		} yield decrUsers).map { users =>
-			val passwordHash = createHash(password)
-      log.info(s"$users")
-			users.find { user =>
-				user.login.toLowerCase == login.toLowerCase && user.passwordHash == passwordHash
-			} match {
-				case Some(user) => Right(user)
-				case None => Left(WrongPassword(1))
+	def checkForFailedAttempts(users: Seq[User], login: String, passwordHash: String): Future[Either[LoginAttemptsFailure, User]] = {
+		users.find(user => user.login.toLowerCase == login.toLowerCase && user.passwordHash == passwordHash).map { user =>
+			user.blockedAt match {
+				case Some(_) => checkBlockedUser(user, isValidUser = true)
+				case None =>
+					for {
+						loginEncr <- encrText(user.login)
+						_ <- usersDao.updateFailedAttemptsCountByLogin(loginEncr, 0)
+					} yield Right(user)
+			}
+		}.getOrElse {
+			val failedUser = users.find(_.login == login)
+			failedUser.map { fUser =>
+				log.warning(s"Login failed [failed User=${fUser.id}, reason: Wrong password]")
+				val failedAttemptsCount = fUser.failedAttemptsCount + 1
+				fUser.blockedAt match {
+					case Some(_) => checkBlockedUser(fUser, isValidUser = false)
+					case None =>
+						for {
+							loginEncr <- encrText(fUser.login)
+							_ <- usersDao.updateFailedAttemptsCountByLogin(loginEncr, failedAttemptsCount)
+						} yield Left(WrongPassword(failedAttemptsCount))
+				}
+			}.getOrElse {
+				log.warning(s"Login failed, reason: Login does not match]")
+				Future.successful(Left(UserNotFound))
 			}
 		}
 	}
 
-//	private def checkForFailedAttempts(users: Seq[User], login: String, password: String) = {
-//		val passwordHash = createHash(password)
-//		users.find(userFilter(login, passwordHash)).map { user =>
-//			user.blockedAt match {
-//				case Some(_) => checkBlockedUser(user, isValidUser = true)
-//				case None =>
-//					for {
-//						loginEncr <- encrText(user.login)
-//						_ <- usersDao.updateFailedAttemptsCountByLogin(loginEncr, 0)
-//					} yield Right(user)
-//			}
-//		}.getOrElse {
-//			val failedUser = users.find(_.login == login)
-//			failedUser.map { fUser =>
-//				log.warning(s"Login failed [failed User=${fUser.id}, reason: Wrong password]")
-//				val failedAttemptsCount = fUser.failedAttemptsCount + 1
-//				fUser.blockedAt match {
-//					case Some(_) => checkBlockedUser(fUser, isValidUser = false)
-//					case None =>
-//						for {
-//							loginEncr <- encrText(fUser.login)
-//							clientCodeEncr <- encrText(fUser.clientCode.get)
-//							_ <- userAccountsDao.updateFailedAttemptsCountByLogin(loginEncr, failedAttemptsCount, clientCodeEncr)
-//						} yield Left(WrongPassword(failedAttemptsCount))
-//				}
-//			}.getOrElse {
-//				log.warning(s"Login failed, reason: Login does not match]")
-//				Future.successful(Left(LoginDoesNotMatch))
-//			}
-//		}
-//	}
+	private def checkBlockedUser(user: User, isValidUser: Boolean): Future[Either[LoginAttemptsFailure, User]] = {
+		if (user.isBlocked) {
+			Future.successful(Left(BlockedUser))
+		} else {
+			if (isValidUser) {
+				updateUsersBlockStatus(user.login).map(_ => Right(user))
+			} else {
+				updateUsersBlockStatus(user.login, None, Some(1)).map(_ => Left(WrongPassword(1)))
+			}
+		}
+	}
 
-//	private def checkBlockedUser(user: UserAccount, isValidUser: Boolean): Future[Either[LoginAttemptsFailure, UserAccount]] = {
-//		if (user.isBlocked) {
-//			Future.successful(Left(BlockedUserAccount))
-//		} else {
-//			if (isValidUser) {
-//				updateUserAccountBlockStatus(user.login, user.clientCode.get).map(_ => Right(user))
-//			} else {
-//				updateUserAccountBlockStatus(user.login, user.clientCode.get, None, Some(1)).map(_ => Left(WrongPassword(1)))
-//			}
-//		}
-//	}
+	def updateUsersBlockStatus(login: String, blockedAt: Option[Date] = None, failedAttemptsCount: Option[Int] = None): Future[Unit] = {
+		(for {
+			loginEncr <- encrText(login.toLowerCase)
+			_ <- usersDao.updateUserBlockStatusByLogin(loginEncr, blockedAt)
+			_ <- usersDao.updateFailedAttemptsCountByLogin(loginEncr, failedAttemptsCount.getOrElse(0))
+		} yield ()).recover { case err =>
+			log.error(err, s"Error occurred during updating block status user account")
+		}
+	}
+
+	def decrText(encrText: String) = {
+		(encryptionManager ? DecryptText(encrText)).mapTo[String]
+	}
+
+	def encrText(decrText: String) = {
+		(encryptionManager ? EncryptText(decrText)).mapTo[String]
+	}
 
 }
