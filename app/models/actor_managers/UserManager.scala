@@ -53,7 +53,7 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 		for {
 			encrUsers <- usersDao.findAll
 			decrUsers <- (encryptionManager ? DecryptUsers(encrUsers)).mapTo[Seq[User]]
-		} yield decrUsers.map(_.copy(passwordHash = ""))
+		} yield decrUsers
 	}
 
 	def checkUserLogin(login: String, password: String): Future[Either[LoginAttemptsFailure, User]] = {

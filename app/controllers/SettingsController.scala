@@ -63,7 +63,7 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 
 	def getUsers = Action.async { implicit request =>
 		(userManager ? GetAllUsers).mapTo[Seq[User]].map { users =>
-			Ok(Json.toJson(users))
+			Ok(Json.toJson(users.map(_.copy(passwordHash = ""))))
 		}
 	}
 
