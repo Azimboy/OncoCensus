@@ -54,7 +54,8 @@ trait UsersComponent extends DepartmentsComponent
 
 @ImplementedBy(classOf[UsersImpl])
 trait UsersDao {
-  def findById(id: Int): Future[Option[User]]
+//  def findById(id: Int): Future[Option[User]]
+  def findByLogin(loginEncr: String): Future[Option[User]]
   def create(user: User): Future[Int]
   def findAll: Future[Seq[User]]
   def update(user: User): Future[Int]
@@ -79,10 +80,13 @@ class UsersImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
   val users = TableQuery[Users]
   val departments = TableQuery[Departments]
 
-  override def findById(id: Int) = {
+  override def findByLogin(loginEncr: String) = {
     db.run {
-      users.filter(_.id === id).result.headOption
-    }
+      users.join(departments).on(_.departmentId === _.id)
+        .filter(_._1.loginEncr === loginEncr).result.headOption
+    }.map(_.map { case (user, department) =>
+      user.copy(department = Some(department))
+    })
   }
 
   override def create(user: User) = {

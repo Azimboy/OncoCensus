@@ -1,7 +1,8 @@
 @import views.html.home
 @import org.webjars.play.WebJarsUtil
+@import models.UserProtocol.User
 
-@()(implicit webJarsUtil: WebJarsUtil)
+@(user: User)(implicit webJarsUtil: WebJarsUtil)
 
 @home.main("OncoCensus"){
   <script src="@routes.Assets.versioned("javascripts/home.js")"></script>
@@ -136,8 +137,8 @@
             <a data-toggle="dropdown" href="#" class="dropdown-toggle">
               <img class="nav-user-photo" src="assets/images/avatars/avatar2.png" alt="Users Photo" />
               <span class="user-info">
-                <small>Administrator,</small>
-                Rahmonov M.
+                <small>@user.roleCodes.getOrElse(""),</small>
+                @user.lastName.getOrElse("") @user.firstName.getOrElse("")
               </span>
 
               <i class="ace-icon fa fa-caret-down"></i>

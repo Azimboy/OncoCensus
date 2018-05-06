@@ -50,6 +50,8 @@ object UserProtocol {
 
 	case class ModifyUser(user: User)
 	case object GetAllUsers
+	case class GetUserByLogin(login: String)
+
 	sealed case class Role(code: String, name: String)
 
 	object Administrator extends Role("administrator", "Administrator")
@@ -61,8 +63,8 @@ object UserProtocol {
 	implicit val roleFormat = Json.format[Role]
 	implicit val userFormat = Json.format[User]
 
-  val sessionKey = "onco.census"
-  val roleSessionKey = s"$sessionKey.role"
-  val sessionDuration = 10.seconds
+  val userSessionKey = "onco.census.user"
+	val roleSessionKey = s"$userSessionKey.role"
+  val sessionDuration = 10.minutes
 
 }

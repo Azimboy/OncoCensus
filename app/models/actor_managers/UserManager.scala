@@ -7,7 +7,7 @@ import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import javax.inject.{Inject, Named, Singleton}
 import models.UserProtocol._
-import models.actor_managers.EncryptionManager.{DecryptText, DecryptUsers, EncryptText, EncryptUser}
+import models.actor_managers.EncryptionManager._
 import models.daos.UsersDao
 import models.utils.StringUtils.createHash
 
@@ -35,6 +35,9 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 
 		case UpdateUsersBlockStatus(login, blockedAt) =>
 			updateUsersBlockStatus(login, blockedAt).pipeTo(sender())
+
+		case GetUserByLogin(login) =>
+			getUserByLogin(login).pipeTo(sender())
 	}
 
 	def modifyUser(user: User): Future[Int] = {
@@ -118,6 +121,15 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 
 	def encrText(decrText: String) = {
 		(encryptionManager ? EncryptText(decrText)).mapTo[String]
+	}
+
+	def getUserByLogin(login: String) = {
+		for {
+			encrLogin <- encrText(login)
+			encrUser <- usersDao.findByLogin(encrLogin).mapTo[Option[User]]
+			_ = if (encrUser.isEmpty) log.error(s"User not found by login. Login: $login")
+			decrUser <- (encryptionManager ? DecryptUser(encrUser.get)).mapTo[User]
+		} yield decrUser
 	}
 
 }

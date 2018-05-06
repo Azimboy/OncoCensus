@@ -45,10 +45,10 @@ trait SimpleAuth extends LazyLogging {
   }
 
   def auth(result: => Result)(implicit request: RequestHeader): Result =
-    checkAuth(sessionKey, sessionDuration)(result)
+    checkAuth(userSessionKey, sessionDuration)(result)
 
   def asyncAuth(result: => Future[Result])(implicit request: RequestHeader, ec: ExecutionContext): Future[Result] =
-    checkAuth(sessionKey, sessionDuration)(result)
+    checkAuth(userSessionKey, sessionDuration)(result)
 
   private def checkAuth[A: TypeTag](sessionAttr: String, sessionDuration: FiniteDuration)(body: => A)(implicit request: RequestHeader): A = {
     val expiresAtSessionAttr = expiresAtSessionAttrName(sessionAttr)

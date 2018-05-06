@@ -58,15 +58,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
 
   implicit val defaultTimeout = Timeout(60.seconds)
 
-  def index = Action { implicit request =>
-    val result = auth {
-      Ok(home.index())
-    }
-
-    if (result.header.status == UNAUTHORIZED) {
-      Ok(home.login(playLoginForm))
-    } else {
-      result
+  def index = Action.async { implicit request =>
+    request.session.get(userSessionKey) match {
+      case Some(login) =>
+        (userManager ? GetUserByLogin(login)).mapTo[User].map { user =>
+          Ok(home.index(user))
+        }
+      case None =>
+        Future.successful(Ok(home.login(playLoginForm)))
     }
   }
 
@@ -80,13 +79,12 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
         logger.error(s"Form Error: $errorForm")
         Future.successful(Redirect(redirectUrl).flashing("error" -> "Login yoki parol noto'g'ri"))
       }, {
-        case LoginForm(login, password) => checkLoginPassword(login, password)
-          .recover {
-            case error =>
-              logger.error("error", error)
-              Redirect(redirectUrl).flashing("error" -> "Login yoki parol noto'g'ri")
-          }
-      })
+        case LoginForm(login, password) => checkLoginPassword(login, password).recover { case error =>
+          logger.error("error", error)
+          Redirect(redirectUrl).flashing("error" -> "Login yoki parol noto'g'ri")
+        }
+      }
+    )
   }
 
   private def checkLoginPassword(login: String, password: String)(implicit request: RequestHeader) = {
@@ -100,7 +98,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     def redirectWithParams(userAccount: Either[LoginAttemptsFailure, User]) = userAccount match {
       case Right(user) =>
         Future.successful(Redirect(redirectUrl).addingToSession(
-          authInit(sessionKey, login, Some(sessionDuration)) ++
+          authInit(userSessionKey, login, Some(sessionDuration)) ++
             authInit(roleSessionKey, user.roleCodes.getOrElse(""), Some(sessionDuration)): _*
         )).map(Right(_, user))
 
@@ -135,7 +133,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
 
   def logout = Action { implicit request: RequestHeader =>
     Redirect(controllers.routes.HomeController.login()).withSession(
-      authClear(sessionKey, roleSessionKey)
+      authClear(userSessionKey, roleSessionKey)
     )
   }
 
