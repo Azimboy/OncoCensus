@@ -5,6 +5,7 @@ import java.util.Date
 import models.AppProtocol.Department
 import org.joda.time.{DateTime, Hours}
 import play.api.libs.json.Json
+import scala.concurrent.duration.DurationInt
 
 object UserProtocol {
 
@@ -59,5 +60,9 @@ object UserProtocol {
 
 	implicit val roleFormat = Json.format[Role]
 	implicit val userFormat = Json.format[User]
+
+  val sessionKey = "onco.census"
+  val roleSessionKey = s"$sessionKey.role"
+  val sessionDuration = 10.seconds
 
 }

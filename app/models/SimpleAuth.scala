@@ -4,6 +4,7 @@ import akka.actor.ActorSystem
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
+import models.UserProtocol._
 import play.api.Configuration
 import play.api.mvc.Results._
 import play.api.mvc._
@@ -43,39 +44,30 @@ trait SimpleAuth extends LazyLogging {
     }
   }
 
-  def authBy(sessionAttr: String, sessionDuration: Option[FiniteDuration] = None)
-            (result: => Result)
-            (implicit request: RequestHeader): Result =
-  {
-    checkAuth(sessionAttr, sessionDuration)(result)
-  }
+  def auth(result: => Result)(implicit request: RequestHeader): Result =
+    checkAuth(sessionKey, sessionDuration)(result)
 
-  def authByAsync(sessionAttr: String, sessionDuration: Option[FiniteDuration] = None)
-                 (result: => Future[Result])
-                 (implicit request: RequestHeader, ec: ExecutionContext): Future[Result] =
-  {
-    checkAuth(sessionAttr, sessionDuration)(result)
-  }
+  def asyncAuth(result: => Future[Result])(implicit request: RequestHeader, ec: ExecutionContext): Future[Result] =
+    checkAuth(sessionKey, sessionDuration)(result)
 
-  private def checkAuth[A: TypeTag](sessionAttr: String, sessionDuration: Option[FiniteDuration] = None)(body: => A)(implicit request: RequestHeader): A =
-  {
+  private def checkAuth[A: TypeTag](sessionAttr: String, sessionDuration: FiniteDuration)(body: => A)(implicit request: RequestHeader): A = {
     val expiresAtSessionAttr = expiresAtSessionAttrName(sessionAttr)
     val session = request.session
 
     def addSessionIfNecessary(result: Result): Result = {
-      sessionDuration.map { sessionDur =>
-        val currentTime = System.currentTimeMillis()
-        val nextExpiration = currentTime + sessionDur.toMillis
-        result.addingToSession(expiresAtSessionAttr -> nextExpiration.toString)
-      }.getOrElse(result)
+      val currentTime = System.currentTimeMillis()
+      val nextExpiration = currentTime + sessionDuration.toMillis
+      result.addingToSession(expiresAtSessionAttr -> nextExpiration.toString)
     }
 
     val errorResultOpt: Option[Result] =
-      if (session.get(sessionAttr).isEmpty || (sessionDuration.isDefined && session.get(expiresAtSessionAttr).isEmpty)) {
+      if (session.get(sessionAttr).isEmpty || session.get(expiresAtSessionAttr).isEmpty) {
         Some(Unauthorized(ErrorText.Unauthorized))
-      } else if (sessionDuration.isDefined && session.get(expiresAtSessionAttr).exists(_.toLong < System.currentTimeMillis())) {
+      } else if (session.get(expiresAtSessionAttr).exists(_.toLong < System.currentTimeMillis())) {
         Some(Unauthorized(ErrorText.SessionExpired))
-      } else { None }
+      } else {
+        None
+      }
 
     typeOf[A] match {
       case t if t =:= typeOf[Result] =>
@@ -88,25 +80,6 @@ trait SimpleAuth extends LazyLogging {
         ).asInstanceOf[A]
     }
   }
-
-//  // Return only roles which belong to app/role which user wants to login
-//  def getRoleCodesByAppsOrRoles(user: UserAccountBase, loginApps: Seq[CieloApp], loginRoles: Seq[CieloRole]): String = {
-//    val userRolesByManagedApps = getRolesByAppCodes(user.managedAppCodes.map(_.split(",").toSeq).getOrElse(Nil))
-//    val userRolesByRoleCodes = getRolesByRoleCodes(user.roleCodes.map(_.split(",").toSeq).getOrElse(Nil))
-//    val userRoles = userRolesByManagedApps ++ userRolesByRoleCodes
-//
-//    val wantedRolesByLoginApps = getRolesByAppCodes(loginApps.map(_.code))
-//    val wantedRolesByLoginRoles = getRolesByRoleCodes(loginRoles.map(_.code))
-//    val wantedRoles = wantedRolesByLoginApps ++ wantedRolesByLoginRoles
-//
-//    wantedRoles
-//        .filter { role =>
-//          userRoles.exists(_.code == role.code)
-//        }
-//        .map(_.code)
-//        .distinct
-//        .mkString(",")
-//  }
 
 }
 

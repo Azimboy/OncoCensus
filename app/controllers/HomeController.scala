@@ -11,7 +11,7 @@ import javax.inject._
 import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, Region}
 import models.PatientProtocol.{ClientGroup, GetAllClientGroups}
 import models.SimpleAuth
-import models.UserProtocol.{BlockedUser, CheckUserLogin, FailedAttemptsCountForBlockUser, LoginAttemptsFailure, UserNotFound, UpdateUsersBlockStatus, User, WrongPassword}
+import models.UserProtocol._
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.data.Form
@@ -40,9 +40,6 @@ object HomeController {
   }
 
   val redirectUrl = controllers.routes.HomeController.index()
-  val sessionKey = "onco.census"
-  val roleSessionKey = s"$sessionKey.role"
-  val sessionDuration = 10.seconds
 }
 
 @Singleton
@@ -62,7 +59,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
   implicit val defaultTimeout = Timeout(60.seconds)
 
   def index = Action { implicit request =>
-    val result = authBy(sessionKey) {
+    val result = auth {
       Ok(home.index())
     }
 
@@ -142,7 +139,7 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     )
   }
 
-  def redirectTo(menuName: String) = Action {
+  def redirectTo(menuName: String) = Action { implicit request => auth {
     menuName match {
       case "indicator" => Redirect(controllers.routes.IndicatorController.index())
       case "reception" => Redirect(controllers.routes.ReceptionController.index())
@@ -152,27 +149,27 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
       case "settings" => Redirect(controllers.routes.SettingsController.index())
       case _ => Ok("Not implemented yet")
     }
-  }
+  }}
 
-  def getRegions = Action.async { implicit request =>
+  def getRegions = Action.async { implicit request => asyncAuth {
     (departmentManager ? GetAllRegions).mapTo[Seq[Region]].map { regions =>
       Ok(Json.toJson(regions))
     }
-  }
+  }}
 
-  def getDistricts = Action.async { implicit request =>
+  def getDistricts = Action.async { implicit request => asyncAuth {
     (departmentManager ? GetAllDistricts).mapTo[Seq[District]].map { districts =>
       Ok(Json.toJson(districts))
     }
-  }
+  }}
 
-  def getClientGroups = Action.async { implicit request =>
+  def getClientGroups = Action.async { implicit request => asyncAuth {
     (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
       Ok(Json.toJson(clientGroups))
     }.recover { case error =>
       logger.error("Error occurred during getting client groups", error)
       InternalServerError
     }
-  }
+  }}
 
 }
