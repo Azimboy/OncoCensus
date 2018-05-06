@@ -21,8 +21,8 @@ trait SimpleAuth extends LazyLogging {
   private def expiresAtSessionAttrName(sessionAttr: String) = s"$sessionAttr.exp"
 
   object ErrorText {
-    val SessionExpired = "Session expired. Please log in."
-    val Unauthorized = "Unauthorized. Please log in."
+    val SessionExpired = "Sessiyangiz muddati tugadi. Iltimos qaytadan tizimga kiring."
+    val Unauthorized = "Avtorizatsiya qilinmagan. Iltimos tizimga kiring."
   }
 
   def authInit(sessionAttrName: String,

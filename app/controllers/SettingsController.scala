@@ -9,12 +9,12 @@ import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
 import javax.inject.{Inject, Named, Singleton}
 import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
+import models.SimpleAuth
 import models.UserProtocol.{GetAllUsers, ModifyUser, User, roles}
+import models.utils.StringUtils.createHash
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
-import models.utils.StringUtils.createHash
-
 import play.api.mvc.{BaseController, ControllerComponents}
 import views.html.settings
 
@@ -50,24 +50,26 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
                                    val configuration: Configuration,
                                    @Named("user-manager") val userManager: ActorRef,
                                    @Named("department-manager") val departmentManager: ActorRef,
-                                   implicit val webJarsUtil: WebJarsUtil,
-                                   implicit val actorSystem: ActorSystem
-																	)(implicit val ec: ExecutionContext)
-	extends BaseController with LazyLogging {
+																	 implicit val actorSystem: ActorSystem,
+																	 implicit val webJarsUtil: WebJarsUtil)
+																	(implicit val ec: ExecutionContext)
+	extends BaseController
+		with SimpleAuth
+		with LazyLogging {
 
 	implicit val defaultTimeout = Timeout(60.seconds)
 
-	def index = Action {
+	def index = Action { implicit request => auth {
 		Ok(settings.index())
-	}
+	}}
 
-	def getUsers = Action.async { implicit request =>
+	def getUsers = Action.async { implicit request => asyncAuth {
 		(userManager ? GetAllUsers).mapTo[Seq[User]].map { users =>
 			Ok(Json.toJson(users.map(_.copy(passwordHash = ""))))
 		}
-	}
+	}}
 
-	def modifyUser = Action.async(parse.json[UserWeb]) { implicit request =>
+	def modifyUser = Action.async(parse.json[UserWeb]) { implicit request => asyncAuth {
 		val userWeb = request.body
 
 		val newUser = User(
@@ -90,45 +92,45 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 			logger.error("Add user error", error)
 			InternalServerError
 		}
-	}
+	}}
 
-	def getDepartments = Action.async { implicit request =>
+	def getDepartments = Action.async { implicit request => asyncAuth {
 		(departmentManager ? GetDepartmentsReport).mapTo[Seq[Department]].map { reports =>
 			Ok(Json.toJson(reports))
 		}.recover { case error =>
 			logger.error("Deps", error)
 			InternalServerError
 		}
-	}
+	}}
 
-	def createDepartment = Action.async(parse.json[Department]) { implicit request =>
+	def createDepartment = Action.async(parse.json[Department]) { implicit request => asyncAuth {
 		(departmentManager ? CreateDepartment(request.body)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
 			logger.error("Create department error", error)
 			InternalServerError
 		}
-	}
+	}}
 
-	def updateDepartment(id: Int) = Action.async(parse.json[Department]) { implicit request =>
+	def updateDepartment(id: Int) = Action.async(parse.json[Department]) { implicit request => asyncAuth {
 		(departmentManager ? UpdateDepartment(request.body)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
 			logger.error("Update department error", error)
 			InternalServerError
 		}
-	}
+	}}
 
-	def deleteDepartment(id: Int) = Action.async { implicit request =>
+	def deleteDepartment(id: Int) = Action.async { implicit request => asyncAuth {
 		(departmentManager ? DeleteDepartment(id)).mapTo[Int].map { id =>
 			Ok(Json.toJson(id))
 		}.recover { case error =>
 			logger.error("Update department error", error)
 			InternalServerError
 		}
-	}
+	}}
 
-	def getRoles() = Action { implicit request =>
+	def getRoles() = Action { implicit request => auth {
 		Ok(Json.toJson(roles))
-	}
+	}}
 }

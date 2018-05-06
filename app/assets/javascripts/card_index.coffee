@@ -11,6 +11,10 @@ $ ->
     checkUps: '/card-index/check-ups'
     supervisedOut: '/card-index/supervised-out'
 
+  logout = ->
+    window.alert("Your session has been expired!\nPlease log in.")
+    my.navigateToUrl('/common/dashboard/logout')
+
   handleError = (error) ->
     vm.isLoading(no)
     if error.status is 401

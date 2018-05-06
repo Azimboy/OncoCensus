@@ -2,15 +2,16 @@ package controllers
 
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
-import javax.inject._
 
-import akka.actor.ActorRef
+import akka.actor.{ActorRef, ActorSystem}
 import akka.pattern.ask
 import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
+import javax.inject._
 import models.AppProtocol.Paging.{PageReq, PageRes}
 import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp, ReceiveInfo, ReceiveReason, ReceiveType}
 import models.PatientProtocol._
+import models.SimpleAuth
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.Files.TemporaryFile
@@ -26,9 +27,12 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
                                     val configuration: Configuration,
                                     @Named("patient-manager") val patientManager: ActorRef,
                                     @Named("check-up-manager") val checkUpManager: ActorRef,
+                                    implicit val actorSystem: ActorSystem,
                                     implicit val webJarsUtil: WebJarsUtil)
                                    (implicit val ec: ExecutionContext)
-  extends BaseController with LazyLogging {
+  extends BaseController
+    with SimpleAuth
+    with LazyLogging {
 
   implicit val defaultTimeout = Timeout(60.seconds)
 
@@ -42,11 +46,11 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     }
   }
 
-  def index = Action {
+  def index = Action { implicit request => auth {
     Ok(card_index.index())
-  }
+  }}
 
-  def getPatients(page: Int, pageSize: Int) = Action.async(parse.json[PatientsFilter]) { implicit request =>
+  def getPatients(page: Int, pageSize: Int) = Action.async(parse.json[PatientsFilter]) { implicit request => asyncAuth {
 	  val pageReq = PageReq(page = page, size = pageSize)
     val patientsFilter = request.body
     (patientManager ? GetAllPatients(patientsFilter, pageReq)).mapTo[PageRes[Patient]].map { pageRes =>
@@ -55,9 +59,9 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       logger.error("Error occurred during getting patients", error)
       InternalServerError
     }
-  }
+  }}
 
-  def modifyPatient = Action.async(parse.multipartFormData) { implicit request =>
+  def modifyPatient = Action.async(parse.multipartFormData) { implicit request => asyncAuth {
 	  val patientId = getValue("patientId").map(_.toInt)
 
 	  val patientDataJs = Json.toJson(PatientData(
@@ -92,18 +96,18 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       logger.error("Error occurred during creating new patient", error)
       InternalServerError
     }
-  }
+  }}
 
-  def deletePatient(patientId: Int) = Action.async { implicit request =>
+  def deletePatient(patientId: Int) = Action.async { implicit request => asyncAuth {
     (patientManager ? DeletePatientById(patientId)).mapTo[Int].map { _ =>
       Ok(Json.toJson("OK"))
     }.recover { case error =>
       logger.error(s"Error occurred during deleting patient. PatientId: $patientId", error)
       InternalServerError
     }
-  }
+  }}
 
-  def modifyCheckUp = Action.async(parse.multipartFormData) { implicit request =>
+  def modifyCheckUp = Action.async(parse.multipartFormData) { implicit request => asyncAuth {
 	  val receivedInfoJs = Json.toJson(ReceiveInfo(
 		  receiveType = getValue("receiveType").map(ReceiveType.withShortName).getOrElse(ReceiveType.Polyclinic),
 		  receiveReason = getValue("receiveReason").map(ReceiveReason.withShortName).getOrElse(ReceiveReason.Simple)
@@ -132,25 +136,25 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
       logger.error(s"Error occurred during adding checkUp.", error)
       InternalServerError
     }
-  }
+  }}
 
-  def getCheckUpsByPatientId(patientId: Int) = Action.async { implicit request =>
+  def getCheckUpsByPatientId(patientId: Int) = Action.async { implicit request => asyncAuth {
     (checkUpManager ? GetCheckUpsByPatientId(patientId)).mapTo[Seq[CheckUp]].map { checkUps =>
       Ok(Json.toJson(checkUps))
     }.recover { case error =>
       logger.error(s"Error occurred during getting check ups. PatientId: $patientId", error)
       InternalServerError
     }
-  }
+  }}
 
-	def supervisedOut(patientId: Int) = Action.async(parse.json[SupervisedOut]) { implicit request =>
+	def supervisedOut(patientId: Int) = Action.async(parse.json[SupervisedOut]) { implicit request => asyncAuth {
 		(patientManager ? PatientSupervisedOut(patientId, request.body)).mapTo[Int].map { _ =>
 			Ok("OK")
 		}.recover { case error =>
 			logger.error(s"Error occurred during changing supervise status.", error)
 			InternalServerError
 		}
-	}
+	}}
 
   private def parseDate(dateStr: String, format: String = "dd.MM.yyyy HH:mm") = {
     val dateFormat = new SimpleDateFormat(format)
