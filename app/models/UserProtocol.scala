@@ -55,10 +55,9 @@ object UserProtocol {
 	sealed case class Role(code: String, name: String)
 
 	object Administrator extends Role("administrator", "Administrator")
-	object Role1 extends Role("role1", "Role 1")
-	object Role2 extends Role("role2", "Role 2")
+	object Potogistolog extends Role("potogistolog", "Potogistolog")
 
-	val roles = Seq(Administrator, Role1, Role2)
+	val roles = Seq(Administrator, Potogistolog)
 
 	implicit val roleFormat = Json.format[Role]
 	implicit val userFormat = Json.format[User]

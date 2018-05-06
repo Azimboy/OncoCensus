@@ -11,6 +11,12 @@ CREATE TABLE "districts" (
   "region_id" INTEGER NOT NULL CONSTRAINT "districts_fk_region_id" REFERENCES "regions" ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE "villages" (
+  "id"          SERIAL PRIMARY KEY,
+  "name"        VARCHAR NOT NULL,
+  "district_id" INTEGER NOT NULL CONSTRAINT "villages_fk_district_id" REFERENCES "villages" ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 CREATE TABLE "departments" (
   "id"          SERIAL PRIMARY KEY,
   "created_at"  TIMESTAMP NOT NULL,
@@ -69,5 +75,6 @@ CREATE TABLE "users" (
 # --- !Downs
 DROP TABLE "regions";
 DROP TABLE "districts";
+DROP TABLE "villages";
 DROP TABLE "departments";
 DROP TABLE "users";

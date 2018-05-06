@@ -23,6 +23,12 @@ object AppProtocol {
 	  regionId: Int
   )
 
+	case class Village(
+	  id: Option[Int] = None,
+	  name: String,
+		districtId: Int
+  )
+
 	case class Department(
     id: Option[Int] = None,
     createdAt: Option[Date] = None,
@@ -34,6 +40,7 @@ object AppProtocol {
 
 	implicit val regionFormat = Json.format[Region]
 	implicit val districtFormat = Json.format[District]
+	implicit val villageFormat = Json.format[Village]
 	implicit val departmentFormat = Json.format[Department]
 
 	case object GetAllRegions
