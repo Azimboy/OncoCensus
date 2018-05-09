@@ -74,7 +74,8 @@
             </li>
             <li>
               <i class="ace-icon fa fa-home bigger-110 blue"></i>
-              <span data-bind="text: vm.selected.patient.district.name"></span> tumani,
+              <span data-bind="text: vm.getDistrictById(vm.selected.patient.village.districtId())"></span> tumani,
+              <span data-bind="text: vm.selected.patient.village.name"></span> qishloqi,
               <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi,
               <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
               <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy

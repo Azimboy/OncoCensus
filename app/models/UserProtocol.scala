@@ -65,6 +65,6 @@ object UserProtocol {
 
   val userSessionKey = "onco.census.user"
 	val roleSessionKey = s"$userSessionKey.role"
-  val sessionDuration = 10.minutes
+  val sessionDuration = 1.hour
 
 }

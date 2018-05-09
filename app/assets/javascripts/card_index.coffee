@@ -260,7 +260,6 @@ $ ->
     ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
     vm.selected.patient.birthDate(vm.formatDate(patient.birthDate, 'DD.MM.YYYY'))
-    vm.selected.patient.regionId(patient.district.regionId)
     vm.rightPage(PageName.CardIndex)
     getPatientsCheckUps(patient.id)
 
@@ -270,6 +269,7 @@ $ ->
     $patientModal.modal('show')
 
   vm.onClickEditPatient = ->
+#    TODO Fix region and district select
     initDatePicker('#birthDate', '', 'DD.MM.YYYY')
     if vm.selected.patient.id()
       $patientModal.modal('show')
@@ -387,14 +387,12 @@ $ ->
     $.get(apiUrl.districts)
     .fail handleError
     .done (districts) ->
-      vm.selected.districts districts
       vm.districts districts
 
   loadAllVillages = ->
     $.get(apiUrl.villages)
     .fail handleError
     .done (villages) ->
-      vm.selected.villages villages
       vm.villages villages
 
   loadAllClientGroups = ->
@@ -409,10 +407,19 @@ $ ->
   vm.selected.patient.regionId.subscribe (regionId) ->
     if regionId
       vm.selected.districts(ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId))
+      vm.selected.villages([])
 
   vm.selected.patient.districtId.subscribe (districtId) ->
     if districtId
       vm.selected.villages(ko.utils.arrayFilter(vm.villages(), (village) -> village.districtId is districtId))
+
+  vm.getDistrictById = (districtId) ->
+    district = ko.utils.arrayFirst(vm.districts(), (district) -> district.id is districtId)
+    console.log(district)
+    if district
+      district.name
+    else
+      ""
 
   loadAllPatients()
   loadAllRegions()

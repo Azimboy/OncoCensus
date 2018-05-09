@@ -59,14 +59,24 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
   implicit val defaultTimeout = Timeout(60.seconds)
 
   def index = Action.async { implicit request =>
-    request.session.get(userSessionKey) match {
-      case Some(login) =>
-        (userManager ? GetUserByLogin(login)).mapTo[Option[User]].map {
-          case Some(user) => Ok(home.index(user))
-          case None => BadRequest("Foydalanuvchi tizimda mavjud emas.")
-        }
-      case None =>
-        Future.successful(Ok(home.login(playLoginForm)))
+    val result = asyncAuth {
+      request.session.get(userSessionKey) match {
+        case Some(login) =>
+          (userManager ? GetUserByLogin(login)).mapTo[Option[User]].map {
+            case Some(user) => Ok(home.index(user))
+            case None => BadRequest("Foydalanuvchi tizimda mavjud emas.")
+          }
+        case None =>
+          Future.successful(Ok(home.login(playLoginForm)))
+      }
+    }
+
+    result.map { result =>
+      if (result.header.status == UNAUTHORIZED) {
+        Ok(home.login(playLoginForm))
+      } else {
+        result
+      }
     }
   }
 

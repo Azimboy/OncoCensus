@@ -35,7 +35,7 @@
           <div data-bind="visible: vm.isFiltersShown">
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-gender" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Jins</label>
+              <label for="by-gender" class="col-xs-3 text-right" style="font-size: 13px;">Jins</label>
               <div class="col-xs-9" id="by-gender">
                 <label>
                   <input type="checkbox" data-bind="checked: vm.filters.isMale" class="ace">
@@ -49,7 +49,7 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-age" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Yosh</label>
+              <label for="by-age" class="col-xs-3 text-right" style="font-size: 13px;">Yosh</label>
               <div class="col-xs-9 form-inline" id="by-age">
                 <div class="form-group">
                   <input type="number" data-bind="value: vm.filters.minAge, valueUpdate: 'keyup keypress'" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; dan &nbsp;
@@ -61,7 +61,7 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-region" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Viloyat</label>
+              <label for="by-region" class="col-xs-3 text-right" style="font-size: 13px;">Viloyat</label>
               <div class="col-xs-9 form-inline" id="by-region">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
                 data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.filters.regionId, optionsCaption: ''">
@@ -70,7 +70,7 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-district" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Tuman</label>
+              <label for="by-district" class="col-xs-3 text-right" style="font-size: 13px;">Tuman</label>
               <div class="col-xs-9 form-inline" id="by-district">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
                 data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.filters.districtId, optionsCaption: ''">
@@ -79,7 +79,7 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-client-group" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Klient guruhi</label>
+              <label for="by-client-group" class="col-xs-3 text-right" style="font-size: 13px;">Klient guruhi</label>
               <div class="col-xs-9 form-inline" id="by-client-group">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
                 data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
@@ -88,14 +88,14 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-passport-id" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Passport №</label>
+              <label for="by-passport-id" class="col-xs-3 text-right" style="font-size: 13px;">Passport №</label>
               <div class="col-xs-9 form-inline" id="by-passport-id">
                 <input type="text" class="form-control input-sm" data-bind="value: vm.filters.passportNumber, valueUpdate: 'keyup keypress'">
               </div>
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-province" class="col-xs-3 text-right no-padding-right" style="font-size: 13px;">Mahalla</label>
+              <label for="by-province" class="col-xs-3 text-right" style="font-size: 13px;">Mahalla</label>
               <div class="col-xs-9 form-inline" id="by-province">
                 <input type="text" class="form-control input-sm" data-bind="value: vm.filters.province, valueUpdate: 'keyup keypress'">
               </div>
@@ -197,7 +197,7 @@
 
             <div class="form-group row">
               <div class="col-xs-6">
-                <label class="control-label no-padding-right" for="clientGroup">Klient guruh</label>
+                <label class="control-label" for="clientGroup">Klient guruh</label>
                 <select class="form-control" autocomplete="off" name="clientGroupId" id="clientGroupId"
                 data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.clientGroupId, optionsCaption: 'Klient guruhi'">
                 </select>
@@ -219,13 +219,13 @@
 
             <div class="form-group row">
               <div class="col-xs-6">
-                <label class="control-label no-padding-right" for="region">Viloyat</label>
+                <label class="control-label" for="region">Viloyat</label>
                 <select class="form-control" autocomplete="off" name="regionId" id="regionId"
                 data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.regionId, optionsCaption: 'Viloyat'">
                 </select>
               </div>
               <div class="col-xs-6">
-                <label class="control-label no-padding-right" for="district">Tuman</label>
+                <label class="control-label" for="district">Tuman</label>
                 <select class="form-control" autocomplete="off" name="districtId" id="districtId"
                 data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.districtId, optionsCaption: 'Tuman'">
                 </select>
@@ -233,11 +233,20 @@
             </div>
 
             <div class="form-group row">
-              <div class="col-xs-5">
+              <div class="col-xs-6">
+                <label class="control-label" for="villageId">Qishloq</label>
+                <select class="form-control" autocomplete="off" name="villageId" id="villageId"
+                data-bind="options: vm.selected.villages, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.villageId, optionsCaption: 'Qishloq'">
+                </select>
+              </div>
+              <div class="col-xs-6">
                 <label for="province">Mahalla</label>
                 <input type="text" class="form-control" id="province" data-bind="value: vm.selected.patient.patientDataJson.province" name="province">
               </div>
-              <div class="col-xs-5">
+            </div>
+
+            <div class="form-group row">
+              <div class="col-xs-6">
                 <label for="street">Ko'cha</label>
                 <input type="text" class="form-control" id="street" data-bind="value: vm.selected.patient.patientDataJson.street" name="street">
               </div>
