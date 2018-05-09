@@ -5,6 +5,7 @@ $ ->
   apiUrl =
     regions: '/home/regions'
     districts: '/home/districts'
+    villages: '/home/villages'
     clientGroups: '/home/client-groups'
     patient: '/card-index/patient'
     patients: '/card-index/patients'
@@ -121,6 +122,7 @@ $ ->
     age: ''
     regionId: ''
     districtId: ''
+    villageId: ''
     clientGroupId: ''
     email: ''
     phoneNumber: ''
@@ -128,10 +130,10 @@ $ ->
       id: ''
       name: ''
       code: ''
-    district:
+    village:
       id: ''
       name: ''
-      regionId: ''
+      districtId: ''
     patientDataJson:
       passportNumber: ''
       province: ''
@@ -170,6 +172,7 @@ $ ->
     patients: []
     regions: []
     districts: []
+    villages: []
     clientGroups: []
     bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
     checkUps: []
@@ -178,6 +181,7 @@ $ ->
       patient: defaultPatient
       checkUp: defaultCheckUp
       districts: []
+      villages: []
     filters:
       lastName: undefined
       isMale: yes
@@ -186,6 +190,7 @@ $ ->
       maxAge: undefined
       regionId: undefined
       districtId: undefined
+      villageId: undefined
       clientGroupId: undefined
       passportNumber: undefined
       province: undefined
@@ -385,6 +390,13 @@ $ ->
       vm.selected.districts districts
       vm.districts districts
 
+  loadAllVillages = ->
+    $.get(apiUrl.villages)
+    .fail handleError
+    .done (villages) ->
+      vm.selected.villages villages
+      vm.villages villages
+
   loadAllClientGroups = ->
     $.get(apiUrl.clientGroups)
     .fail handleError
@@ -398,9 +410,14 @@ $ ->
     if regionId
       vm.selected.districts(ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId))
 
+  vm.selected.patient.districtId.subscribe (districtId) ->
+    if districtId
+      vm.selected.villages(ko.utils.arrayFilter(vm.villages(), (village) -> village.districtId is districtId))
+
   loadAllPatients()
   loadAllRegions()
   loadAllDistricts()
+  loadAllVillages()
   loadAllClientGroups()
 
   # CHECH UP

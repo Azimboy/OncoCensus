@@ -15,7 +15,7 @@ CREATE TABLE "patients" (
   "middle_name_encr"    VARCHAR   NULL,
   "gender"              INTEGER   NULL,
   "birth_date"          TIMESTAMP NULL,
-  "district_id"         INTEGER   NOT NULL CONSTRAINT "patients_fk_district_id" REFERENCES "districts" ON UPDATE CASCADE ON DELETE SET NULL,
+  "village_id"          INTEGER   NOT NULL CONSTRAINT "patients_fk_village_id" REFERENCES "villages" ON UPDATE CASCADE ON DELETE SET NULL,
   "email_encr"          VARCHAR   NULL,
   "phone_number_encr"   VARCHAR   NULL,
   "avatar_id"           VARCHAR   NULL,

@@ -14,13 +14,13 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
+trait PatientsComponent extends VillagesComponent with ClientGroupsComponent
   { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import models.utils.PostgresDriver.api._
 
   class Patients(tag: Tag) extends Table[Patient](tag, "patients") with Date2SqlDate {
-    val districts = TableQuery[Districts]
+    val villages = TableQuery[Villages]
     val clientGroups = TableQuery[ClientGroups]
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -31,7 +31,7 @@ trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
     def middleNameEncr = column[String]("middle_name_encr")
     def gender = column[Gender.Value]("gender")
     def birthDate = column[Date]("birth_date")
-    def districtId = column[Int]("district_id")
+    def villageId = column[Int]("village_id")
     def emailEncr = column[String]("email_encr")
     def phoneNumberEncr = column[String]("phone_number_encr")
     def avatarId = column[String]("avatar_id")
@@ -40,7 +40,7 @@ trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
     def supervisedOutJson = column[JsValue]("supervised_out_json")
 
     def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, gender.?, birthDate.?,
-       districtId.?, emailEncr.?, phoneNumberEncr.?, avatarId.?, clientGroupId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
+       villageId.?, emailEncr.?, phoneNumberEncr.?, avatarId.?, clientGroupId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
       (t => {
         val fields =
           (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None, None)
@@ -52,7 +52,7 @@ trait PatientsComponent extends DistrictsComponent with ClientGroupsComponent
           }
       )
 
-    def district = foreignKey("patients_fk_district_id", districtId, districts)(_.id)
+    def village = foreignKey("patients_fk_village_id", villageId, villages)(_.id)
     def clientGroup = foreignKey("patients_fk_client_group_id", clientGroupId, clientGroups)(_.id)
   }
 }
@@ -79,6 +79,7 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
 
   val patients = TableQuery[Patients]
   val districts = TableQuery[Districts]
+  val villages = TableQuery[Villages]
   val clientGroups = TableQuery[ClientGroups]
 
   override def create(Patient: Patient) = {
@@ -110,7 +111,8 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
     val byMaxAge = maxDate.map(t => byGender.filter(_.birthDate >= t)).getOrElse(byGender)
     val byMinAge = minDate.map(t => byMaxAge.filter(_.birthDate <= t)).getOrElse(byMaxAge)
 
-    val withDistricts = byMinAge.join(districts).on(_.districtId === _.id)
+    val withVillages = byMinAge.join(villages).on(_.villageId === _.id)
+    val withDistricts = withVillages.join(districts).on(_._2.districtId === _.id)
 
     val byRegion = patientsFilter.regionId match {
       case Some(regionId) => withDistricts.filter(_._2.regionId === regionId)
@@ -118,21 +120,21 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
     }
 
     val byDistrict = patientsFilter.districtId match {
-      case Some(districtId) => byRegion.filter(_._1.districtId === districtId)
+      case Some(districtId) => byRegion.filter(_._1._2.districtId === districtId)
       case None => byRegion
     }
 
     val byClientGroup = patientsFilter.clientGroupId match {
-      case Some(clientGroupId) => byDistrict.filter(_._1.clientGroupId === clientGroupId)
+      case Some(clientGroupId) => byDistrict.filter(_._1._1.clientGroupId === clientGroupId)
       case None => byDistrict
     }
 
-    val withClientGroup = byClientGroup.join(clientGroups).on(_._1.clientGroupId === _.id)
+    val withClientGroup = byClientGroup.join(clientGroups).on(_._1._1.clientGroupId === _.id)
 
     db.run {
-      withClientGroup.sortBy(_._1._1.id).result
-    }.map(_.map { case ((patient, district), clientGroup) =>
-      patient.copy(district = Some(district), clientGroup = Some(clientGroup))
+      withClientGroup.sortBy(_._1._1._1.id).result
+    }.map(_.map { case (((patient, villages), _), clientGroup) =>
+      patient.copy(village = Some(villages), clientGroup = Some(clientGroup))
     })
   }
 

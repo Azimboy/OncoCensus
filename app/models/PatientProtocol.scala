@@ -21,14 +21,14 @@ object PatientProtocol {
     middleName: Option[String] = None,
     gender: Option[Gender.Value] = None,
     birthDate: Option[Date] = None,
-    districtId: Option[Int] = None,
+    villageId: Option[Int] = None,
     email: Option[String] = None,
     phoneNumber: Option[String] = None,
     avatarId: Option[String] = None,
     clientGroupId: Option[Int] = None,
     patientDataJson: Option[JsValue] = None,
     supervisedOutJson: Option[JsValue] = None,
-    district: Option[District] = None,
+    village: Option[Village] = None,
     clientGroup: Option[ClientGroup] = None
   )
 

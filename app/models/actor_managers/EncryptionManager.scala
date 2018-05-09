@@ -29,6 +29,7 @@ object EncryptionManager {
 
 	case class EncryptUser(user: User)
 	case class DecryptUser(user: User)
+	case class DecryptOptUser(maybeUser: Option[User])
 	case class DecryptUsers(users: Seq[User])
 
 	case class EncryptDepartment(user: Department)
@@ -117,6 +118,9 @@ class EncryptionManager @Inject() (configuration: Configuration)
 
 		case DecryptUser(user) =>
 			sender() ! decryptUser(user)
+
+		case DecryptOptUser(maybeUser) =>
+			sender() ! decryptOptUser(maybeUser)
 
 		case DecryptUsers(users) =>
 			sender() ! decryptUsers(users)
@@ -270,6 +274,10 @@ class EncryptionManager @Inject() (configuration: Configuration)
 			phoneNumber = user.phoneNumber.map(decryptText),
 			department = user.department.map(dep => dep.copy(name = decryptText(dep.name)))
 		)
+	}
+
+	def decryptOptUser(maybeUser: Option[User]) = {
+		maybeUser.map(decryptUser)
 	}
 
 	def decryptUsers(accounts: Seq[User]) = {

@@ -1,12 +1,12 @@
 package models.daos
 
 import java.util.Date
+
 import javax.inject.{Inject, Singleton}
 import models.utils.Date2SqlDate
-
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import models.AppProtocol.Department
+import models.AppProtocol.{CreateDepartment, Department}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
@@ -47,7 +47,7 @@ trait DepartmentsDao {
 	def update(department: Department): Future[Int]
 	def delete(id: Int): Future[Int]
 	def findById(id: Int): Future[Option[Department]]
-	def findAll: Future[Seq[Department]]
+	def findAll(): Future[Seq[Department]]
 	def getDepartmentsByDistrictId(districtId: Int): Future[Seq[Department]]
 }
 

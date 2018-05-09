@@ -81,6 +81,7 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 
 	val checkUps = TableQuery[CheckUps]
 	val patients = TableQuery[Patients]
+	val villages = TableQuery[Villages]
 	val districts = TableQuery[Districts]
 	val users = TableQuery[Users]
 
@@ -113,12 +114,12 @@ class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 
 	override def getAllCheckUps(reportData: ReportData): Future[Seq[CheckUp]] = {
 		val withPatients = checkUps.join(patients).on(_.patientId === _.id)
-		val withDistricts = withPatients.join(districts).on(_._2.districtId === _.id)
+		val withDistricts = withPatients.join(villages).on(_._2.villageId === _.id)
 
 		val byStartDate = reportData.startDate.map(t => withDistricts.filter(_._1._1.createdAt >= t)).getOrElse(withDistricts)
 		val byEndDate = reportData.endDate.map(t => byStartDate.filter(_._1._1.createdAt <= t)).getOrElse(byStartDate)
 
-		val byRegion = reportData.regionId.map(r => byEndDate.filter(_._2.regionId === r)).getOrElse(byEndDate)
+		val byRegion = reportData.regionId.map(r => byEndDate).getOrElse(byEndDate)
 		val byDistrict = reportData.districtId.map(d => byRegion.filter(_._2.id === d)).getOrElse(byRegion)
 
 		val byReceiveType = reportData.receiveType.map { r =>

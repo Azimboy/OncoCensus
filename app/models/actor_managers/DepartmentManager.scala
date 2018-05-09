@@ -1,14 +1,14 @@
 package models.actor_managers
 
 import java.util.Date
-import javax.inject.{Inject, Named}
 
+import javax.inject.{Inject, Named}
 import akka.actor.{Actor, ActorLogging, ActorRef}
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, District, GetAllDistricts, GetAllRegions, GetDepartmentsReport, Region, UpdateDepartment}
-import models.actor_managers.EncryptionManager.{DecryptText, EncryptDepartment}
-import models.daos.{DepartmentsDao, DistrictsDao, RegionsDao}
+import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, District, GetAllDistricts, GetAllRegions, GetAllVillages, GetDepartmentsReport, Region, UpdateDepartment, Village}
+import models.actor_managers.EncryptionManager.{DecryptDepartments, DecryptText, EncryptDepartment}
+import models.daos.{DepartmentsDao, DistrictsDao, RegionsDao, VillagesDao}
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future}
@@ -16,6 +16,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionManager: ActorRef,
                                   val regionsDao: RegionsDao,
                                   val districtsDao: DistrictsDao,
+                                  val villagesDao: VillagesDao,
                                   val departmentsDao: DepartmentsDao)
                                  (implicit val ec: ExecutionContext)
 	extends Actor
@@ -29,6 +30,9 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 
 		case GetAllDistricts =>
 			getDistricts().pipeTo(sender())
+
+		case GetAllVillages =>
+			getVillages().pipeTo(sender())
 
 		case GetDepartmentsReport =>
 			getAllDepartments.pipeTo(sender())
@@ -44,27 +48,22 @@ class DepartmentManager @Inject()(@Named("encryption-manager") val encryptionMan
 	}
 
 	def getAllRegions(): Future[Seq[Region]] = {
-		regionsDao.getAllRegions()
+		regionsDao.findAll()
 	}
 
 	def getDistricts(): Future[Seq[District]] = {
-		regionsDao.getAllRegions().flatMap { regions =>
-			Future.sequence(
-				regions.map { region =>
-					districtsDao.getDistrictsByRegionId(region.id.get)
-				}
-			).map(_.flatten)
-		}
+		districtsDao.findAll()
+	}
+
+	def getVillages(): Future[Seq[Village]] = {
+		villagesDao.findAll()
 	}
 
 	def getAllDepartments(): Future[Seq[Department]] = {
-		departmentsDao.findAll.flatMap { departments =>
-			Future.sequence( departments.map { report =>
-				(encryptionManager ? DecryptText(report.name)).mapTo[String].map { decrDepName =>
-					report.copy(name = decrDepName)
-				}
-			})
-		}
+		for {
+			departments <- departmentsDao.findAll()
+			decrDepartments <- (encryptionManager ? DecryptDepartments(departments)).mapTo[Seq[Department]]
+		} yield decrDepartments
 	}
 
 	def addDepartment(department: Department): Future[Int] = {

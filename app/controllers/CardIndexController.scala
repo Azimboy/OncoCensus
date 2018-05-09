@@ -81,7 +81,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 		  middleName = "middleName",
 		  gender = getValue("gender").map(Gender.withShortName),
 		  birthDate = getValue("birthDate").map(d => parseDate(d, "dd.MM.yyyy")),
-		  districtId = getValue("districtId").map(_.toInt),
+		  villageId = getValue("villageId").map(_.toInt),
 		  clientGroupId = getValue("clientGroupId").map(_.toInt),
 		  email = "email",
 		  phoneNumber = "phoneNumber",

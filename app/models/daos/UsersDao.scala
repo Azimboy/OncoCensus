@@ -54,10 +54,11 @@ trait UsersComponent extends DepartmentsComponent
 
 @ImplementedBy(classOf[UsersImpl])
 trait UsersDao {
-//  def findById(id: Int): Future[Option[User]]
+  def usersCount(): Future[Int]
+  //  def findById(id: Int): Future[Option[User]]
   def findByLogin(loginEncr: String): Future[Option[User]]
   def create(user: User): Future[Int]
-  def findAll: Future[Seq[User]]
+  def findAll(): Future[Seq[User]]
   def update(user: User): Future[Int]
   def updateUserPasswordHashEncr(userId: Int, passwordHashEncr: String): Future[Int]
   def updateUserPasswordHashEncrAndExpiresDate(userId: Int, passwordHashEncr: String, expiresAt: Date): Future[Int]
@@ -79,6 +80,10 @@ class UsersImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
 
   val users = TableQuery[Users]
   val departments = TableQuery[Departments]
+
+  override def usersCount() = {
+    db.run(users.size.result)
+  }
 
   override def findByLogin(loginEncr: String) = {
     db.run {

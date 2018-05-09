@@ -48,6 +48,7 @@ object UserProtocol {
 	case class CheckUserLogin(login: String, password: String)
 	case class UpdateUsersBlockStatus(login: String, blockedAt: Option[Date])
 
+	case object CreateAdmin
 	case class ModifyUser(user: User)
 	case object GetAllUsers
 	case class GetUserByLogin(login: String)
@@ -57,7 +58,7 @@ object UserProtocol {
 	object Administrator extends Role("administrator", "Administrator")
 	object Potogistolog extends Role("potogistolog", "Potogistolog")
 
-	val roles = Seq(Administrator, Potogistolog)
+	val roles = Seq(Potogistolog)
 
 	implicit val roleFormat = Json.format[Role]
 	implicit val userFormat = Json.format[User]

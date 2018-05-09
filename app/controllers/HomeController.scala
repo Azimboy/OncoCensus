@@ -8,7 +8,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import controllers.HomeController._
 import javax.inject._
-import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, Region}
+import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, GetAllVillages, Region, Village}
 import models.PatientProtocol.{ClientGroup, GetAllClientGroups}
 import models.SimpleAuth
 import models.UserProtocol._
@@ -61,8 +61,9 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
   def index = Action.async { implicit request =>
     request.session.get(userSessionKey) match {
       case Some(login) =>
-        (userManager ? GetUserByLogin(login)).mapTo[User].map { user =>
-          Ok(home.index(user))
+        (userManager ? GetUserByLogin(login)).mapTo[Option[User]].map {
+          case Some(user) => Ok(home.index(user))
+          case None => BadRequest("Foydalanuvchi tizimda mavjud emas.")
         }
       case None =>
         Future.successful(Ok(home.login(playLoginForm)))
@@ -161,6 +162,12 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     }
   }}
 
+  def getVillages = Action.async { implicit request => asyncAuth {
+    (departmentManager ? GetAllVillages).mapTo[Seq[Village]].map { villages =>
+      Ok(Json.toJson(villages))
+    }
+  }}
+
   def getClientGroups = Action.async { implicit request => asyncAuth {
     (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
       Ok(Json.toJson(clientGroups))
@@ -169,5 +176,14 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
       InternalServerError
     }
   }}
+
+  def createAdmin() = Action.async { implicit request =>
+    (userManager ? CreateAdmin).map { _ =>
+      Ok("OK")
+    }.recover { case error =>
+      logger.error("Error occurred during creating admin", error)
+      InternalServerError
+    }
+  }
 
 }

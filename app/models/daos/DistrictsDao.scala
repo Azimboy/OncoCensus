@@ -32,7 +32,7 @@ trait DistrictsComponent extends RegionsComponent
 @ImplementedBy(classOf[DistrictsDaoImpl])
 trait DistrictsDao {
 	def findById(id: Int): Future[Option[District]]
-	def getDistrictsByRegionId(regionId: Int): Future[Seq[District]]
+	def findAll(): Future[Seq[District]]
 }
 
 @Singleton
@@ -52,7 +52,7 @@ class DistrictsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigP
 		}
 	}
 
-	override def getDistrictsByRegionId(regionId: Int): Future[Seq[District]] = {
-		db.run(districts.filter(_.regionId === regionId).result)
+	override def findAll(): Future[Seq[District]] = {
+		db.run(districts.result)
 	}
 }

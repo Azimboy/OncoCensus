@@ -45,6 +45,7 @@ object AppProtocol {
 
 	case object GetAllRegions
 	case object GetAllDistricts
+	case object GetAllVillages
 	case class GetDepartmentsByDistrictId(districtId: Int)
 
 	case object GetDepartmentsReport

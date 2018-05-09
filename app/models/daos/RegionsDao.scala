@@ -27,7 +27,7 @@ trait RegionsComponent
 @ImplementedBy(classOf[RegionsDaoImpl])
 trait RegionsDao {
 	def findById(id: Int): Future[Option[Region]]
-	def getAllRegions(): Future[Seq[Region]]
+	def findAll(): Future[Seq[Region]]
 }
 
 @Singleton
@@ -47,7 +47,7 @@ class RegionsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPro
 		}
 	}
 
-	override def getAllRegions(): Future[Seq[Region]] = {
+	override def findAll(): Future[Seq[Region]] = {
 		db.run(regions.result)
 	}
 }

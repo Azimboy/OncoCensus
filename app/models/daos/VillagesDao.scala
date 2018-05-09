@@ -3,7 +3,7 @@ package models.daos
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
-import models.AppProtocol.Village
+import models.AppProtocol.{District, Village}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
@@ -31,7 +31,7 @@ trait VillagesComponent extends DistrictsComponent
 @ImplementedBy(classOf[VillagesDaoImpl])
 trait VillagesDao {
 	def findById(id: Int): Future[Option[Village]]
-	def getVillagesByDistrictId(regionId: Int): Future[Seq[Village]]
+	def findAll(): Future[Seq[Village]]
 }
 
 @Singleton
@@ -51,7 +51,7 @@ class VillagesDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigPr
 		}
 	}
 
-	override def getVillagesByDistrictId(districtId: Int): Future[Seq[Village]] = {
-		db.run(villages.filter(_.districtId === districtId).result)
+	override def findAll(): Future[Seq[Village]] = {
+		db.run(villages.result)
 	}
 }
