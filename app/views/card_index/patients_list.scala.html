@@ -82,7 +82,7 @@
               <label for="by-client-group" class="col-xs-3 text-right" style="font-size: 13px;">Klient guruhi</label>
               <div class="col-xs-9 form-inline" id="by-client-group">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
-                data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
+                data-bind="options: vm.clientGroups, optionsText: 'code', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
                 </select>
               </div>
             </div>
@@ -199,7 +199,7 @@
               <div class="col-xs-6">
                 <label class="control-label" for="clientGroup">Klient guruh</label>
                 <select class="form-control" autocomplete="off" name="clientGroupId" id="clientGroupId"
-                data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.clientGroupId, optionsCaption: 'Klient guruhi'">
+                data-bind="options: vm.clientGroups, optionsText: 'code', optionsValue: 'id', value: vm.selected.patient.clientGroupId, optionsCaption: 'Klient guruhi'">
                 </select>
               </div>
               <div class="col-xs-6">
