@@ -29,26 +29,25 @@ trait PatientsComponent extends VillagesComponent with ClientGroupsComponent
     def firstNameEncr = column[String]("first_name_encr")
     def lastNameEncr = column[String]("last_name_encr")
     def middleNameEncr = column[String]("middle_name_encr")
+    def passportId = column[String]("passport_id")
     def gender = column[Gender.Value]("gender")
     def birthDate = column[Date]("birth_date")
     def villageId = column[Int]("village_id")
-    def emailEncr = column[String]("email_encr")
-    def phoneNumberEncr = column[String]("phone_number_encr")
-    def avatarId = column[String]("avatar_id")
     def clientGroupId = column[Int]("client_group_id")
+    def avatarId = column[String]("avatar_id")
     def patientDataJson = column[JsValue]("patient_data_json")
     def supervisedOutJson = column[JsValue]("supervised_out_json")
 
-    def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, gender.?, birthDate.?,
-       villageId.?, emailEncr.?, phoneNumberEncr.?, avatarId.?, clientGroupId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
+    def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, passportId, gender, birthDate,
+       villageId, clientGroupId, avatarId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
       (t => {
         val fields =
-          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None, None)
+          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, None, None)
         (Patient.apply _).tupled(fields)
       },
         (i: Patient) =>
           Patient.unapply(i).map { t =>
-            (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15)
+            (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14)
           }
       )
 
@@ -129,7 +128,12 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
       case None => byDistrict
     }
 
-    val withClientGroup = byClientGroup.join(clientGroups).on(_._1._1.clientGroupId === _.id)
+    val byPassportId = patientsFilter.passportId match {
+      case Some(passportId) => byClientGroup.filter(_._1._1.passportId === passportId)
+      case None => byClientGroup
+    }
+
+    val withClientGroup = byPassportId.join(clientGroups).on(_._1._1.clientGroupId === _.id)
 
     db.run {
       withClientGroup.sortBy(_._1._1._1.id).result

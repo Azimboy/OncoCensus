@@ -65,13 +65,14 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 	  val patientId = getValue("patientId").map(_.toInt)
 
 	  val patientDataJs = Json.toJson(PatientData(
-		  passportNumber = "passportNumber",
 		  province = "province",
 		  street = "street",
 		  home = "home",
 		  work = "work",
 		  position = "position",
-		  bloodGroup = getValue("bloodGroup").map(BloodGroup.withName)
+		  bloodGroup = getValue("bloodGroup").map(BloodGroup.withName),
+      email = "email",
+      phoneNumber = "phoneNumber"
 	  ))
 
 	  val patient = Patient(
@@ -79,12 +80,11 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 		  firstName = "firstName",
 		  lastName = "lastName",
 		  middleName = "middleName",
-		  gender = getValue("gender").map(Gender.withShortName),
-		  birthDate = getValue("birthDate").map(d => parseDate(d, "dd.MM.yyyy")),
-		  villageId = getValue("villageId").map(_.toInt),
-		  clientGroupId = getValue("clientGroupId").map(_.toInt),
-		  email = "email",
-		  phoneNumber = "phoneNumber",
+      passportId = getValue("passportId").get,
+      gender = getValue("gender").map(Gender.withShortName).get,
+		  birthDate = parseDate(getValue("birthDate").get, "dd.MM.yyyy"),
+		  villageId = getValue("villageId").map(_.toInt).get,
+		  clientGroupId = getValue("clientGroupId").map(_.toInt).get,
 		  patientDataJson = Some(patientDataJs)
 	  )
 

@@ -66,19 +66,12 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 				case Some(lastName) => decrPatients.filter(_.lastName.exists(_.toLowerCase.contains(lastName.toLowerCase)))
 				case None => decrPatients
 			}
-			byPassportNumber = patientsFilter.passportNumber match {
-				case Some(passportNumber) => byLastName.filter(_.patientDataJson.exists { js =>
-				val passNum = (js \ "passportNumber").as[String]
-					passNum.contains(passportNumber)
-				})
-				case None => byLastName
-			}
-			byProvince = patientsFilter.passportNumber match {
-				case Some(province) => byPassportNumber.filter(_.patientDataJson.exists { js =>
+			byProvince = patientsFilter.passportId match {
+				case Some(province) => byLastName.filter(_.patientDataJson.exists { js =>
 					val passNum = (js \ "province").as[String].toLowerCase
 					passNum.contains(province.toLowerCase)
 				})
-				case None => byPassportNumber
+				case None => byLastName
 			}
 			pageRes = pageReq.toPageRes(byProvince)
 		} yield pageRes

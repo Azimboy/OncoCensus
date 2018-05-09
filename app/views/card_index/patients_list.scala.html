@@ -90,7 +90,7 @@
             <div class="row">
               <label for="by-passport-id" class="col-xs-3 text-right" style="font-size: 13px;">Passport №</label>
               <div class="col-xs-9 form-inline" id="by-passport-id">
-                <input type="text" class="form-control input-sm" data-bind="value: vm.filters.passportNumber, valueUpdate: 'keyup keypress'">
+                <input type="text" class="form-control input-sm" data-bind="value: vm.filters.passportId, valueUpdate: 'keyup keypress'">
               </div>
             </div>
             <div class="space-2"></div>
@@ -124,7 +124,7 @@
                   </span>
                   <span data-bind="visible: $data.clientGroup.code"><span data-bind="text: $data.clientGroup.code"></span></span>,
                   <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>,
-                  <span data-bind="text: $data.patientDataJson.passportNumber"></span>
+                  <span data-bind="text: $data.patientDataJson.passportId"></span>
                   @*<span data-bind="text: $data.district.name"></span>*@
                 </td>
               </tr>
@@ -212,8 +212,8 @@
 
             <div class="form-group row">
               <div class="col-xs-6">
-                <label for="passportNumber">Passport Raqam</label>
-                <input type="text" class="form-control" id="passportNumber" data-bind="value: vm.selected.patient.patientDataJson.passportNumber" name="passportNumber">
+                <label for="passportId">Passport Raqam</label>
+                <input type="text" class="form-control" id="passportId" data-bind="value: vm.selected.patient.passportId" name="passportId">
               </div>
             </div>
 
@@ -274,7 +274,7 @@
                   <span class="input-group-addon">
                     <i class="ace-icon fa fa-phone"></i>
                   </span>
-                  <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.phoneNumber" name="phoneNumber"/>
+                  <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.patientDataJson.phoneNumber" name="phoneNumber"/>
                 </div>
               </div>
               <div class="col-xs-6">
@@ -283,7 +283,7 @@
                   <span class="input-group-addon">
                     <i class="ace-icon fa fa-envelope"></i>
                   </span>
-                  <input type="text" class="form-control" id="email" data-bind="value: vm.selected.patient.email" name="email">
+                  <input type="text" class="form-control" id="email" data-bind="value: vm.selected.patient.patientDataJson.email" name="email">
                 </div>
               </div>
             </div>

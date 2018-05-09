@@ -19,13 +19,12 @@ object PatientProtocol {
     firstName: Option[String] = None,
     lastName: Option[String] = None,
     middleName: Option[String] = None,
-    gender: Option[Gender.Value] = None,
-    birthDate: Option[Date] = None,
-    villageId: Option[Int] = None,
-    email: Option[String] = None,
-    phoneNumber: Option[String] = None,
+    passportId: String,
+    gender: Gender.Value,
+    birthDate: Date,
+    villageId: Int,
+    clientGroupId: Int,
     avatarId: Option[String] = None,
-    clientGroupId: Option[Int] = None,
     patientDataJson: Option[JsValue] = None,
     supervisedOutJson: Option[JsValue] = None,
     village: Option[Village] = None,
@@ -49,13 +48,14 @@ object PatientProtocol {
   )
 
   case class PatientData(
-    passportNumber: Option[String] = None,
     province: Option[String] = None,
     street: Option[String] = None,
     home: Option[String] = None,
     work: Option[String] = None,
     position: Option[String] = None,
-    bloodGroup: Option[BloodGroup.Value] = None
+    bloodGroup: Option[BloodGroup.Value] = None,
+    email: Option[String] = None,
+    phoneNumber: Option[String] = None
   )
 
   object BloodGroup extends EnumMappedToDb {
@@ -99,7 +99,7 @@ object PatientProtocol {
     regionId: Option[Int],
     districtId: Option[Int],
     clientGroupId: Option[Int],
-    passportNumber: Option[String],
+    passportId: Option[String],
     province: Option[String]
   )
 

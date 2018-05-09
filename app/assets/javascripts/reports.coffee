@@ -81,7 +81,7 @@ $ ->
       minAge: undefined
       maxAge: undefined
       clientGroupId: undefined
-      passportNumber: undefined
+      passportId: undefined
       province: undefined
     isLoading: no
 

@@ -117,6 +117,7 @@ $ ->
     firstName: ''
     lastName: ''
     middleName: ''
+    passportId: ''
     gender: ''
     birthDate: ''
     age: ''
@@ -124,8 +125,6 @@ $ ->
     districtId: ''
     villageId: ''
     clientGroupId: ''
-    email: ''
-    phoneNumber: ''
     clientGroup:
       id: ''
       name: ''
@@ -135,13 +134,14 @@ $ ->
       name: ''
       districtId: ''
     patientDataJson:
-      passportNumber: ''
       province: ''
       street: ''
       home: ''
       work: ''
       position: ''
       bloodGroup: ''
+      email: ''
+      phoneNumber: ''
     supervisedOutJson:
       date: ''
       reason: ''
@@ -192,7 +192,7 @@ $ ->
       districtId: undefined
       villageId: undefined
       clientGroupId: undefined
-      passportNumber: undefined
+      passportId: undefined
       province: undefined
     checkUpFiles: []
     isLoading: no
@@ -228,7 +228,7 @@ $ ->
         'Bemorning klient guruhini tanlang!'
       else if notvalid(patient.patientDataJson.bloodGroup())
         'Bemorning qon guruhini tanlang!'
-      else if notvalid(patient.patientDataJson.passportNumber())
+      else if notvalid(patient.passportId())
         'Bemorning passport raqamini kiriting!'
       else if notvalid(patient.regionId())
         'Viloyatni tanlang!'
@@ -236,7 +236,7 @@ $ ->
         'Tumanni tanlang!'
       else if notvalid(patient.patientDataJson.province())
         'Mahalla nomini kiriting!'
-      else if notvalid(patient.phoneNumber())
+      else if notvalid(patient.patientDataJson.phoneNumber())
         'Bemorning telefon raqamini kiriting!'
 
     if warningText
@@ -371,7 +371,7 @@ $ ->
   vm.filters.clientGroupId.subscribe ->
     loadAllPatients()
 
-  vm.filters.passportNumber.subscribe ->
+  vm.filters.passportId.subscribe ->
     loadAllPatients()
 
   vm.filters.province.subscribe ->
