@@ -7,25 +7,22 @@ version := "1.0"
 lazy val `oncocensus` = (project in file(".")).enablePlugins(PlayScala)
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
-      
-resolvers += "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 
-scalaVersion := "2.12.2"
+scalaVersion := "2.12.4"
 
 includeFilter in (Assets, LessKeys.less) := "*.less"
 excludeFilter in (Assets, LessKeys.less) := "_*.less"
 
-val playVersion = "2.6.5"
-val akkaVersion = "2.5.6"
+val playVersion = "2.6.8"
+val akkaVersion = "2.5.8"
 val silhouetteVersion = "5.0.1"
 
 val play: Seq[ModuleID] = Seq(
-	"com.typesafe.play" %% "play" % playVersion,
 	"com.typesafe.play" %% "play-json" % playVersion,
-	"com.typesafe.play" %% "play-test" % playVersion % "test",
-	"com.typesafe.play" %% "play-slick" % "3.0.0",
-	"com.typesafe.play" %% "play-slick" % "3.0.0",
-	"com.typesafe.play" %% "play-slick-evolutions" % "3.0.0"
+//	"com.typesafe.play" %% "play-test" % playVersion % "test",
+	"com.typesafe.play" %% "play-slick" % "3.0.3",
+	"com.typesafe.play" %% "play-slick" % "3.0.3",
+	"com.typesafe.play" %% "play-slick-evolutions" % "3.0.3"
 )
 
 val akka: Seq[ModuleID] = Seq(
@@ -38,13 +35,13 @@ val akka: Seq[ModuleID] = Seq(
 	"com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
 )
 
-val auth: Seq[ModuleID] = Seq(
-	"com.mohiva" %% "play-silhouette" % silhouetteVersion,
-	"com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteVersion,
-	"com.mohiva" %% "play-silhouette-persistence" % silhouetteVersion,
-	"com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteVersion
-//	"com.mohiva" %% "play-silhouette-testkit"
-)
+//val auth: Seq[ModuleID] = Seq(
+//	"com.mohiva" %% "play-silhouette" % silhouetteVersion,
+//	"com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteVersion,
+//	"com.mohiva" %% "play-silhouette-persistence" % silhouetteVersion,
+//	"com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteVersion
+////	"com.mohiva" %% "play-silhouette-testkit"
+//)
 
 val database: Seq[ModuleID] = Seq(
 	"org.postgresql" % "postgresql" % "42.0.0",
@@ -64,7 +61,6 @@ val loggingLibs: Seq[ModuleID] = Seq(
 
 val webJars: Seq[ModuleID] = Seq(
 	"org.webjars" %% "webjars-play" % "2.6.1", // playV
-	"org.webjars" % "materializecss" % "0.100.2",
 	"org.webjars" % "knockout" % "3.3.0",
 	"org.webjars" % "lodash" % "3.10.1",
 	"org.webjars" % "toastr" % "2.1.2",
@@ -84,5 +80,3 @@ val webJars: Seq[ModuleID] = Seq(
 
 libraryDependencies ++= play ++ akka ++ database ++ webJars ++ loggingLibs ++
 	Seq(ws, specs2 % Test, guice)
-
-unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )
