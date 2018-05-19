@@ -39,8 +39,8 @@
           <div data-bind="visible: vm.isFiltersShown">
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-gender" class="col-xs-3 text-right" style="font-size: 13px;">Jins</label>
-              <div class="col-xs-9" id="by-gender">
+              <label for="by-gender" class="col-sm-3 text-right" style="font-size: 13px;">Jins</label>
+              <div class="col-sm-9" id="by-gender">
                 <label>
                   <input type="checkbox" data-bind="checked: vm.filters.isMale" class="ace">
                   <span class="lbl"> Erkak</span>
@@ -53,8 +53,8 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-age" class="col-xs-3 text-right" style="font-size: 13px;">Yosh</label>
-              <div class="col-xs-9 form-inline" id="by-age">
+              <label for="by-age" class="col-sm-3 text-right" style="font-size: 13px;">Yosh</label>
+              <div class="col-sm-9 form-inline" id="by-age">
                 <div class="form-group">
                   <input type="number" data-bind="value: vm.filters.minAge, valueUpdate: 'keyup keypress'" class="form-control input-sm" min="0" max="100" style="width: 55px;"> &nbsp; dan &nbsp;
                 </div>
@@ -65,8 +65,8 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-region" class="col-xs-3 text-right" style="font-size: 13px;">Viloyat</label>
-              <div class="col-xs-9 form-inline" id="by-region">
+              <label for="by-region" class="col-sm-3 text-right" style="font-size: 13px;">Viloyat</label>
+              <div class="col-sm-9 form-inline" id="by-region">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
                 data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.filters.regionId, optionsCaption: ''">
                 </select>
@@ -74,8 +74,8 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-district" class="col-xs-3 text-right" style="font-size: 13px;">Tuman</label>
-              <div class="col-xs-9 form-inline" id="by-district">
+              <label for="by-district" class="col-sm-3 text-right" style="font-size: 13px;">Tuman</label>
+              <div class="col-sm-9 form-inline" id="by-district">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
                 data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.filters.districtId, optionsCaption: ''">
                 </select>
@@ -83,8 +83,8 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-client-group" class="col-xs-3 text-right" style="font-size: 13px;">Klient guruhi</label>
-              <div class="col-xs-9 form-inline" id="by-client-group">
+              <label for="by-client-group" class="col-sm-3 text-right" style="font-size: 13px;">Klient guruhi</label>
+              <div class="col-sm-9 form-inline" id="by-client-group">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
                 data-bind="options: vm.clientGroups, optionsText: 'code', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
                 </select>
@@ -92,15 +92,15 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-passport-id" class="col-xs-3 text-right" style="font-size: 13px;">Passport №</label>
-              <div class="col-xs-9 form-inline" id="by-passport-id">
+              <label for="by-passport-id" class="col-sm-3 text-right" style="font-size: 13px;">Passport №</label>
+              <div class="col-sm-9 form-inline" id="by-passport-id">
                 <input type="text" class="form-control input-sm" data-bind="value: vm.filters.passportId, valueUpdate: 'keyup keypress'">
               </div>
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-province" class="col-xs-3 text-right" style="font-size: 13px;">Mahalla</label>
-              <div class="col-xs-9 form-inline" id="by-province">
+              <label for="by-province" class="col-sm-3 text-right" style="font-size: 13px;">Mahalla</label>
+              <div class="col-sm-9 form-inline" id="by-province">
                 <input type="text" class="form-control input-sm" data-bind="value: vm.filters.province, valueUpdate: 'keyup keypress'">
               </div>
             </div>
@@ -145,7 +145,7 @@
 </div>
 
 <div id="patient-modal" class="modal fade" role="dialog" data-backdrop="static">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -153,152 +153,171 @@
       </div>
       <div class="modal-body">
         <form action="@controllers.routes.CardIndexController.modifyPatient" id="patient-form"
-          enctype="multipart/form-data" method="post">
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label for="patientsPhoto">Fotosurat</label><br>
-                <img id="avatar" class="profile-picture" alt="Avatar" src="assets/images/profile-pic.jpg" height="130px"/>
-                <input type="file" name="patientsPhoto" id="patientsPhoto">
-                <input type="hidden" name="patientId" id="patientId" data-bind="value: vm.selected.patient.id">
-              </div>
-              <div class="col-xs-6">
-                <div>
-                  <label for="input1">Ism</label>
-                  <input type="text" class="form-control" id="firstName" data-bind="value: vm.selected.patient.firstName" name="firstName">
+          enctype="multipart/form-data" method="post" class="form-horizontal">
+          <h4 class="widget-title lighter">
+            <i class="ace-icon fa fa-credit-card"></i>&nbsp;
+            Passport ma'lumotlari
+          </h4>
+          <div class="hr hr-10 dotted hr-double"></div>
+          <div class="row">
+            <div class="col-sm-3">
+              <img id="avatar" class="profile-picture" alt="Avatar" src="assets/images/profile-pic.jpg" height="130px"/>
+              <input type="file" name="patientsPhoto" id="patientsPhoto">
+              <input type="hidden" name="patientId" id="patientId" data-bind="value: vm.selected.patient.id">
+            </div>
+
+            <div class="col-sm-9">
+              <div class="form-group row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="input1" class="col-sm-4 control-label no-padding-right">Ism</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="firstName" data-bind="value: vm.selected.patient.firstName" name="firstName">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="input2" class="col-sm-4 control-label no-padding-right">Familiya</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="lastName" data-bind="value: vm.selected.patient.lastName" name="lastName">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="input3" class="col-sm-4 control-label no-padding-right">Otasining ismi</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control" id="middleName" data-bind="value: vm.selected.patient.middleName" name="middleName">
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label for="input2">Familiya</label>
-                  <input type="text" class="form-control" id="lastName" data-bind="value: vm.selected.patient.lastName" name="lastName">
-                </div>
-                <div>
-                  <label for="input3">Otasining ismi</label>
-                  <input type="text" class="form-control" id="middleName" data-bind="value: vm.selected.patient.middleName" name="middleName">
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label for="gender">Jins</label>
-                <select class="form-control" autocomplete="off" name="gender" id="gender" data-bind="value: vm.selected.patient.gender">
-                  <option value>Jinsi</option>
-                  <option value="Male">Erkak</option>
-                  <option value="Female">Ayol</option>
-                </select>
-              </div>
-              <div class="col-xs-6">
-                <label for="birthDate">Tug'ulgan yil</label>
-                <div class="input-group" id="birthDate" data-bind="datetimepicker: vm.selected.patient.birthDate,
-                dateTimePickerOptions: {format: 'MM.DD.YYYY', pickTime: false}">
-                  <input type='text' name="birthDate" class="form-control" data-bind="value: vm.selected.patient.birthDate"/>
-                  <span class="input-group-addon">
-                    <span class="fa fa-calendar"></span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label class="control-label" for="clientGroup">Klient guruh</label>
-                <select class="form-control" autocomplete="off" name="clientGroupId" id="clientGroupId"
-                data-bind="options: vm.clientGroups, optionsText: 'code', optionsValue: 'id', value: vm.selected.patient.clientGroupId, optionsCaption: 'Klient guruhi'">
-                </select>
-              </div>
-              <div class="col-xs-6">
-                <label for="bloodGroup">Qon guruh</label>
-                <select class="form-control" autocomplete="off" name="bloodGroup" id="bloodGroup"
-                data-bind="options: vm.bloodGroups, value: vm.selected.patient.patientDataJson.bloodGroup, optionsCaption: 'Qon guruhi'">
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label for="passportId">Passport Raqam</label>
-                <input type="text" class="form-control" id="passportId" data-bind="value: vm.selected.patient.passportId" name="passportId">
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label class="control-label" for="region">Viloyat</label>
-                <select class="form-control" autocomplete="off" name="regionId" id="regionId"
-                data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.regionId, optionsCaption: 'Viloyat'">
-                </select>
-              </div>
-              <div class="col-xs-6">
-                <label class="control-label" for="district">Tuman</label>
-                <select class="form-control" autocomplete="off" name="districtId" id="districtId"
-                data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.districtId, optionsCaption: 'Tuman'">
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label class="control-label" for="villageId">Qishloq</label>
-                <select class="form-control" autocomplete="off" name="villageId" id="villageId"
-                data-bind="options: vm.selected.villages, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.villageId, optionsCaption: 'Qishloq'">
-                </select>
-              </div>
-              <div class="col-xs-6">
-                <label for="province">Mahalla</label>
-                <input type="text" class="form-control" id="province" data-bind="value: vm.selected.patient.patientDataJson.province" name="province">
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label for="street">Ko'cha</label>
-                <input type="text" class="form-control" id="street" data-bind="value: vm.selected.patient.patientDataJson.street" name="street">
-              </div>
-              <div class="col-xs-2">
-                <label for="home">Uy</label>
-                <input type="text" class="form-control" id="home" data-bind="value: vm.selected.patient.patientDataJson.home" name="home">
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label for="work">Ish (O'qish) joyi</label>
-                <input type="text" class="form-control" id="work" data-bind="value: vm.selected.patient.patientDataJson.work" name="work">
-              </div>
-              <div class="col-xs-6">
-                <label for="position">Lavozimi</label>
-                <input type="text" class="form-control" id="position" data-bind="value: vm.selected.patient.patientDataJson.position" name="position">
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <div class="col-xs-6">
-                <label for="phoneNumber">Telefon raqam</label>
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    <i class="ace-icon fa fa-phone"></i>
-                  </span>
-                  <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.patientDataJson.phoneNumber" name="phoneNumber"/>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="gender" class="col-sm-5 control-label no-padding-right">Jins</label>
+                    <div class="col-sm-7">
+                      <select class="form-control" autocomplete="off" name="gender" id="gender" data-bind="value: vm.selected.patient.gender">
+                        <option value>Jinsi</option>
+                        <option value="Male">Erkak</option>
+                        <option value="Female">Ayol</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="birthDate" class="col-sm-5 control-label no-padding-right">Tug'ulgan yil</label>
+                    <div class="col-sm-7">
+                      <div class="input-group" id="birthDate" data-bind="datetimepicker: vm.selected.patient.birthDate,
+                      dateTimePickerOptions: {format: 'MM.DD.YYYY', pickTime: false}">
+                        <input type='text' name="birthDate" class="form-control" data-bind="value: vm.selected.patient.birthDate"/>
+                        <span class="input-group-addon">
+                          <span class="fa fa-calendar"></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="passportId" class="col-sm-5 control-label no-padding-right">Passport Raqami</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control" id="passportId" data-bind="value: vm.selected.patient.passportId" name="passportId">
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="col-xs-6">
-                <label for="email">Elektron pochta</label>
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    <i class="ace-icon fa fa-envelope"></i>
-                  </span>
-                  <input type="text" class="form-control" id="email" data-bind="value: vm.selected.patient.patientDataJson.email" name="email">
-                </div>
+
+              <div class="form-group row">
+
               </div>
             </div>
-            <div class="row">
-              <div class="col-xs-12">
-                <button type="submit" class="btn btn-white btn-bold btn-warning pull-left save" data-bind="click: vm.onSubmitPatient, disable: vm.isLoading">Saqlash</button>
-                <div class="pull-left">&nbsp; &nbsp;</div>
-                <div class="pull-left busy-loader" data-bl-selector=".save .cancel" data-bl-url="card-index/patient"></div>
-                <button type="button" class="btn btn-white btn-bold btn-default pull-right cancel" data-dismiss="modal">Bekor qilish</button> &nbsp;
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label for="bloodGroup">Qon guruh</label>
+              <select class="form-control" autocomplete="off" name="bloodGroup" id="bloodGroup"
+              data-bind="options: vm.bloodGroups, value: vm.selected.patient.patientDataJson.bloodGroup, optionsCaption: 'Qon guruhi'">
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <label class="control-label" for="clientGroup">Klient guruh</label>
+              <select class="form-control" autocomplete="off" name="clientGroupId" id="clientGroupId"
+              data-bind="options: vm.clientGroups, optionsText: 'code', optionsValue: 'id', value: vm.selected.patient.clientGroupId, optionsCaption: 'Klient guruhi'">
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label class="control-label" for="region">Viloyat</label>
+              <select class="form-control" autocomplete="off" name="regionId" id="regionId"
+              data-bind="options: vm.regions, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.regionId, optionsCaption: 'Viloyat'">
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <label class="control-label" for="district">Tuman</label>
+              <select class="form-control" autocomplete="off" name="districtId" id="districtId"
+              data-bind="options: vm.selected.districts, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.districtId, optionsCaption: 'Tuman'">
+              </select>
+            </div>
+            <div class="col-sm-4">
+              <label class="control-label" for="villageId">Qishloq/Shaharcha</label>
+              <select class="form-control" autocomplete="off" name="villageId" id="villageId"
+              data-bind="options: vm.selected.villages, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.villageId, optionsCaption: 'Qishloq'">
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label for="province">Mahalla</label>
+              <input type="text" class="form-control" id="province" data-bind="value: vm.selected.patient.patientDataJson.province" name="province">
+            </div>
+            <div class="col-sm-4">
+              <label for="street">Ko'cha</label>
+              <input type="text" class="form-control" id="street" data-bind="value: vm.selected.patient.patientDataJson.street" name="street">
+            </div>
+            <div class="col-sm-4">
+              <label for="home">Uy</label>
+              <input type="text" class="form-control" id="home" data-bind="value: vm.selected.patient.patientDataJson.home" name="home">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label for="work">Ish (O'qish) joyi</label>
+              <input type="text" class="form-control" id="work" data-bind="value: vm.selected.patient.patientDataJson.work" name="work">
+            </div>
+            <div class="col-sm-4">
+              <label for="position">Lavozimi</label>
+              <input type="text" class="form-control" id="position" data-bind="value: vm.selected.patient.patientDataJson.position" name="position">
+            </div>
+            <div class="col-sm-4">
+              <label for="phoneNumber">Telefon raqam</label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <i class="ace-icon fa fa-phone"></i>
+                </span>
+                <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.patientDataJson.phoneNumber" name="phoneNumber"/>
               </div>
             </div>
-          </form>
+          </div>
+          @*
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label for="email">Elektron pochta</label>
+              <div class="input-group">
+                <span class="input-group-addon">
+                  <i class="ace-icon fa fa-envelope"></i>
+                </span>
+                <input type="text" class="form-control" id="email" data-bind="value: vm.selected.patient.patientDataJson.email" name="email">
+              </div>
+            </div>
+          </div>
+          *@
+          <div class="row">
+            <div class="col-sm-12">
+              <button type="submit" class="btn btn-white btn-bold btn-warning pull-left save" data-bind="click: vm.onSubmitPatient, disable: vm.isLoading">Saqlash</button>
+              <div class="pull-left">&nbsp; &nbsp;</div>
+              <div class="pull-left busy-loader" data-bl-selector=".save .cancel" data-bl-url="card-index/patient"></div>
+              <button type="button" class="btn btn-white btn-bold btn-default pull-right cancel" data-dismiss="modal">Bekor qilish</button> &nbsp;
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
