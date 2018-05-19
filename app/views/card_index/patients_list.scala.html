@@ -305,7 +305,7 @@
 </div>
 
 @* Patients document upload *@
-<div id="patients-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="docUpload" data-backdrop="static">
+<div id="patients-file-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="docUpload" data-backdrop="static">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -321,7 +321,7 @@
                   Faylni tanlang <input type="file" name="file" data-bind="event:{ change: vm.onPatientsFileSelected }" style="display: none;">
                 </span>
               </label>
-              <input type="text" class="form-control" data-bind="value: vm.patientsFileUploadInfo()" readonly>
+              <input type="text" class="form-control" data-bind="value: vm.patientsFileName()" readonly>
             </div>
             <span class="text-warning">NOTE: Bemorlar ma'lumotlari faylini XLCX formatda yuklang.</span>
           </div>

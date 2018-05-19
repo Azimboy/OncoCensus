@@ -26,7 +26,7 @@ $ ->
       alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
   $patientModal = $('#patient-modal')
-  $patientsUploadModal = $('#patients-upload-modal')
+  $patientsFileModal = $('#patients-file-upload-modal')
   $checkUpModal = $('#check-up-modal')
   $supervisedOutModal = $('#supervised-out-modal')
 
@@ -109,6 +109,33 @@ $ ->
         if vm.selected.patient.id()
           getPatientsCheckUps(vm.selected.patient.id())
         $checkUpModal.modal('hide')
+      else
+        alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
+
+  patientsFileData = null
+  $patientsFileForm = $('#patients-file-upload-form')
+  $patientsFileForm.fileupload
+    dataType: 'text'
+    autoUpload: no
+    singleFileUploads: true
+    multipart: true
+    add: (e, data) ->
+      patientsFileData = data
+      progress = parseInt(data.loaded / data.total * 100, 10)
+      $('#progress .bar').css('width', progress + '%')
+    progressall: (e, data) ->
+      progress = parseInt(data.loaded / data.total * 100, 10)
+      $('#progress .bar').css('width', progress + '%')
+    fail: (e, data) ->
+      $('#progress').hide()
+      handleError(data.jqXHR)
+    done: (e, data) ->
+      $('#progress').hide()
+      result = data.result
+      if result is 'OK'
+        toastr.success('Fayl muvaffaqiyatli yuklandi.')
+        $patientsFileModal.modal('hide')
+        vm.patientsFileUploadInfo('')
       else
         alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
@@ -196,7 +223,7 @@ $ ->
       passportId: undefined
       province: undefined
     checkUpFiles: []
-    patientsFileUploadInfo: ''
+    patientsFileName: ''
     isLoading: no
 
   vm.PageName = PageName
@@ -271,7 +298,7 @@ $ ->
     $patientModal.modal('show')
 
   vm.onClickUploadPatients = ->
-    $patientsUploadModal.modal('show')
+    $patientsFileModal.modal('show')
 
   vm.onClickEditPatient = ->
 #    TODO Fix region and district select
@@ -543,13 +570,22 @@ $ ->
 
 #  Patients File Uploading
   vm.onPatientsFileSelected = (v, event) ->
-    vm.patientsFileUploadInfo(event.target.files[0].name)
+    vm.patientsFileName(event.target.files[0].name)
 
   vm.onSubmitPatientsFile = ->
-    ""
+    if !(/\.(xls|xlsx)$/.test(vm.patientsFileName()))
+      patientsFileData = null
+      toastr.warning("Faqat XLS yoki XLSX formatdagi faylni yuklashingiz mumkin!")
+    else
+      if patientsFileData
+        patientsFileData.submit()
+        $('#progress .bar').css('width', 0)
+        $('#progress').show()
+      else
+        toastr.warning('Iltimos faylni tanlang.')
 
   vm.onCancelPatientsFile = ->
-    vm.patientsFileUploadInfo('')
+    vm.patientsFileName('')
 
   Glob.vm = vm
 
