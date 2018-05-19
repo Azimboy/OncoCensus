@@ -14,6 +14,7 @@ GET     /home/regions                                       @controllers.HomeCon
 GET     /home/districts                                     @controllers.HomeController.getDistricts
 GET     /home/villages                                      @controllers.HomeController.getVillages
 GET     /home/icds                                          @controllers.HomeController.getIcds
+GET     /home/client-groups                                 @controllers.HomeController.getClientGroups
 GET     /home/blood-types                                   @controllers.HomeController.getBloodTypes
 GET     /home/create-admin                                  @controllers.HomeController.createAdmin
 

@@ -58,17 +58,19 @@ object PatientProtocol {
   )
 
   object ClientGroup extends EnumMappedToDb {
-    val I = Value("1")
-    val II = Value("2")
-    val III = Value("3")
-    val IV = Value("4")
+    val I = Value("I")
+    val II = Value("II")
+    val III = Value("III")
+    val IV = Value("IV")
 
     def withShortName: PartialFunction[String, ClientGroup.Value] = {
-      case "1" => I
-      case "2" => II
-      case "3" => III
-      case "4" => IV
+      case "I" => I
+      case "II" => II
+      case "III" => III
+      case "IV" => IV
     }
+
+    val all = Seq(I, II, III, IV)
   }
 
   object BloodType extends EnumMappedToDb {
@@ -121,8 +123,8 @@ object PatientProtocol {
   implicit val patientsFilterFormat = Json.format[PatientsFilter]
   implicit val genderFormat = EnumUtils.enumFormat(Gender)
   implicit val bloodTypeFormat = EnumUtils.enumFormat(BloodType)
-  implicit val clientGroupFormat = EnumUtils.enumFormat(ClientGroup)
   implicit val icdFormat = Json.format[Icd]
+  implicit val clientGroupFormat = EnumUtils.enumFormat(ClientGroup)
   implicit val patientDataFormat = Json.format[PatientData]
   implicit val patientFormat = Json.format[Patient]
   implicit val supervisedOutReasonFormat = EnumUtils.enumFormat(SupervisedOutReason)

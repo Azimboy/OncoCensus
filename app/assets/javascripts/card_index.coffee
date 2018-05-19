@@ -7,6 +7,7 @@ $ ->
     districts: '/home/districts'
     villages: '/home/villages'
     icds: '/home/icds'
+    clientGroups: '/home/client-groups'
     bloodTypes: '/home/blood-types'
     patient: '/card-index/patient'
     patients: '/card-index/patients'
@@ -154,6 +155,7 @@ $ ->
     districtId: ''
     villageId: ''
     icd: ''
+    clientGroup: ''
     village:
       id: ''
       name: ''
@@ -199,6 +201,7 @@ $ ->
     districts: []
     villages: []
     icds: []
+    clientGroups: []
     bloodTypes: []
     checkUps: []
     rightPage: PageName.Summary
@@ -418,6 +421,9 @@ $ ->
   loadAllIcds = ->
     $.get(apiUrl.icds).fail(handleError).done(vm.icds)
 
+  loadAllclientGroups = ->
+    $.get(apiUrl.clientGroups).fail(handleError).done(vm.clientGroups)
+
   loadAllBloodTypes = ->
     $.get(apiUrl.bloodTypes).fail(handleError).done(vm.bloodTypes)
 
@@ -446,6 +452,7 @@ $ ->
   loadAllDistricts()
   loadAllVillages()
   loadAllIcds()
+  loadAllclientGroups()
   loadAllBloodTypes()
 
   # CHECH UP

@@ -9,7 +9,7 @@ import com.typesafe.scalalogging.LazyLogging
 import controllers.HomeController._
 import javax.inject._
 import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, GetAllVillages, Region, Village}
-import models.PatientProtocol.{BloodType, GetAllIcds, Icd}
+import models.PatientProtocol.{BloodType, ClientGroup, GetAllIcds, Icd}
 import models.SimpleAuth
 import models.UserProtocol._
 import org.webjars.play.WebJarsUtil
@@ -185,6 +185,10 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
       logger.error("Error occurred during getting client groups", error)
       InternalServerError
     }
+  }}
+
+  def getClientGroups = Action { implicit request => auth {
+    Ok(Json.toJson(ClientGroup.all))
   }}
 
   def getBloodTypes = Action { implicit request => auth {
