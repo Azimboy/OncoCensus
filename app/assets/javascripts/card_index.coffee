@@ -26,6 +26,7 @@ $ ->
       alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
   $patientModal = $('#patient-modal')
+  $patientsUploadModal = $('#patients-upload-modal')
   $checkUpModal = $('#check-up-modal')
   $supervisedOutModal = $('#supervised-out-modal')
 
@@ -195,6 +196,7 @@ $ ->
       passportId: undefined
       province: undefined
     checkUpFiles: []
+    patientsFileUploadInfo: ''
     isLoading: no
 
   vm.PageName = PageName
@@ -267,6 +269,9 @@ $ ->
     initDatePicker('#birthDate', '', 'DD.MM.YYYY')
     ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
     $patientModal.modal('show')
+
+  vm.onClickUploadPatients = ->
+    $patientsUploadModal.modal('show')
 
   vm.onClickEditPatient = ->
 #    TODO Fix region and district select
@@ -535,6 +540,16 @@ $ ->
       when 0 then 'Fayl yuklanmagan'
       when 1 then vm.checkUpFiles()[0]
       else vm.checkUpFiles().length + ' ta fayl yuklandi'
+
+#  Patients File Uploading
+  vm.onPatientsFileSelected = (v, event) ->
+    vm.patientsFileUploadInfo(event.target.files[0].name)
+
+  vm.onSubmitPatientsFile = ->
+    ""
+
+  vm.onCancelPatientsFile = ->
+    vm.patientsFileUploadInfo('')
 
   Glob.vm = vm
 

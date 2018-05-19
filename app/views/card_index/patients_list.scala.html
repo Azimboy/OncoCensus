@@ -16,6 +16,10 @@
         <a href="#" data-action="add" data-bind="click: vm.onClickAddPatient">
           <i class="ace-icon fa fa-plus"></i>
         </a>
+
+        <a href="#" data-action="add-patients" data-bind="click: vm.onClickUploadPatients">
+          <i class="ace-icon fa fa-file"></i>
+        </a>
       </div>
     </div>
 
@@ -135,7 +139,6 @@
         <div class="alert alert-info" data-bind="visible: vm.patients().length == 0">
           <span class="text-center text-info"><span class="fa fa-info-circle"></span> So'rov bo'yicha ma'lumot topilmadi!</span>
         </div>
-
       </div>
     </div>
   </div>
@@ -287,14 +290,12 @@
                 </div>
               </div>
             </div>
-
             <div class="row">
-              <div class="col-xs-offset-4 col-xs-8">
-                <button type="submit" class="pull-left btn btn-primary" data-bind="click: vm.onSubmitPatient, disable: vm.isLoading">Saqlash</button>
+              <div class="col-xs-12">
+                <button type="submit" class="btn btn-white btn-bold btn-warning pull-left save" data-bind="click: vm.onSubmitPatient, disable: vm.isLoading">Saqlash</button>
                 <div class="pull-left">&nbsp; &nbsp;</div>
-                <button type="button" class="pull-left btn btn-danger" data-dismiss="modal">Bekor qilish</button> &nbsp;
-                <div class="pull-left">&nbsp; &nbsp;</div>
-                <div class="pull-left busy-loader" data-bl-selector=".app-select" data-bl-url="card-index/patient"></div>
+                <div class="pull-left busy-loader" data-bl-selector=".save .cancel" data-bl-url="card-index/patient"></div>
+                <button type="button" class="btn btn-white btn-bold btn-default pull-right cancel" data-dismiss="modal">Bekor qilish</button> &nbsp;
               </div>
             </div>
           </form>
@@ -303,3 +304,36 @@
   </div>
 </div>
 
+@* Patients document upload *@
+<div id="patients-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="docUpload" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Chiqish"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Bemorlar ma'lumotlarini fayldan yuklash</h4>
+      </div>
+      <div class="modal-body">
+        <form action="" id="patients-file-upload-form" enctype="multipart/form-data" method="post" role="document">
+          <div class="form-group">
+            <div class="input-group">
+              <label class="input-group-btn">
+                <span type="button" class="btn btn-warning btn-white">
+                  Faylni tanlang <input type="file" name="file" data-bind="event:{ change: vm.onPatientsFileSelected }" style="display: none;">
+                </span>
+              </label>
+              <input type="text" class="form-control" data-bind="value: vm.patientsFileUploadInfo()" readonly>
+            </div>
+            <span class="text-warning">NOTE: Bemorlar ma'lumotlari faylini XLCX formatda yuklang.</span>
+          </div>
+          <div id="progress">
+            <div class="bar" style="width: 0%;"></div>
+          </div>
+          <div>
+            <button type="submit" data-bind="click: vm.onSubmitPatientsFile" class="btn btn-white btn-bold btn-warning">Yuklash</button>
+            <button type="reset" data-bind="click: vm.onCancelPatientsFile" class="btn btn-white btn-bold btn-default pull-right" data-dismiss="modal">Bekor qilish</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -40,52 +40,52 @@
             <img height="150" class="thumbnail inline no-margin-bottom center-block" alt="Avatar" src="assets/images/avatars/avatar2.png"/>
           </div>
           <div class="col-sm-9">
+            <ul class="list-unstyled spaced">
+              <li class="no-margin-top">
+                <div data-bind="if: !vm.selected.patient.supervisedOutJson.date()">
+                  <i class="ace-icon fa fa-calendar-check-o bigger-110 green" style="padding-left: 2px;"></i>
+                  Nazoratga olindi: <span data-bind="text: vm.formatDate(vm.selected.patient.createdAt(), 'MMMM DD, YYYY HH:mm')"></span>
+                  <a href="#" class="red pull-right" data-bind="click: vm.onSupervisedOutModalOpen">
+                    <i class="fa fa-calendar-times-o"></i> Nazoratdan chiqarish
+                  </a>
+                </div>
+                <div data-bind="if: vm.selected.patient.supervisedOutJson.date()">
+                  <i class="ace-icon fa fa-calendar-times-o bigger-110 red" style="padding-left: 2px;"></i>
+                  <span data-bind="visible: vm.selected.patient.supervisedOutJson.reason() == 'recovery'">Tuzalganligi tufayli </span>
+                  <span data-bind="visible: vm.selected.patient.supervisedOutJson.reason() == 'dead'">Vafot qilganligi tufayli </span>
+                  nazoratdan chiqarilgan: <span data-bind="text: vm.formatDate(parseInt(vm.selected.patient.supervisedOutJson.date()), 'MMMM DD, YYYY HH:mm')"></span>
+                </div>
+              </li>
+              <li>
+                <i data-bind="visible: vm.selected.patient.gender() == 'Male'" class="fa fa-male ace-icon bigger-110 purple"></i>
+                <i data-bind="visible: vm.selected.patient.gender() == 'Female'" class="fa fa-female ace-icon bigger-110 purple" style="padding-left: 4px;"></i>
+                <span data-bind="text: vm.selected.patient.birthDate"></span>
+              </li>
+              <li>
+                <i class="ace-icon fa fa-hospital-o bigger-110 red"></i>
+                <span data-bind="text: vm.selected.patient.clientGroup.code"></span>
+                <span class="text-muted" data-bind="text: vm.selected.patient.clientGroup.name"></span>
+                <span class="text-muted" data-bind="text: vm.selected.patient.patientDataJson.bloodGroup"></span>
+              </li>
+              <li>
+                <i style="vertical-align: middle;" class="ace-icon fa fa-mobile bigger-140 blue"></i>
+                <span data-bind="text: vm.selected.patient.patientDataJson.phoneNumber"></span>
+              </li>
+              <li>
+                <i class="ace-icon fa fa-home bigger-110 blue"></i>
+                <span data-bind="text: vm.getDistrictById(vm.selected.patient.village.districtId())"></span> tumani,
+                <span data-bind="text: vm.selected.patient.village.name"></span> qishloqi,
+                <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi,
+                <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
+                <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy
+              </li>
+              <li>
+                <i class="ace-icon fa fa-info-circle bigger-110 blue"></i>
+                <span data-bind="text: vm.selected.patient.patientDataJson.work"></span>
+                <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
+              </li>
+            </ul>
           </div>
-          <ul class="list-unstyled spaced">
-            <li class="no-margin-top">
-              <div data-bind="if: !vm.selected.patient.supervisedOutJson.date()">
-                <i class="ace-icon fa fa-calendar-check-o bigger-110 green" style="padding-left: 2px;"></i>
-                Nazoratga olindi: <span data-bind="text: vm.formatDate(vm.selected.patient.createdAt(), 'MMMM DD, YYYY HH:mm')"></span>
-                <a href="#" class="red pull-right" data-bind="click: vm.onSupervisedOutModalOpen">
-                  <i class="fa fa-calendar-times-o"></i> Nazoratdan chiqarish
-                </a>
-              </div>
-              <div data-bind="if: vm.selected.patient.supervisedOutJson.date()">
-                <i class="ace-icon fa fa-calendar-times-o bigger-110 red" style="padding-left: 2px;"></i>
-                <span data-bind="visible: vm.selected.patient.supervisedOutJson.reason() == 'recovery'">Tuzalganligi tufayli </span>
-                <span data-bind="visible: vm.selected.patient.supervisedOutJson.reason() == 'dead'">Vafot qilganligi tufayli </span>
-                nazoratdan chiqarilgan: <span data-bind="text: vm.formatDate(parseInt(vm.selected.patient.supervisedOutJson.date()), 'MMMM DD, YYYY HH:mm')"></span>
-              </div>
-            </li>
-            <li>
-              <i data-bind="visible: vm.selected.patient.gender() == 'Male'" class="fa fa-male ace-icon bigger-110 purple"></i>
-              <i data-bind="visible: vm.selected.patient.gender() == 'Female'" class="fa fa-female ace-icon bigger-110 purple" style="padding-left: 4px;"></i>
-              <span data-bind="text: vm.selected.patient.birthDate"></span>
-            </li>
-            <li>
-              <i class="ace-icon fa fa-hospital-o bigger-110 red"></i>
-              <span data-bind="text: vm.selected.patient.clientGroup.code"></span>
-              <span class="text-muted" data-bind="text: vm.selected.patient.clientGroup.name"></span>
-              <span class="text-muted" data-bind="text: vm.selected.patient.patientDataJson.bloodGroup"></span>
-            </li>
-            <li>
-              <i style="vertical-align: middle;" class="ace-icon fa fa-mobile bigger-140 blue"></i>
-              <span data-bind="text: vm.selected.patient.patientDataJson.phoneNumber"></span>
-            </li>
-            <li>
-              <i class="ace-icon fa fa-home bigger-110 blue"></i>
-              <span data-bind="text: vm.getDistrictById(vm.selected.patient.village.districtId())"></span> tumani,
-              <span data-bind="text: vm.selected.patient.village.name"></span> qishloqi,
-              <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi,
-              <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
-              <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy
-            </li>
-            <li>
-              <i class="ace-icon fa fa-info-circle bigger-110 blue"></i>
-              <span data-bind="text: vm.selected.patient.patientDataJson.work"></span>
-              <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
-            </li>
-          </ul>
         </div>
 
         @*TIBBIY KO'RIK KO'RSATMALARI*@
