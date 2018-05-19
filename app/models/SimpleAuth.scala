@@ -37,8 +37,7 @@ trait SimpleAuth extends LazyLogging {
   }
 
   def authClear(sessionAttrNames: String*)
-               (implicit request: RequestHeader): Session =
-  {
+               (implicit request: RequestHeader): Session = {
     sessionAttrNames.foldLeft(request.session) { (session, name) =>
       session - name - expiresAtSessionAttrName(name)
     }

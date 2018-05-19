@@ -43,6 +43,12 @@ val akka: Seq[ModuleID] = Seq(
 ////	"com.mohiva" %% "play-silhouette-testkit"
 //)
 
+val tools: Seq[ModuleID] = Seq(
+	"org.apache.poi" % "poi" % "3.13",
+	"org.apache.poi" % "poi-ooxml" % "3.13",
+	"org.apache.commons" % "commons-text" % "1.1"
+)
+
 val database: Seq[ModuleID] = Seq(
 	"org.postgresql" % "postgresql" % "42.0.0",
 	"com.typesafe.slick" %% "slick" % "3.2.1",
@@ -78,5 +84,5 @@ val webJars: Seq[ModuleID] = Seq(
 	//	"org.webjars" % "material-design-icons" % "2.2.0"
 )
 
-libraryDependencies ++= play ++ akka ++ database ++ webJars ++ loggingLibs ++
+libraryDependencies ++= play ++ akka ++ tools ++ database ++ webJars ++ loggingLibs ++
 	Seq(ws, specs2 % Test, guice)

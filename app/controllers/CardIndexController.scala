@@ -1,5 +1,6 @@
 package controllers
 
+import java.io.File
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
 
@@ -19,7 +20,7 @@ import play.api.libs.json.Json
 import play.api.mvc._
 import views.html.card_index
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
 
 @Singleton
@@ -155,6 +156,17 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 			InternalServerError
 		}
 	}}
+
+  def uploadPatients = Action.async (parse.multipartFormData) { implicit request => asyncAuth {
+//    val dataPart = request.body.asFormUrlEncoded
+    request.body.file("file").map { filePart =>
+      val fileName = filePart.filename
+      logger.info(s"File = $fileName")
+      Future.successful(Ok("OK"))
+    }.getOrElse {
+      Future { Ok("Missing file") }
+    }
+  }}
 
   private def parseDate(dateStr: String, format: String = "dd.MM.yyyy HH:mm") = {
     val dateFormat = new SimpleDateFormat(format)
