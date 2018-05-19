@@ -35,7 +35,7 @@ VALUES
   (3, 'Sarapoyon', 7),
   (4, 'Qaramazi', 7);
 
-INSERT INTO "client_groups" ("id", "name", "code")
+INSERT INTO "icds" ("id", "name", "code")
 VALUES
   (1, 'Lab havfli o''smasi', 'C00'),
   (2, 'Og''iz bo''shlig''i va yutqini havfli o''smasi', 'C01'),
@@ -47,4 +47,4 @@ VALUES
 DELETE FROM "regions";
 DELETE FROM "districts";
 DELETE FROM "villages";
-DELETE FROM "client_groups";
+DELETE FROM "icds";

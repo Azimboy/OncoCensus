@@ -83,10 +83,10 @@
             </div>
             <div class="space-2"></div>
             <div class="row">
-              <label for="by-client-group" class="col-sm-3 text-right" style="font-size: 13px;">Klient guruhi</label>
+              <label for="by-client-group" class="col-sm-3 text-right" style="font-size: 13px;">MKB</label>
               <div class="col-sm-9 form-inline" id="by-client-group">
                 <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
-                data-bind="options: vm.clientGroups, optionsText: 'code', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
+                data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'id', value: vm.filters.icdId, optionsCaption: ''">
                 </select>
               </div>
             </div>
@@ -126,7 +126,7 @@
                     <i class="ace-icon fa fa-calendar-times-o bigger-110 red" style="padding-left: 2px;"></i>
                     <span data-bind="text: $root.vm.formatDate(parseInt($data.supervisedOutJson.date), 'MMMM DD, YYYY')"></span>,
                   </span>
-                  <span data-bind="visible: $data.clientGroup.code"><span data-bind="text: $data.clientGroup.code"></span></span>,
+                  <span data-bind="visible: $data.icd.code"><span data-bind="text: $data.icd.code"></span></span>,
                   <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>,
                   <span data-bind="text: $data.patientDataJson.passportId"></span>
                   @*<span data-bind="text: $data.district.name"></span>*@
@@ -216,9 +216,9 @@
               </select>
             </div>
             <div class="col-sm-4">
-              <label class="control-label" for="clientGroup">Klient guruh</label>
-              <select class="form-control" autocomplete="off" name="clientGroupId" id="clientGroupId"
-              data-bind="options: vm.clientGroups, optionsText: 'code', optionsValue: 'id', value: vm.selected.patient.clientGroupId, optionsCaption: 'Klient guruhi'">
+              <label class="control-label" for="icd">MKB</label>
+              <select class="form-control" autocomplete="off" name="icdId" id="icdId"
+              data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'id', value: vm.selected.patient.icdId, optionsCaption: 'MKB'">
               </select>
             </div>
           </div>

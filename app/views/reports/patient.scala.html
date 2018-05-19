@@ -84,10 +84,10 @@
               </div>
               <div class="space-2"></div>
               <div class="row">
-                <label for="by-client-group" class="col-xs-3">Klient guruhi</label>
+                <label for="by-client-group" class="col-xs-3">MKB</label>
                 <div class="col-xs-9 form-inline" id="by-client-group">
                   <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
-                  data-bind="options: vm.clientGroups, optionsText: 'name', optionsValue: 'id', value: vm.filters.clientGroupId, optionsCaption: ''">
+                  data-bind="options: vm.icds, optionsText: 'name', optionsValue: 'id', value: vm.filters.icdId, optionsCaption: ''">
                   </select>
                 </div>
               </div>
@@ -165,7 +165,7 @@
           <th colspan="2" class="text-center">Sana</th>
           <th rowspan="2" class="text-center">FIO</th>
           <th rowspan="2">Tug'ulgan yili</th>
-          <th rowspan="2">Klient guruhi</th>
+          <th rowspan="2">MKB</th>
           <th colspan="2" class="text-center">Ko'riklar soni</th>
           <th rowspan="2">Yashash manzili</th>
           <th rowspan="2">Ish/O'qish joyi</th>
@@ -183,7 +183,7 @@
           <td data-bind="text: $data.supervisedOutAt"></td>
           <td data-bind="text: $data.lastName + ' ' + $data.firstName + ' ' + $data.middleName"></td>
           <td data-bind="text: $root.vm.formatDate($data.birthDate, 'DD.MM.YYYY')"></td>
-          <td data-bind="text: $data.clientGroup.code"></td>
+          <td data-bind="text: $data.icd.code"></td>
           <td>0</td>
           <td>0</td>
           <td>

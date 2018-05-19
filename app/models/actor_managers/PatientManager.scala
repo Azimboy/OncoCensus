@@ -12,7 +12,7 @@ import models.AppProtocol.Paging.{PageReq, PageRes}
 import models.AppProtocol.{GetDetailedReport, ReportData}
 import models.PatientProtocol._
 import models.actor_managers.EncryptionManager.{DecryptPatient, DecryptPatients, EncryptPatient}
-import models.daos.{ClientGroupsDao, PatientsDao}
+import models.daos.{IcdsDao, PatientsDao}
 import models.utils.FileUtils
 import play.api.libs.json.Json
 import play.api.{Configuration, Environment}
@@ -24,7 +24,7 @@ import scala.util.Random
 class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: ActorRef,
                                 val environment: Environment,
                                 val configuration: Configuration,
-                                val clientGroupsDao: ClientGroupsDao,
+                                val icdsDao: IcdsDao,
                                 val patientsDao: PatientsDao)
                                 (implicit val ec: ExecutionContext)
 	extends Actor
@@ -42,8 +42,8 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		case GetAllPatients(patientsFilter, pageReq) =>
 			getAllPatients(patientsFilter, pageReq).pipeTo(sender())
 
-		case GetAllClientGroups =>
-			getAllClientGroups().pipeTo(sender())
+		case GetAllIcds =>
+			getAllIcds().pipeTo(sender())
 
 		case ModifyPatient(patient, photosPath) =>
 			modifyPatient(patient, photosPath).pipeTo(sender())
@@ -77,8 +77,8 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		} yield pageRes
 	}
 
-	def getAllClientGroups(): Future[Seq[ClientGroup]] = {
-		clientGroupsDao.getAllClientGroups()
+	def getAllIcds(): Future[Seq[Icd]] = {
+		icdsDao.getAllIcds()
 	}
 
 	def modifyPatient(patient: Patient, photosPath: Option[Path]): Future[Int] = {

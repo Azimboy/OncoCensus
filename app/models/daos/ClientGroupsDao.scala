@@ -4,50 +4,50 @@ import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import models.PatientProtocol.ClientGroup
+import models.PatientProtocol.Icd
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 
 import scala.concurrent.Future
 
-trait ClientGroupsComponent
+trait IcdsComponent
 { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
 	import dbConfig.profile.api._
 
-	class ClientGroups(tag: Tag) extends Table[ClientGroup](tag, "client_groups") {
+	class Icds(tag: Tag) extends Table[Icd](tag, "icds") {
 		def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 		def name = column[String]("name")
 		def code = column[String]("code")
 		def * = (id.?, name.?, code.?) <>
-			(ClientGroup.tupled, ClientGroup.unapply _)
+			(Icd.tupled, Icd.unapply _)
 	}
 }
 
-@ImplementedBy(classOf[ClientGroupsDaoImpl])
-trait ClientGroupsDao {
-	def findById(id: Int): Future[Option[ClientGroup]]
-	def getAllClientGroups(): Future[Seq[ClientGroup]]
+@ImplementedBy(classOf[IcdsDaoImpl])
+trait IcdsDao {
+	def findById(id: Int): Future[Option[Icd]]
+	def getAllIcds(): Future[Seq[Icd]]
 }
 
 @Singleton
-class ClientGroupsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-	extends ClientGroupsDao
-		with ClientGroupsComponent
+class IcdsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+	extends IcdsDao
+		with IcdsComponent
 		with HasDatabaseConfigProvider[JdbcProfile]
 		with LazyLogging {
 
 	import dbConfig.profile.api._
 
-	val clientGroups = TableQuery[ClientGroups]
+	val icds = TableQuery[Icds]
 
 	override def findById(id: Int) = {
 		db.run {
-			clientGroups.filter(_.id === id).result.headOption
+			icds.filter(_.id === id).result.headOption
 		}
 	}
 
-	override def getAllClientGroups(): Future[Seq[ClientGroup]] = {
-		db.run(clientGroups.result)
+	override def getAllIcds(): Future[Seq[Icd]] = {
+		db.run(icds.result)
 	}
 }

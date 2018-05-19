@@ -1,11 +1,10 @@
 package models.daos
 
 import java.util.Date
-import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import models.AppProtocol.ReportData
+import javax.inject.{Inject, Singleton}
 import models.PatientProtocol.{Gender, Patient, PatientsFilter}
 import models.utils.{Date2SqlDate, DateUtils}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
@@ -14,14 +13,14 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PatientsComponent extends VillagesComponent with ClientGroupsComponent
+trait PatientsComponent extends VillagesComponent with IcdsComponent
   { self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import models.utils.PostgresDriver.api._
 
   class Patients(tag: Tag) extends Table[Patient](tag, "patients") with Date2SqlDate {
     val villages = TableQuery[Villages]
-    val clientGroups = TableQuery[ClientGroups]
+    val icds = TableQuery[Icds]
 
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def createdAt = column[Date]("created_at")
@@ -33,13 +32,13 @@ trait PatientsComponent extends VillagesComponent with ClientGroupsComponent
     def gender = column[Gender.Value]("gender")
     def birthDate = column[Date]("birth_date")
     def villageId = column[Int]("village_id")
-    def clientGroupId = column[Int]("client_group_id")
+    def icdId = column[Int]("icd_id")
     def avatarId = column[String]("avatar_id")
     def patientDataJson = column[JsValue]("patient_data_json")
     def supervisedOutJson = column[JsValue]("supervised_out_json")
 
     def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, passportId, gender, birthDate,
-       villageId, clientGroupId, avatarId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
+       villageId, icdId, avatarId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
       (t => {
         val fields =
           (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, None, None)
@@ -52,7 +51,7 @@ trait PatientsComponent extends VillagesComponent with ClientGroupsComponent
       )
 
     def village = foreignKey("patients_fk_village_id", villageId, villages)(_.id)
-    def clientGroup = foreignKey("patients_fk_client_group_id", clientGroupId, clientGroups)(_.id)
+    def icd = foreignKey("patients_fk_icd_id", icdId, icds)(_.id)
   }
 }
 
@@ -79,7 +78,7 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   val patients = TableQuery[Patients]
   val districts = TableQuery[Districts]
   val villages = TableQuery[Villages]
-  val clientGroups = TableQuery[ClientGroups]
+  val icds = TableQuery[Icds]
 
   override def create(Patient: Patient) = {
     db.run {
@@ -123,22 +122,22 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
       case None => byRegion
     }
 
-    val byClientGroup = patientsFilter.clientGroupId match {
-      case Some(clientGroupId) => byDistrict.filter(_._1._1.clientGroupId === clientGroupId)
+    val byIcd = patientsFilter.icdId match {
+      case Some(icdId) => byDistrict.filter(_._1._1.icdId === icdId)
       case None => byDistrict
     }
 
     val byPassportId = patientsFilter.passportId match {
-      case Some(passportId) => byClientGroup.filter(_._1._1.passportId === passportId)
-      case None => byClientGroup
+      case Some(passportId) => byIcd.filter(_._1._1.passportId === passportId)
+      case None => byIcd
     }
 
-    val withClientGroup = byPassportId.join(clientGroups).on(_._1._1.clientGroupId === _.id)
+    val withIcd = byPassportId.join(icds).on(_._1._1.icdId === _.id)
 
     db.run {
-      withClientGroup.sortBy(_._1._1._1.id).result
-    }.map(_.map { case (((patient, villages), _), clientGroup) =>
-      patient.copy(village = Some(villages), clientGroup = Some(clientGroup))
+      withIcd.sortBy(_._1._1._1.id).result
+    }.map(_.map { case (((patient, villages), _), icd) =>
+      patient.copy(village = Some(villages), icd = Some(icd))
     })
   }
 

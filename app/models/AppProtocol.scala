@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 import models.AppProtocol.Paging.PageReq
-import models.PatientProtocol.{ClientGroup, PatientsFilter}
+import models.PatientProtocol.Icd
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat, __}
 
@@ -89,9 +89,9 @@ object AppProtocol {
 	)
 
 	case class PatientsReport(
-    clientGroup: ClientGroup,
-    maleCount: Int,
-    femaleCount: Int
+	  icd: Icd,
+	  maleCount: Int,
+	  femaleCount: Int
   )
 
 	case class GetDetailedReport(reportData: ReportData, pageReq: PageReq)

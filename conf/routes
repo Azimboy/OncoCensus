@@ -13,7 +13,7 @@ GET     /redirect/:menuName                                 @controllers.HomeCon
 GET     /home/regions                                       @controllers.HomeController.getRegions
 GET     /home/districts                                     @controllers.HomeController.getDistricts
 GET     /home/villages                                      @controllers.HomeController.getVillages
-GET     /home/client-groups                                 @controllers.HomeController.getClientGroups
+GET     /home/client-groups                                 @controllers.HomeController.getIcds
 GET     /home/create-admin                                  @controllers.HomeController.createAdmin
 
 GET     /indicator                                          @controllers.IndicatorController.index

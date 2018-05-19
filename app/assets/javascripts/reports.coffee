@@ -5,7 +5,7 @@ $ ->
   apiUrl =
     regions: '/home/regions'
     districts: '/home/districts'
-    clientGroups: '/home/client-groups'
+    icds: '/home/client-groups'
     patients: '/reports/patients'
 
   handleError = (error) ->
@@ -64,7 +64,7 @@ $ ->
     regions: []
     districts: []
     reports: []
-    clientGroups: []
+    icds: []
     patients: []
     reportData:
       startDate: ''
@@ -80,7 +80,7 @@ $ ->
       isFemale: yes
       minAge: undefined
       maxAge: undefined
-      clientGroupId: undefined
+      icdId: undefined
       passportId: undefined
       province: undefined
     isLoading: no
@@ -109,11 +109,11 @@ $ ->
       vm.selected.districts districts
       vm.districts districts
 
-  loadAllClientGroups = ->
-    $.get(apiUrl.clientGroups)
+  loadAllIcds = ->
+    $.get(apiUrl.icds)
     .fail handleError
-    .done (clientGroups) ->
-      vm.clientGroups clientGroups
+    .done (icds) ->
+      vm.icds icds
 
   vm.reportData.regionId.subscribe (regionId) ->
     if regionId
@@ -121,7 +121,7 @@ $ ->
 
   loadAllRegions()
   loadAllDistricts()
-  loadAllClientGroups()
+  loadAllIcds()
 
   loadAllPatients = (event, page) ->
     pageParam = "pageSize=#{pageSize}"

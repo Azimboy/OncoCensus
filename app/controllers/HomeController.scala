@@ -9,7 +9,7 @@ import com.typesafe.scalalogging.LazyLogging
 import controllers.HomeController._
 import javax.inject._
 import models.AppProtocol.{District, GetAllDistricts, GetAllRegions, GetAllVillages, Region, Village}
-import models.PatientProtocol.{ClientGroup, GetAllClientGroups}
+import models.PatientProtocol.{Icd, GetAllIcds}
 import models.SimpleAuth
 import models.UserProtocol._
 import org.webjars.play.WebJarsUtil
@@ -178,9 +178,9 @@ class HomeController @Inject()(val controllerComponents: ControllerComponents,
     }
   }}
 
-  def getClientGroups = Action.async { implicit request => asyncAuth {
-    (patientManager ? GetAllClientGroups).mapTo[Seq[ClientGroup]].map { clientGroups =>
-      Ok(Json.toJson(clientGroups))
+  def getIcds = Action.async { implicit request => asyncAuth {
+    (patientManager ? GetAllIcds).mapTo[Seq[Icd]].map { icds =>
+      Ok(Json.toJson(icds))
     }.recover { case error =>
       logger.error("Error occurred during getting client groups", error)
       InternalServerError

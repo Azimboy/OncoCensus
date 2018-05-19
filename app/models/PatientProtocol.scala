@@ -23,12 +23,12 @@ object PatientProtocol {
     gender: Gender.Value,
     birthDate: Date,
     villageId: Int,
-    clientGroupId: Int,
+    icdId: Int,
     avatarId: Option[String] = None,
     patientDataJson: Option[JsValue] = None,
     supervisedOutJson: Option[JsValue] = None,
     village: Option[Village] = None,
-    clientGroup: Option[ClientGroup] = None
+    icd: Option[Icd] = None
   )
 
   object Gender extends EnumMappedToDb {
@@ -41,7 +41,7 @@ object PatientProtocol {
     }
   }
 
-  case class ClientGroup(
+  case class Icd(
     id: Option[Int] = None,
     name: Option[String] = None,
     code: Option[String] = None
@@ -98,7 +98,7 @@ object PatientProtocol {
     maxAge: Option[Int],
     regionId: Option[Int],
     districtId: Option[Int],
-    clientGroupId: Option[Int],
+    icdId: Option[Int],
     passportId: Option[String],
     province: Option[String]
   )
@@ -106,7 +106,7 @@ object PatientProtocol {
   implicit val patientsFilterFormat = Json.format[PatientsFilter]
   implicit val genderFormat = EnumUtils.enumFormat(Gender)
   implicit val bloodGroupFormat = EnumUtils.enumFormat(BloodGroup)
-  implicit val clientGroupFormat = Json.format[ClientGroup]
+  implicit val icdFormat = Json.format[Icd]
   implicit val patientDataFormat = Json.format[PatientData]
   implicit val patientFormat = Json.format[Patient]
   implicit val supervisedOutReasonFormat = EnumUtils.enumFormat(SupervisedOutReason)
@@ -115,7 +115,7 @@ object PatientProtocol {
   case class DeletePatientById(patientId: Int)
 
   case class GetAllPatients(patientsFilter: PatientsFilter, pageReq: PageReq)
-  case object GetAllClientGroups
+  case object GetAllIcds
 
   case class SupervisedOut(
     date: Date,

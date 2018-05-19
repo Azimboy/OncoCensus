@@ -6,7 +6,7 @@ $ ->
     regions: '/home/regions'
     districts: '/home/districts'
     villages: '/home/villages'
-    clientGroups: '/home/client-groups'
+    icds: '/home/client-groups'
     patient: '/card-index/patient'
     patients: '/card-index/patients'
     checkUps: '/card-index/check-ups'
@@ -152,8 +152,8 @@ $ ->
     regionId: ''
     districtId: ''
     villageId: ''
-    clientGroupId: ''
-    clientGroup:
+    icdId: ''
+    icd:
       id: ''
       name: ''
       code: ''
@@ -201,7 +201,7 @@ $ ->
     regions: []
     districts: []
     villages: []
-    clientGroups: []
+    icds: []
     bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
     checkUps: []
     rightPage: PageName.Summary
@@ -219,7 +219,7 @@ $ ->
       regionId: undefined
       districtId: undefined
       villageId: undefined
-      clientGroupId: undefined
+      icdId: undefined
       passportId: undefined
       province: undefined
     checkUpFiles: []
@@ -253,7 +253,7 @@ $ ->
         'Bemorning jinsini tanlang!'
       else if notvalid(patient.birthDate())
         'Bemorning tug\'ulgan sanasini kiriting!'
-      else if notvalid(patient.clientGroupId())
+      else if notvalid(patient.icdId())
         'Bemorning klient guruhini tanlang!'
       else if notvalid(patient.patientDataJson.bloodGroup())
         'Bemorning qon guruhini tanlang!'
@@ -400,7 +400,7 @@ $ ->
   vm.filters.districtId.subscribe ->
     loadAllPatients()
 
-  vm.filters.clientGroupId.subscribe ->
+  vm.filters.icdId.subscribe ->
     loadAllPatients()
 
   vm.filters.passportId.subscribe ->
@@ -427,11 +427,11 @@ $ ->
     .done (villages) ->
       vm.villages villages
 
-  loadAllClientGroups = ->
-    $.get(apiUrl.clientGroups)
+  loadAllIcds = ->
+    $.get(apiUrl.icds)
     .fail handleError
-    .done (clientGroups) ->
-      vm.clientGroups clientGroups
+    .done (icds) ->
+      vm.icds icds
 
   vm.getPatientFullName = ->
     "#{vm.selected.patient.lastName vm.selected.patient.firstName vm.selected.patient.middleName}"
@@ -457,7 +457,7 @@ $ ->
   loadAllRegions()
   loadAllDistricts()
   loadAllVillages()
-  loadAllClientGroups()
+  loadAllIcds()
 
   # CHECH UP
   getPatientsCheckUps = (patientId) ->
