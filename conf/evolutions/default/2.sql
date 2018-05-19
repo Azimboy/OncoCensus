@@ -35,12 +35,12 @@ VALUES
   (3, 'Sarapoyon', 7),
   (4, 'Qaramazi', 7);
 
-INSERT INTO "icds" ("id", "name", "code")
+INSERT INTO "icds" ("code", "name")
 VALUES
-  (1, 'Lab havfli o''smasi', 'C00'),
-  (2, 'Og''iz bo''shlig''i va yutqini havfli o''smasi', 'C01'),
-  (3, 'Milkda havfli o''sma', 'C03'),
-  (4, 'Og''iz boshlig''i tubi havfli o''smasi', 'C04');
+  ('C00', 'Lab havfli o''smasi'),
+  ('C01', 'Og''iz bo''shlig''i va yutqini havfli o''smasi'),
+  ('C02', 'Milkda havfli o''sma'),
+  ('C04', 'Og''iz boshlig''i tubi havfli o''smasi');
 
 # --- !Downs
 

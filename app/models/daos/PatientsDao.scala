@@ -32,17 +32,17 @@ trait PatientsComponent extends VillagesComponent with IcdsComponent
     def gender = column[Gender.Value]("gender")
     def birthDate = column[Date]("birth_date")
     def villageId = column[Int]("village_id")
-    def icdId = column[Int]("icd_id")
+    def icd = column[String]("icd")
     def clientGroup = column[ClientGroup.Value]("client_group")
     def avatarId = column[String]("avatar_id")
     def patientDataJson = column[JsValue]("patient_data_json")
     def supervisedOutJson = column[JsValue]("supervised_out_json")
 
     def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, passportId, gender, birthDate,
-       villageId, icdId, clientGroup, avatarId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
+       villageId, icd, clientGroup, avatarId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
       (t => {
         val fields =
-          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None, None)
+          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None)
         (Patient.apply _).tupled(fields)
       },
         (i: Patient) =>
@@ -52,7 +52,6 @@ trait PatientsComponent extends VillagesComponent with IcdsComponent
       )
 
     def village = foreignKey("patients_fk_village_id", villageId, villages)(_.id)
-    def icd = foreignKey("patients_fk_icd_id", icdId, icds)(_.id)
   }
 }
 
@@ -123,8 +122,8 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
       case None => byRegion
     }
 
-    val byIcd = patientsFilter.icdId match {
-      case Some(icdId) => byDistrict.filter(_._1._1.icdId === icdId)
+    val byIcd = patientsFilter.icd match {
+      case Some(icd) => byDistrict.filter(_._1._1.icd === icd)
       case None => byDistrict
     }
 
@@ -133,12 +132,10 @@ class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
       case None => byIcd
     }
 
-    val withIcd = byPassportId.join(icds).on(_._1._1.icdId === _.id)
-
     db.run {
-      withIcd.sortBy(_._1._1._1.id).result
-    }.map(_.map { case (((patient, villages), _), icd) =>
-      patient.copy(village = Some(villages), icd = Some(icd))
+      byPassportId.sortBy(_._1._1.id).result
+    }.map(_.map { case ((patient, villages), _) =>
+      patient.copy(village = Some(villages))
     })
   }
 

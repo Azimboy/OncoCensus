@@ -16,17 +16,16 @@ trait IcdsComponent
 	import dbConfig.profile.api._
 
 	class Icds(tag: Tag) extends Table[Icd](tag, "icds") {
-		def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-		def name = column[String]("name")
+		def name = column[String]("name", O.PrimaryKey)
 		def code = column[String]("code")
-		def * = (id.?, name.?, code.?) <>
+		def * = (code.?, name.?) <>
 			(Icd.tupled, Icd.unapply _)
 	}
 }
 
 @ImplementedBy(classOf[IcdsDaoImpl])
 trait IcdsDao {
-	def findById(id: Int): Future[Option[Icd]]
+	def findByCode(code: String): Future[Option[Icd]]
 	def getAllIcds(): Future[Seq[Icd]]
 }
 
@@ -41,9 +40,9 @@ class IcdsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
 
 	val icds = TableQuery[Icds]
 
-	override def findById(id: Int) = {
+	override def findByCode(code: String) = {
 		db.run {
-			icds.filter(_.id === id).result.headOption
+			icds.filter(_.code === code).result.headOption
 		}
 	}
 

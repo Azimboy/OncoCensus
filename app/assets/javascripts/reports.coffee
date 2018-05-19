@@ -80,7 +80,7 @@ $ ->
       isFemale: yes
       minAge: undefined
       maxAge: undefined
-      icdId: undefined
+      icd: undefined
       passportId: undefined
       province: undefined
     isLoading: no

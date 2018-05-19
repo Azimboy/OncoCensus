@@ -153,11 +153,7 @@ $ ->
     regionId: ''
     districtId: ''
     villageId: ''
-    icdId: ''
-    icd:
-      id: ''
-      name: ''
-      code: ''
+    icd: ''
     village:
       id: ''
       name: ''
@@ -220,7 +216,7 @@ $ ->
       regionId: undefined
       districtId: undefined
       villageId: undefined
-      icdId: undefined
+      icd: undefined
       passportId: undefined
       province: undefined
     checkUpFiles: []
@@ -254,7 +250,7 @@ $ ->
         'Bemorning jinsini tanlang!'
       else if notvalid(patient.birthDate())
         'Bemorning tug\'ulgan sanasini kiriting!'
-      else if notvalid(patient.icdId())
+      else if notvalid(patient.icd())
         'Bemorning klient guruhini tanlang!'
       else if notvalid(patient.patientDataJson.bloodType())
         'Bemorning qon guruhini tanlang!'
@@ -401,7 +397,7 @@ $ ->
   vm.filters.districtId.subscribe ->
     loadAllPatients()
 
-  vm.filters.icdId.subscribe ->
+  vm.filters.icd.subscribe ->
     loadAllPatients()
 
   vm.filters.passportId.subscribe ->

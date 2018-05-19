@@ -23,13 +23,12 @@ object PatientProtocol {
     gender: Gender.Value,
     birthDate: Date,
     villageId: Int,
-    icdId: Int,
+    icd: String,
     clientGroup: ClientGroup.Value,
     avatarId: Option[String] = None,
     patientDataJson: Option[JsValue] = None,
     supervisedOutJson: Option[JsValue] = None,
     village: Option[Village] = None,
-    icd: Option[Icd] = None
   )
 
   object Gender extends EnumMappedToDb {
@@ -53,11 +52,9 @@ object PatientProtocol {
     phoneNumber: Option[String] = None
   )
 
-
   case class Icd(
-    id: Option[Int] = None,
-    name: Option[String] = None,
-    code: Option[String] = None
+    code: Option[String] = None,
+    name: Option[String] = None
   )
 
   object ClientGroup extends EnumMappedToDb {
@@ -116,7 +113,7 @@ object PatientProtocol {
     maxAge: Option[Int],
     regionId: Option[Int],
     districtId: Option[Int],
-    icdId: Option[Int],
+    icd: Option[String],
     passportId: Option[String],
     province: Option[String]
   )

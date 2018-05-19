@@ -85,8 +85,8 @@
             <div class="row">
               <label for="by-client-group" class="col-sm-3 text-right" style="font-size: 13px;">MKB</label>
               <div class="col-sm-9 form-inline" id="by-client-group">
-                <select class="form-control input-sm" autocomplete="off" name="regionId" id="regionId"
-                data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'id', value: vm.filters.icdId, optionsCaption: ''">
+                <select class="form-control input-sm" autocomplete="off" name="icd" id="icd"
+                  data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'code', value: vm.filters.icd, optionsCaption: ''">
                 </select>
               </div>
             </div>
@@ -217,8 +217,8 @@
             </div>
             <div class="col-sm-4">
               <label class="control-label" for="icd">MKB</label>
-              <select class="form-control" autocomplete="off" name="icdId" id="icdId"
-              data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'id', value: vm.selected.patient.icdId, optionsCaption: 'MKB'">
+              <select class="form-control" autocomplete="off" name="icd" id="icd"
+              data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'code', value: vm.selected.patient.icd, optionsCaption: 'MKB'">
               </select>
             </div>
           </div>
