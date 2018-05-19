@@ -149,4 +149,5 @@ object PatientProtocol {
 
   case class PatientSupervisedOut(patientId: Int, supervisedOut: SupervisedOut)
 
+  case class CreatePatients(patients: List[Patient])
 }

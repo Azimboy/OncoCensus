@@ -56,6 +56,9 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 
 		case GetDetailedReport(reportData, pageReq) =>
 			getPatientsDetailedReport(reportData, pageReq).pipeTo(sender())
+
+		case CreatePatients(patients) =>
+			createPatients(patients).pipeTo(sender())
 	}
 
 	def getAllPatients(patientsFilter: PatientsFilter, pageReq: PageReq): Future[PageRes[Patient]] = {
@@ -81,7 +84,7 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 		icdsDao.getAllIcds()
 	}
 
-	def modifyPatient(patient: Patient, photosPath: Option[Path]): Future[Int] = {
+	def modifyPatient(patient: Patient, photosPath: Option[Path] = None): Future[Int] = {
 		for {
 			encrPatient <- (encryptionManager ? EncryptPatient(patient)).mapTo[Patient]
 			encrPatientWithAvatar <- saveAvatarIfExists(photosPath, encrPatient)
@@ -132,6 +135,10 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 
 	def getPatientsDetailedReport(reportData: ReportData, pageReq: PageReq): Future[Unit] = {
 		Future.successful(())
+	}
+
+	def createPatients(patients: List[Patient]) = {
+		Future.sequence(patients.map(p => modifyPatient(p)))
 	}
 
 }
