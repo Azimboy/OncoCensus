@@ -71,7 +71,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 		  home = "home",
 		  work = "work",
 		  position = "position",
-		  bloodGroup = getValue("bloodGroup").map(BloodGroup.withName),
+		  bloodType = getValue("bloodType").map(BloodType.withName),
       email = "email",
       phoneNumber = "phoneNumber"
 	  ))
@@ -86,6 +86,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 		  birthDate = parseDate(getValue("birthDate").get, "dd.MM.yyyy"),
 		  villageId = getValue("villageId").map(_.toInt).get,
 		  icdId = getValue("icdId").map(_.toInt).get,
+		  clientGroup = getValue("clientGroup").map(ClientGroup.withShortName).get,
 		  patientDataJson = Some(patientDataJs)
 	  )
 

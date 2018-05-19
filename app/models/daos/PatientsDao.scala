@@ -5,7 +5,7 @@ import java.util.Date
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject.{Inject, Singleton}
-import models.PatientProtocol.{Gender, Patient, PatientsFilter}
+import models.PatientProtocol.{ClientGroup, Gender, Patient, PatientsFilter}
 import models.utils.{Date2SqlDate, DateUtils}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.JsValue
@@ -33,20 +33,21 @@ trait PatientsComponent extends VillagesComponent with IcdsComponent
     def birthDate = column[Date]("birth_date")
     def villageId = column[Int]("village_id")
     def icdId = column[Int]("icd_id")
+    def clientGroup = column[ClientGroup.Value]("client_group")
     def avatarId = column[String]("avatar_id")
     def patientDataJson = column[JsValue]("patient_data_json")
     def supervisedOutJson = column[JsValue]("supervised_out_json")
 
     def * = (id.?, createdAt.?, deletedAt.?, firstNameEncr.?, lastNameEncr.?, middleNameEncr.?, passportId, gender, birthDate,
-       villageId, icdId, avatarId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
+       villageId, icdId, clientGroup, avatarId.?, patientDataJson.?, supervisedOutJson.?).shaped <>
       (t => {
         val fields =
-          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, None, None)
+          (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15, None, None)
         (Patient.apply _).tupled(fields)
       },
         (i: Patient) =>
           Patient.unapply(i).map { t =>
-            (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14)
+            (t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10, t._11, t._12, t._13, t._14, t._15)
           }
       )
 

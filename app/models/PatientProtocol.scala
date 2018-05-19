@@ -4,7 +4,7 @@ import java.nio.file.Path
 import java.util.Date
 
 import models.AppProtocol.Paging.PageReq
-import models.AppProtocol.{District, _}
+import models.AppProtocol._
 import models.utils.{EnumMappedToDb, EnumUtils}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -24,6 +24,7 @@ object PatientProtocol {
     birthDate: Date,
     villageId: Int,
     icdId: Int,
+    clientGroup: ClientGroup.Value,
     avatarId: Option[String] = None,
     patientDataJson: Option[JsValue] = None,
     supervisedOutJson: Option[JsValue] = None,
@@ -41,43 +42,60 @@ object PatientProtocol {
     }
   }
 
-  case class Icd(
-    id: Option[Int] = None,
-    name: Option[String] = None,
-    code: Option[String] = None
-  )
-
   case class PatientData(
     province: Option[String] = None,
     street: Option[String] = None,
     home: Option[String] = None,
     work: Option[String] = None,
     position: Option[String] = None,
-    bloodGroup: Option[BloodGroup.Value] = None,
+    bloodType: Option[BloodType.Value] = None,
     email: Option[String] = None,
     phoneNumber: Option[String] = None
   )
 
-  object BloodGroup extends EnumMappedToDb {
-    val I_Plus = Value("I(+)")
-    val I_Minus = Value("I(-)")
-    val II_Plus = Value("II(+)")
-    val II_Minus = Value("II(-)")
-    val III_Plus = Value("III(+)")
-    val III_Minus = Value("III(-)")
-    val IV_Plus = Value("IV(+)")
-    val IV_Minus = Value("IV(-)")
 
-    def withShortName: PartialFunction[String, BloodGroup.Value] = {
-      case "I(+)" => I_Plus
-      case "I(-)" => I_Minus
-      case "II(+)" => II_Plus
-      case "II(-)" => II_Minus
-      case "III(+)" => III_Plus
-      case "III(-)" => III_Minus
-      case "IV(+)" => IV_Plus
-      case "IV(-)" => IV_Minus
+  case class Icd(
+    id: Option[Int] = None,
+    name: Option[String] = None,
+    code: Option[String] = None
+  )
+
+  object ClientGroup extends EnumMappedToDb {
+    val I = Value("1")
+    val II = Value("2")
+    val III = Value("3")
+    val IV = Value("4")
+
+    def withShortName: PartialFunction[String, ClientGroup.Value] = {
+      case "1" => I
+      case "2" => II
+      case "3" => III
+      case "4" => IV
     }
+  }
+
+  object BloodType extends EnumMappedToDb {
+    val I_- = Value("O(I) Rh−")
+    val I_+ = Value("O(I) Rh+")
+    val II_- = Value("A(II) Rh−")
+    val II_+ = Value("A(II) Rh+")
+    val III_- = Value("B(III) Rh−")
+    val III_+ = Value("B(III) Rh+")
+    val IV_- = Value("AB(IV) Rh−")
+    val IV_+ = Value("AB(IV) Rh+")
+
+    def withShortName: PartialFunction[String, BloodType.Value] = {
+      case "O(I) Rh−" => I_-
+      case "O(I) Rh+" => I_+
+      case "A(II) Rh−" => II_-
+      case "A(II) Rh+" => II_+
+      case "B(III) Rh−" => III_-
+      case "B(III) Rh+" => III_+
+      case "AB(IV) Rh−" => IV_-
+      case "AB(IV) Rh+" => IV_+
+    }
+
+    val all = Seq(I_-, I_+, II_-, II_+, III_-, III_+, IV_-, IV_+)
   }
 
   object SupervisedOutReason extends EnumMappedToDb {
@@ -105,7 +123,8 @@ object PatientProtocol {
 
   implicit val patientsFilterFormat = Json.format[PatientsFilter]
   implicit val genderFormat = EnumUtils.enumFormat(Gender)
-  implicit val bloodGroupFormat = EnumUtils.enumFormat(BloodGroup)
+  implicit val bloodTypeFormat = EnumUtils.enumFormat(BloodType)
+  implicit val clientGroupFormat = EnumUtils.enumFormat(ClientGroup)
   implicit val icdFormat = Json.format[Icd]
   implicit val patientDataFormat = Json.format[PatientData]
   implicit val patientFormat = Json.format[Patient]

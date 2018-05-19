@@ -6,7 +6,8 @@ $ ->
     regions: '/home/regions'
     districts: '/home/districts'
     villages: '/home/villages'
-    icds: '/home/client-groups'
+    icds: '/home/icds'
+    bloodTypes: '/home/blood-types'
     patient: '/card-index/patient'
     patients: '/card-index/patients'
     checkUps: '/card-index/check-ups'
@@ -167,7 +168,7 @@ $ ->
       home: ''
       work: ''
       position: ''
-      bloodGroup: ''
+      bloodType: ''
       email: ''
       phoneNumber: ''
     supervisedOutJson:
@@ -202,7 +203,7 @@ $ ->
     districts: []
     villages: []
     icds: []
-    bloodGroups: ['I(+)', 'I(-)', 'II(+)', 'II(-)', 'III(+)', 'III(-)', 'IV(+)', 'IV(-)']
+    bloodTypes: []
     checkUps: []
     rightPage: PageName.Summary
     selected:
@@ -255,7 +256,7 @@ $ ->
         'Bemorning tug\'ulgan sanasini kiriting!'
       else if notvalid(patient.icdId())
         'Bemorning klient guruhini tanlang!'
-      else if notvalid(patient.patientDataJson.bloodGroup())
+      else if notvalid(patient.patientDataJson.bloodType())
         'Bemorning qon guruhini tanlang!'
       else if notvalid(patient.passportId())
         'Bemorning passport raqamini kiriting!'
@@ -410,28 +411,19 @@ $ ->
     loadAllPatients()
 
   loadAllRegions = ->
-    $.get(apiUrl.regions)
-    .fail handleError
-    .done (regions) ->
-      vm.regions regions
+    $.get(apiUrl.regions).fail(handleError).done(vm.regions)
 
   loadAllDistricts = ->
-    $.get(apiUrl.districts)
-    .fail handleError
-    .done (districts) ->
-      vm.districts districts
+    $.get(apiUrl.districts).fail(handleError).done(vm.districts)
 
   loadAllVillages = ->
-    $.get(apiUrl.villages)
-    .fail handleError
-    .done (villages) ->
-      vm.villages villages
+    $.get(apiUrl.villages).fail(handleError).done(vm.villages)
 
   loadAllIcds = ->
-    $.get(apiUrl.icds)
-    .fail handleError
-    .done (icds) ->
-      vm.icds icds
+    $.get(apiUrl.icds).fail(handleError).done(vm.icds)
+
+  loadAllBloodTypes = ->
+    $.get(apiUrl.bloodTypes).fail(handleError).done(vm.bloodTypes)
 
   vm.getPatientFullName = ->
     "#{vm.selected.patient.lastName vm.selected.patient.firstName vm.selected.patient.middleName}"
@@ -458,6 +450,7 @@ $ ->
   loadAllDistricts()
   loadAllVillages()
   loadAllIcds()
+  loadAllBloodTypes()
 
   # CHECH UP
   getPatientsCheckUps = (patientId) ->

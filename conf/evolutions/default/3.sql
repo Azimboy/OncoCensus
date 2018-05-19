@@ -13,6 +13,7 @@ CREATE TABLE "patients" (
   "village_id"          INTEGER   NOT NULL CONSTRAINT "patients_fk_village_id" REFERENCES "villages" ON UPDATE CASCADE ON DELETE SET NULL,
   "avatar_id"           VARCHAR   NULL,
   "icd_id"              INTEGER   NOT NULL CONSTRAINT "patients_fk_icd_id" REFERENCES "icds" ON UPDATE CASCADE ON DELETE SET NULL,
+  "client_group"        VARCHAR   NOT NULL,
   "patient_data_json"   JSONB     NULL,
   "supervised_out_json" JSONB     NULL,
   UNIQUE ("passport_id")
