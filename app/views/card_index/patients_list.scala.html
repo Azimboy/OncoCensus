@@ -149,16 +149,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Bemoring ma'lumotlari</h4>
+        <h4 class="modal-title">
+          <i class="ace-icon fa fa-credit-card"></i>&nbsp;
+          Passport ma'lumotlari
+        </h4>
       </div>
       <div class="modal-body">
         <form action="@controllers.routes.CardIndexController.modifyPatient" id="patient-form"
-          enctype="multipart/form-data" method="post" class="form-horizontal">
-          <h4 class="widget-title lighter">
-            <i class="ace-icon fa fa-credit-card"></i>&nbsp;
-            Passport ma'lumotlari
-          </h4>
-          <div class="hr hr-10 dotted hr-double"></div>
+          enctype="multipart/form-data" method="post">
           <div class="row">
             <div class="col-sm-3">
               <img id="avatar" class="profile-picture" alt="Avatar" src="assets/images/profile-pic.jpg" height="130px"/>
@@ -167,61 +165,45 @@
             </div>
 
             <div class="col-sm-9">
-              <div class="form-group row">
+              <div class="row">
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="input1" class="col-sm-4 control-label no-padding-right">Ism</label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control" id="firstName" data-bind="value: vm.selected.patient.firstName" name="firstName">
-                    </div>
+                    <label for="input1">Ism</label>
+                    <input placeholder="Ism" type="text" class="form-control" id="firstName" data-bind="value: vm.selected.patient.firstName" name="firstName">
                   </div>
                   <div class="form-group">
-                    <label for="input2" class="col-sm-4 control-label no-padding-right">Familiya</label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control" id="lastName" data-bind="value: vm.selected.patient.lastName" name="lastName">
-                    </div>
+                    <label for="input2">Familiya</label>
+                    <input placeholder="Familiya" type="text" class="form-control" id="lastName" data-bind="value: vm.selected.patient.lastName" name="lastName">
                   </div>
                   <div class="form-group">
-                    <label for="input3" class="col-sm-4 control-label no-padding-right">Otasining ismi</label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control" id="middleName" data-bind="value: vm.selected.patient.middleName" name="middleName">
-                    </div>
+                    <label for="input3">Otasining ismi</label>
+                    <input placeholder="Otasining ismi" type="text" class="form-control" id="middleName" data-bind="value: vm.selected.patient.middleName" name="middleName">
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-group">
-                    <label for="gender" class="col-sm-5 control-label no-padding-right">Jins</label>
-                    <div class="col-sm-7">
-                      <select class="form-control" autocomplete="off" name="gender" id="gender" data-bind="value: vm.selected.patient.gender">
-                        <option value>Jinsi</option>
-                        <option value="Male">Erkak</option>
-                        <option value="Female">Ayol</option>
-                      </select>
+                    <label for="gender">Jins</label>
+                    <select class="form-control" autocomplete="off" name="gender" id="gender" data-bind="value: vm.selected.patient.gender">
+                      <option value>Jinsi</option>
+                      <option value="Male">Erkak</option>
+                      <option value="Female">Ayol</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="birthDate">Tug'ulgan yil</label>
+                    <div class="input-group" id="birthDate" data-bind="datetimepicker: vm.selected.patient.birthDate,
+                    dateTimePickerOptions: {format: 'MM.DD.YYYY', pickTime: false}">
+                      <input type='text' name="birthDate" class="form-control" data-bind="value: vm.selected.patient.birthDate"/>
+                      <span class="input-group-addon">
+                        <span class="fa fa-calendar"></span>
+                      </span>
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="birthDate" class="col-sm-5 control-label no-padding-right">Tug'ulgan yil</label>
-                    <div class="col-sm-7">
-                      <div class="input-group" id="birthDate" data-bind="datetimepicker: vm.selected.patient.birthDate,
-                      dateTimePickerOptions: {format: 'MM.DD.YYYY', pickTime: false}">
-                        <input type='text' name="birthDate" class="form-control" data-bind="value: vm.selected.patient.birthDate"/>
-                        <span class="input-group-addon">
-                          <span class="fa fa-calendar"></span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="passportId" class="col-sm-5 control-label no-padding-right">Passport Raqami</label>
-                    <div class="col-sm-7">
-                      <input type="text" class="form-control" id="passportId" data-bind="value: vm.selected.patient.passportId" name="passportId">
-                    </div>
+                    <label for="passportId">Passport Raqami</label>
+                    <input placeholder="Passport Raqam" type="text" class="form-control" id="passportId" data-bind="value: vm.selected.patient.passportId" name="passportId">
                   </div>
                 </div>
-              </div>
-
-              <div class="form-group row">
-
               </div>
             </div>
           </div>
@@ -257,7 +239,7 @@
             <div class="col-sm-4">
               <label class="control-label" for="villageId">Qishloq/Shaharcha</label>
               <select class="form-control" autocomplete="off" name="villageId" id="villageId"
-              data-bind="options: vm.selected.villages, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.villageId, optionsCaption: 'Qishloq'">
+              data-bind="options: vm.selected.villages, optionsText: 'name', optionsValue: 'id', value: vm.selected.patient.villageId, optionsCaption: 'Qishloq/Shaharcha'">
               </select>
             </div>
           </div>
@@ -286,6 +268,8 @@
               <label for="position">Lavozimi</label>
               <input type="text" class="form-control" id="position" data-bind="value: vm.selected.patient.patientDataJson.position" name="position">
             </div>
+          </div>
+          <div class="form-group row">
             <div class="col-sm-4">
               <label for="phoneNumber">Telefon raqam</label>
               <div class="input-group">
@@ -295,9 +279,6 @@
                 <input type="text" class="form-control" id="phoneNumber" data-bind="value: vm.selected.patient.patientDataJson.phoneNumber" name="phoneNumber"/>
               </div>
             </div>
-          </div>
-          @*
-          <div class="form-group row">
             <div class="col-sm-4">
               <label for="email">Elektron pochta</label>
               <div class="input-group">
@@ -308,7 +289,6 @@
               </div>
             </div>
           </div>
-          *@
           <div class="row">
             <div class="col-sm-12">
               <button type="submit" class="btn btn-white btn-bold btn-warning pull-left save" data-bind="click: vm.onSubmitPatient, disable: vm.isLoading">Saqlash</button>
