@@ -177,7 +177,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
   def createPatients(rows: List[List[String]]) = {
     (departmentManager ? GetAllVillages).mapTo[Seq[Village]].flatMap { villages =>
       try {
-        val patients = validatePatients(rows)
+        val patients = validatePatients(rows, villages)
         (patientManager ? CreatePatients(patients)).mapTo[List[Int]].map { ids =>
           logger.info(s"All patients imported from file. Count: $ids")
           Ok("OK")
@@ -196,16 +196,17 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     }
   }
 
-  private def validatePatients(rows: List[List[String]]) = {
+  private def validatePatients(rows: List[List[String]], villages: Seq[Village]) = {
     val header = rows.head
     rows.tail.zipWithIndex.map { case (cyrillicRow, i) =>
-      val index = i + 2
+      val index = i + 1
       val cells = cyrillicRow.map(cyril2Latin)
       logger.info(s"ROW $index | $cells")
 
+      val throwError = (ind: Int) => throw SpreadsheetException(s"${header(ind)} ustunida xatolik aniqlandi. Qator raqami: $index")
       val getRequired = (ind: Int) =>
         if (cells(ind).isEmpty) {
-          throw SpreadsheetException(s"${header(ind)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+          throwError(ind)
         } else {
           cells(ind)
         }
@@ -223,23 +224,29 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
         case 3 => (fullName(1), fullName(0), fullName(2))
         case 2 => (fullName(1), fullName(0), "")
         case 1 => (fullName(1), "", "")
-        case _ => throw SpreadsheetException(s"${header.head} ustunida xatolik aniqlandi. Satr Raqami: $index")
+        case _ => throwError(0)
       }
       val gender = cells(1) match {
         case "e" => Gender.Male
         case "a" => Gender.Female
-        case _ => throw SpreadsheetException(s"${header(1)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+        case _ => throwError(1)
       }
       val birthDate = Try(parseDate(cells(2), "dd.MM.yyyy")).toOption match {
         case Some(validDate) => validDate
-        case None => throw SpreadsheetException(s"${header(2)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+        case None => throwError(2)
       }
       val clientGroup = cells(11) match {
         case "I-kl.gr" => ClientGroup.I
         case "II-kl.gr" => ClientGroup.II
         case "III-kl.gr" => ClientGroup.III
         case "IV-kl.gr" => ClientGroup.IV
-        case _ => throw SpreadsheetException(s"${header(11)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+        case _ =>
+          throwError(11)
+      }
+      logger.info(s"!!!$villages")
+      val villageId = villages.find(_.name.contains(getRequired(3).take(5))) match {
+        case Some(village) => village.id.get
+        case None => throwError(3)
       }
       val supervisedOutJs = getOptional(cells(13)).map { supervisedOutDate =>
         val status = cells(12)
@@ -254,7 +261,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
               comments = getOptional(status)
             )
           )
-          case None => throw SpreadsheetException(s"${header(13)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+          case None => throwError(13)
         }
       }
       val patientDataJs = Json.toJson(PatientData(
@@ -274,7 +281,7 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
         passportId = getRequired(7),
         gender = gender,
         birthDate = birthDate,
-        villageId = 1,
+        villageId = villageId,
         icd = getRequired(10),
         clientGroup = clientGroup,
         patientDataJson = Some(patientDataJs),

@@ -74,10 +74,14 @@
               <li>
                 <i class="ace-icon fa fa-home bigger-110 blue"></i>
                 <span data-bind="text: vm.getDistrictById(vm.selected.patient.village.districtId())"></span> tumani,
-                <span data-bind="text: vm.selected.patient.village.name"></span>,
-                <span data-bind="text: vm.selected.patient.patientDataJson.province"></span>,
-                <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
-                <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy
+                <span data-bind="text: vm.selected.patient.village.name"></span> qishloqi,
+                <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi,
+                <span data-bind="visible: vm.selected.patient.patientDataJson.street">
+                  <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
+                </span>
+                <span data-bind="visible: vm.selected.patient.patientDataJson.home">
+                  <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy
+                </span>
               </li>
               <li data-bind="visible: vm.selected.patient.patientDataJson.work">
                 <i class="ace-icon fa fa-info-circle bigger-110 blue"></i>
