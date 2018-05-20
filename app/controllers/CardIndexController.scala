@@ -243,7 +243,6 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
         case _ =>
           throwError(11)
       }
-      logger.info(s"!!!$villages")
       val villageId = villages.find(_.name.contains(getRequired(3).take(5))) match {
         case Some(village) => village.id.get
         case None => throwError(3)
