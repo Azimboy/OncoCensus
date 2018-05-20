@@ -31,9 +31,16 @@ VALUES
 INSERT INTO "villages" ("id", "name", "district_id")
 VALUES
   (1, 'Xonqa shaharchasi', 7),
-  (2, 'Qirq yop', 7),
+  (2, 'Qirqyop', 7),
   (3, 'Sarapoyon', 7),
-  (4, 'Qaramazi', 7);
+  (4, 'Qoraqosh', 7),
+  (5, 'Amudaryo', 7),
+  (6, 'Jirmiz', 7),
+  (7, 'Madir', 7),
+  (8, 'Navxos', 7),
+  (9, 'Namuna', 7),
+  (10, 'Olaja', 7),
+  (11, 'Tomadurgʻodik', 7);
 
 INSERT INTO "icds" ("code", "name")
 VALUES
