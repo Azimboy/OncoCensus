@@ -120,15 +120,15 @@
                   <span data-bind="text: $data.firstName"></span><br>
                   <span data-bind="if: !$data.supervisedOutJson">
                     <i class="ace-icon fa fa-calendar-check-o bigger-110 green" style="padding-left: 2px;"></i>
-                    <span data-bind="text: $root.vm.formatDate($data.createdAt, 'MMMM DD, YYYY')"></span>,
+                    <span data-bind="text: $root.vm.formatDate($data.createdAt, 'MMMM DD, YYYY')"></span>
                   </span>
                   <span data-bind="if: $data.supervisedOutJson">
                     <i class="ace-icon fa fa-calendar-times-o bigger-110 red" style="padding-left: 2px;"></i>
-                    <span data-bind="text: $root.vm.formatDate(parseInt($data.supervisedOutJson.date), 'MMMM DD, YYYY')"></span>,
-                  </span>
-                  <span data-bind="visible: $data.icd.code"><span data-bind="text: $data.icd.code"></span></span>,
-                  <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>,
-                  <span data-bind="text: $data.patientDataJson.passportId"></span>
+                    <span data-bind="text: $root.vm.formatDate(parseInt($data.supervisedOutJson.date), 'MMMM DD, YYYY')"></span>
+                  </span> |
+                  <span data-bind="text: $data.passportId"></span>,
+                  <span data-bind="visible: $data.icd">MKB <span data-bind="text: $data.icd"></span></span>,
+                  <span data-bind="visible: $data.age"><span data-bind="text: $data.age"></span> yoshda</span>
                   @*<span data-bind="text: $data.district.name"></span>*@
                 </td>
               </tr>
@@ -223,9 +223,12 @@
             </div>
             <div class="col-sm-4">
               <label class="control-label" for="icd">MKB</label>
+              <input placeholder="MKB" type="text" class="form-control" id="icd" data-bind="value: vm.selected.patient.icd" name="icd">
+@*
               <select class="form-control" autocomplete="off" name="icd" id="icd"
-              data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'code', value: vm.selected.patient.icd, optionsCaption: 'MKB'">
+              data-bind="options: vm.icds, optionsText: 'code', optionsValue: 'code', value: vm.selected.patient.icds, optionsCaption: 'MKB'">
               </select>
+*@
             </div>
           </div>
 

@@ -29,10 +29,10 @@
 
     <div class="widget-body" data-bind="visible: vm.selected.patient.id">
       <div class="widget-main padding-0">
-        <h5>
+        <h5 class="bolder">
           <span data-bind="text: vm.selected.patient.lastName"></span>
-          <span data-bind="text: vm.selected.patient.firstName" class="text-capitalize"></span>
-            &nbsp;|&nbsp; Karta №: <span data-bind="text: vm.selected.patient.id"></span>
+          <span data-bind="text: vm.selected.patient.firstName"></span>
+          <span data-bind="text: vm.selected.patient.middleName"></span> | <span data-bind="text: vm.selected.patient.passportId"></span>
         </h5>
         <hr style="margin-top: 0px; margin-bottom: 15px">
         <div class="row no-margin-right">
@@ -57,15 +57,15 @@
                 </div>
               </li>
               <li>
-                <i data-bind="visible: vm.selected.patient.gender() == 'Male'" class="fa fa-male ace-icon bigger-110 purple"></i>
-                <i data-bind="visible: vm.selected.patient.gender() == 'Female'" class="fa fa-female ace-icon bigger-110 purple" style="padding-left: 4px;"></i>
+                <i data-bind="visible: vm.selected.patient.gender() == 'Male'" class="fa fa-male ace-icon bigger-110 red"></i>
+                <i data-bind="visible: vm.selected.patient.gender() == 'Female'" class="fa fa-female ace-icon bigger-110 red" style="padding-left: 4px;"></i>
+                <span class="text-danger" data-bind="text: vm.selected.patient.patientDataJson.bloodType"></span> |
                 <span data-bind="text: vm.selected.patient.birthDate"></span>
               </li>
               <li>
-                <i class="ace-icon fa fa-hospital-o bigger-110 red"></i>
-                <span data-bind="text: vm.selected.patient.icd.code"></span>
-                <span class="text-muted" data-bind="text: vm.selected.patient.icd.name"></span>
-                <span class="text-muted" data-bind="text: vm.selected.patient.patientDataJson.bloodType"></span>
+                <i class="ace-icon fa fa-hospital-o bigger-110 purple"></i>
+                <span data-bind="text: vm.selected.patient.icd"></span>,
+                <span data-bind="text: vm.selected.patient.clientGroup"></span> klient guruh
               </li>
               <li>
                 <i style="vertical-align: middle;" class="ace-icon fa fa-mobile bigger-140 blue"></i>
@@ -74,12 +74,12 @@
               <li>
                 <i class="ace-icon fa fa-home bigger-110 blue"></i>
                 <span data-bind="text: vm.getDistrictById(vm.selected.patient.village.districtId())"></span> tumani,
-                <span data-bind="text: vm.selected.patient.village.name"></span> qishloqi,
-                <span data-bind="text: vm.selected.patient.patientDataJson.province"></span> mahallasi,
+                <span data-bind="text: vm.selected.patient.village.name"></span>,
+                <span data-bind="text: vm.selected.patient.patientDataJson.province"></span>,
                 <span data-bind="text: vm.selected.patient.patientDataJson.street"></span> ko'chasi,
                 <span data-bind="text: vm.selected.patient.patientDataJson.home"></span> - uy
               </li>
-              <li>
+              <li data-bind="visible: vm.selected.patient.patientDataJson.work">
                 <i class="ace-icon fa fa-info-circle bigger-110 blue"></i>
                 <span data-bind="text: vm.selected.patient.patientDataJson.work"></span>
                 <span data-bind="text: vm.selected.patient.patientDataJson.position"></span>
