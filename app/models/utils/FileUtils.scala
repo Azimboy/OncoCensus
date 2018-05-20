@@ -21,7 +21,8 @@ object FileUtils extends LazyLogging {
 
 	private val badCharsR = """\/|\.\.|\?|\*|:|\\""".r // / .. ? * : \
 
-	case class ParseSpreadsheetException(errorText: String) extends Exception(errorText)
+	case class SpreadsheetException(errorText: String) extends Exception(errorText)
+
 	case class ExcelFileParam(
 														 sheetName: String,
 														 columnTitles: Seq[String],
@@ -54,13 +55,9 @@ object FileUtils extends LazyLogging {
 			}
 			Right(matrix)
 		} catch {
-			case encrErr: EncryptedDocumentException =>
-				logger.warn(s"EncryptedSpreadsheetUploaded ${file.getName}", encrErr)
-				Left("Error occurred. You've uploaded password protected file. Please remove password protection before uploading the file")
-
 			case error: Throwable =>
 				logger.error(s"Error during parsing of ${file.getName}", error)
-				Left("Error occurred. Please check uploaded file.")
+				Left("Faylni yuklashda xatolik.")
 		}
 	}
 

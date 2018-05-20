@@ -1,6 +1,5 @@
 package controllers
 
-import java.io.File
 import java.nio.file.Paths
 import java.text.SimpleDateFormat
 
@@ -10,26 +9,29 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.LazyLogging
 import javax.inject._
 import models.AppProtocol.Paging.{PageReq, PageRes}
+import models.AppProtocol.{GetAllVillages, Village}
 import models.CheckUpProtocol.{CheckUp, GetCheckUpsByPatientId, ModifyCheckUp, ReceiveInfo, ReceiveReason, ReceiveType}
 import models.PatientProtocol._
 import models.SimpleAuth
+import models.utils.FileUtils.{SpreadsheetException, parseSpreadsheet}
+import models.utils.StringUtils.cyril2Latin
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.Files.TemporaryFile
 import play.api.libs.json.Json
 import play.api.mvc._
 import views.html.card_index
-import models.utils.FileUtils.{ParseSpreadsheetException, parseSpreadsheet}
-import models.utils.StringUtils.cyril2Latin
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class CardIndexController @Inject()(val controllerComponents: ControllerComponents,
                                     val configuration: Configuration,
                                     @Named("patient-manager") val patientManager: ActorRef,
                                     @Named("check-up-manager") val checkUpManager: ActorRef,
+                                    @Named("department-manager") val departmentManager: ActorRef,
                                     implicit val actorSystem: ActorSystem,
                                     implicit val webJarsUtil: WebJarsUtil)
                                    (implicit val ec: ExecutionContext)
@@ -68,12 +70,12 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
 	  val patientId = getValue("patientId").map(_.toInt)
 
 	  val patientDataJs = Json.toJson(PatientData(
-		  province = "province",
+		  province = getValue("province").get,
 		  street = "street",
 		  home = "home",
 		  work = "work",
 		  position = "position",
-		  bloodType = getValue("bloodType").map(BloodType.withName),
+		  bloodType = getValue("bloodType").map(BloodType.withName).get,
       email = "email",
       phoneNumber = "phoneNumber"
 	  ))
@@ -172,78 +174,113 @@ class CardIndexController @Inject()(val controllerComponents: ControllerComponen
     }
   }}
 
-
   def createPatients(rows: List[List[String]]) = {
-    val aa = rows.tail.zipWithIndex.map { case (cyrillicRow, index) =>
+    (departmentManager ? GetAllVillages).mapTo[Seq[Village]].flatMap { villages =>
+      try {
+        val patients = validatePatients(rows)
+        (patientManager ? CreatePatients(patients)).mapTo[List[Int]].map { ids =>
+          logger.info(s"All patients imported from file. Count: $ids")
+          Ok("OK")
+        }.recover { case error =>
+          logger.error(s"Creating patients error", error)
+          InternalServerError
+        }
+      } catch {
+        case error: SpreadsheetException =>
+          logger.warn(s"SpreadsheetException: ", error)
+          Future { BadRequest(error.errorText) }
+        case error: Throwable =>
+          logger.error(s"Validate Patients from spreadsheet Error: ", error)
+          Future { InternalServerError }
+      }
+    }
+  }
+
+  private def validatePatients(rows: List[List[String]]) = {
+    val header = rows.head
+    rows.tail.zipWithIndex.map { case (cyrillicRow, i) =>
+      val index = i + 2
       val cells = cyrillicRow.map(cyril2Latin)
-      logger.info(s"ROW $index  = $cells")
-      val fullName = cells(0).trim.split(" ")
+      logger.info(s"ROW $index | $cells")
+
+      val getRequired = (ind: Int) =>
+        if (cells(ind).isEmpty) {
+          throw SpreadsheetException(s"${header(ind)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+        } else {
+          cells(ind)
+        }
+
+      val getOptional = (value: String) =>
+        if (value.isEmpty) {
+          None
+        } else {
+          Some(value)
+        }
+
+      val fullName = cells.head.trim.split(" ")
       val (firstName, lastName, middleName) = fullName.size match {
+        case 4 => (fullName(1), fullName(0), fullName(2) + " " + fullName(3))
         case 3 => (fullName(1), fullName(0), fullName(2))
         case 2 => (fullName(1), fullName(0), "")
-        case _ => ParseSpreadsheetException(s"FISH mavjud emas. Qator: $index")
-          sys.error("")
+        case 1 => (fullName(1), "", "")
+        case _ => throw SpreadsheetException(s"${header.head} ustunida xatolik aniqlandi. Satr Raqami: $index")
       }
-
       val gender = cells(1) match {
-        case "э" => Gender.Male
-        case "а" => Gender.Female
+        case "e" => Gender.Male
+        case "a" => Gender.Female
+        case _ => throw SpreadsheetException(s"${header(1)} ustunida xatolik aniqlandi. Satr Raqami: $index")
       }
-
-      val birthDay = parseDate(cells(2), "dd.MM.yyyy")
-      val province = cells(4)
-      val street = cells(5)
-      val home = cells(6)
-      val passportNumber = cells(7)
-      val work = cells(8)
-      val phone = cells(9)
-      val icd = cells(10)
+      val birthDate = Try(parseDate(cells(2), "dd.MM.yyyy")).toOption match {
+        case Some(validDate) => validDate
+        case None => throw SpreadsheetException(s"${header(2)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+      }
       val clientGroup = cells(11) match {
-        case "I-кл.гр" => ClientGroup.I
-        case "II-кл.гр" => ClientGroup.II
-        case "III-кл.гр" => ClientGroup.III
-        case "IV-кл.гр" => ClientGroup.IV
+        case "I-kl.gr" => ClientGroup.I
+        case "II-kl.gr" => ClientGroup.II
+        case "III-kl.gr" => ClientGroup.III
+        case "IV-kl.gr" => ClientGroup.IV
+        case _ => throw SpreadsheetException(s"${header(11)} ustunida xatolik aniqlandi. Satr Raqami: $index")
       }
-      val status = cells(12)
-      val supOut = parseDate(cells(13), "dd.MM.yyyy")
-
-      val getOptValue = (s: String) => if (s.isEmpty) None else Some(s)
-
+      val supervisedOutJs = getOptional(cells(13)).map { supervisedOutDate =>
+        val status = cells(12)
+        Try(parseDate(supervisedOutDate, "dd.MM.yyyy")).toOption match {
+          case Some(validDate) => Json.toJson(
+            SupervisedOut(
+              date = validDate,
+              reason = status match {
+                case "dead" => SupervisedOutReason.Dead
+                case _ => SupervisedOutReason.Recovery
+              },
+              comments = getOptional(status)
+            )
+          )
+          case None => throw SpreadsheetException(s"${header(13)} ustunida xatolik aniqlandi. Satr Raqami: $index")
+        }
+      }
       val patientDataJs = Json.toJson(PatientData(
-        province = getOptValue(province),
-        street = getOptValue(street),
-        home = getOptValue(home),
-        work = getOptValue(work),
+        province = getRequired(4),
+        street = getOptional(cells(5)),
+        home = getOptional(cells(6)),
+        work = getOptional(cells(8)),
         position = None,
-        bloodType = Some(BloodType.I_+),
-        phoneNumber = getOptValue(phone)
+        bloodType = BloodType.I_+,
+        phoneNumber = getOptional(cells(9))
       ))
 
       Patient(
-        firstName = getOptValue(firstName),
-        lastName = getOptValue(lastName),
-        middleName = getOptValue(middleName),
-        passportId = passportNumber,
+        firstName = getOptional(firstName),
+        lastName = getOptional(lastName),
+        middleName = getOptional(middleName),
+        passportId = getRequired(7),
         gender = gender,
-        birthDate = birthDay,
+        birthDate = birthDate,
         villageId = 1,
-        icd = icd,
+        icd = getRequired(10),
         clientGroup = clientGroup,
-        patientDataJson = Some(patientDataJs)
+        patientDataJson = Some(patientDataJs),
+        supervisedOutJson = supervisedOutJs
       )
     }
-    (patientManager ? CreatePatients(aa)).map { _ =>
-      Ok("OK")
-    }.recover { case er =>
-      logger.error(s"KOroche error", er)
-      InternalServerError
-    }
-
-//    val nonDigitPattern = "^[\\D]+$"
-//    if (!(firstName + lastName).matches(nonDigitPattern)) {
-//      throw ParseSpreadsheetException("First name or last name contains digits. " +
-//        s"Please correct it and re-upload file. Row: $lineText")
-//    }
   }
 
   private def parseDate(dateStr: String, format: String = "dd.MM.yyyy HH:mm") = {

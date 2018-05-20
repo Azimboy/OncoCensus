@@ -42,14 +42,14 @@ object PatientProtocol {
   }
 
   case class PatientData(
-    province: Option[String] = None,
+    province: String,
     street: Option[String] = None,
     home: Option[String] = None,
     work: Option[String] = None,
     position: Option[String] = None,
-    bloodType: Option[BloodType.Value] = None,
-    email: Option[String] = None,
-    phoneNumber: Option[String] = None
+    bloodType: BloodType.Value,
+    phoneNumber: Option[String] = None,
+    email: Option[String] = None
   )
 
   case class Icd(
@@ -97,16 +97,6 @@ object PatientProtocol {
     val all = Seq(I_-, I_+, II_-, II_+, III_-, III_+, IV_-, IV_+)
   }
 
-  object SupervisedOutReason extends EnumMappedToDb {
-    val Recovery = Value("recovery")
-    val Dead = Value("dead")
-
-    def withShortName: PartialFunction[String, SupervisedOutReason.Value] = {
-      case "recovery" => Recovery
-      case "dead" => Dead
-    }
-  }
-
   case class PatientsFilter(
     lastName: Option[String],
     isMale: Boolean,
@@ -134,6 +124,16 @@ object PatientProtocol {
 
   case class GetAllPatients(patientsFilter: PatientsFilter, pageReq: PageReq)
   case object GetAllIcds
+
+  object SupervisedOutReason extends EnumMappedToDb {
+    val Recovery = Value("recovery")
+    val Dead = Value("dead")
+
+    def withShortName: PartialFunction[String, SupervisedOutReason.Value] = {
+      case "recovery" => Recovery
+      case "dead" => Dead
+    }
+  }
 
   case class SupervisedOut(
     date: Date,

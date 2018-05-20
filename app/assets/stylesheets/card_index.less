@@ -1,3 +1,19 @@
 .tags {
-	width: 100%!important;
+  width: 100%!important;
+}
+
+#progress {
+  display: none;
+  .bar {
+    height: 3px;
+    margin-bottom: 3px;
+    background-color: #f6ba52;
+    background: repeating-linear-gradient(
+    to right,
+    #f6ba52,
+    #f6ba52 5px,
+    #ffd180 5px,
+    #ffd180 10px
+    );
+  }
 }
