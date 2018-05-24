@@ -19,7 +19,8 @@ $ ->
     regions: []
     districts: []
     selected:
-      regionId: ''
+      regionName: 'XORAZM'
+      districtId: ''
       districts: []
     isLoading: no
 
@@ -34,28 +35,45 @@ $ ->
     $.get(apiUrl.regions)
     .fail handleError
     .done (regions) ->
-      vm.regions regions
+      console.log(regions)
+      for region in regions
+        region.y = Math.floor(Math.random() * 100)
+        region.cnt = Math.floor(Math.random() * 10000)
+        region.abs = Math.floor(Math.random() * 1000)
+        region.click = (e) ->
+          vm.selected.regionName(e.dataPoint.name.toUpperCase())
+          reloadDistrictsChart(e.dataPoint.id)
+        region.from0to14 = Math.floor(Math.random() * 100)
+        region.from15to17 = Math.floor(Math.random() * 100)
+        region.from18 = Math.floor(Math.random() * 100)
+      vm.regions(regions)
+      loadAllDistricts()
 
   loadAllDistricts = ->
     $.get(apiUrl.districts)
     .fail handleError
     .done (districts) ->
-      vm.selected.districts districts
       vm.districts districts
+      loadRegionsChart()
+      reloadDistrictsChart(12)
 
-  vm.selected.regionId.subscribe (regionId) ->
-    if regionId
-      vm.selected.districts(ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId))
-
-  loadAllRegions()
-  loadAllDistricts()
+  reloadDistrictsChart = (regionId) ->
+    districts = ko.utils.arrayFilter(vm.districts(), (district) -> district.regionId is regionId)
+    vm.selected.districts(districts)
+    for district in vm.selected.districts()
+      district.y = Math.floor(Math.random() * 100)
+      district.cnt = Math.floor(Math.random() * 10000)
+      district.abs = Math.floor(Math.random() * 1000)
+      district.click = (e) ->
+        vm.selected.districtId(e.dataPoint.id)
+        console.log(e)
+      district.from0to14 = Math.floor(Math.random() * 100)
+      district.from15to17 = Math.floor(Math.random() * 100)
+      district.from18 = Math.floor(Math.random() * 100)
+      loadDistricsChart(districts)
 
   loadRegionsChart = ->
     chart = new CanvasJS.Chart("regionsChart", {
-#      title:
-#        text: "Viloyatlar bo'yicha kasallik ko'rsatkichlari"
-      exportFileName: "Viloyatlar bo'yicha"
-      exportEnabled: true
       animationEnabled: true
       legend:
         verticalAlign: "bottom"
@@ -64,73 +82,41 @@ $ ->
         {
           type: "pie"
           showInLegend: true
-          toolTipContent: "{legendText}: <strong>{y}%</strong><br>
-                           Jami: <b>155</b><br>
-                           Absolyut soni: <b>20</b><br>
+          toolTipContent: "{name}: <strong>{y}%</strong><br>
+                           Jami: <b>{cnt}</b><br>
+                           Absolyut soni: <b>{abs}</b><br>
                            Shundan:
                            <ul>
-                             <li>0 - 14: <b>2</b></li>
-                             <li>15 - 17: <b>5</b></li>
-                             <li>18 - va undan kattalar: <b>6</b></li>
+                             <li>0 - 14: <b>{from0to14}</b></li>
+                             <li>15 - 17: <b>{from15to17}</b></li>
+                             <li>18 - va undan kattalar: <b>{from18}</b></li>
                            </ul>"
-          indexLabel: "{legendText} 655/{y}%"
-          dataPoints: [
-            { y: 35, legendText: "Andijon", exploded: true }
-            { y: 20, legendText: "Buxoro" }
-            { y: 18, legendText: "Farg'ona" }
-            { y: 15, legendText: "Jizzax" }
-            { y: 5, legendText: "Xorazm" }
-            { y: 7, legendText: "Namangan" }
-            { y: 7, legendText: "Navoiy" }
-            { y: 7, legendText: "Qashqadaryo" }
-            { y: 7, legendText: "Qoraqalpog'iston Respublikasi" }
-            { y: 7, legendText: "Samarqand" }
-            { y: 7, legendText: "Toshkent" }
-          ]
+          indexLabel: "{name} {cnt}/{y}"
+          dataPoints: vm.regions()
         }
       ]
     })
     chart.render()
 
-  loadDistricsChart = ->
+  loadDistricsChart = (districts) ->
     chart = new CanvasJS.Chart("districtsChart", {
-#      title:
-#        text: "Tumanlar bo'yicha kasallik ko'rsatkichlari"
-      exportFileName: "Tumanlar bo'yicha"
-      exportEnabled: true
       animationEnabled: true
       theme: "theme1"
       data: [
         {
           type: "doughnut"
           showInLegend: true
-#          indexLabelFontFamily: "Garamond"
-#          indexLabelFontSize: 20
-#          startAngle: 0
-#          indexLabelFontColor: "dimgrey"
-#          indexLabelLineColor: "darkgrey"
-          toolTipContent: "{legendText}: <strong>{y}%</strong><br>
-                           Jami: <b>155</b><br>
-                           Absolyut soni: <b>20</b><br>
+          toolTipContent: "{name}: <strong>{y}%</strong><br>
+                           Jami: <b>{cnt}</b><br>
+                           Absolyut soni: <b>{abs}</b><br>
                            Shundan:
                            <ul>
-                             <li>0 - 14: <b>2</b></li>
-                             <li>15 - 17: <b>5</b></li>
-                             <li>18 - va undan kattalar: <b>6</b></li>
+                             <li>0 - 14: <b>{from0to14}</b></li>
+                             <li>15 - 17: <b>{from15to17}</b></li>
+                             <li>18 - va undan kattalar: <b>{from18}</b></li>
                            </ul>"
-          indexLabel: "{legendText} 156/{y}%"
-          dataPoints: [
-            { y: 51.04, exploded: true, legendText: "Bog'ot" }
-            { y: 40.83, legendText: "Gurlan" }
-            { y: 3.20, legendText: "Xonqa" }
-            { y: 1.11, legendText: "Hazorasp" }
-            { y: 2.29, legendText: "Xiva" }
-            { y: 4.53, legendText: "Qo'shko'pir" }
-            { y: 1.53, legendText: "Shovot" }
-            { y: 6.53, legendText: "Urganch" }
-            { y: 7.53, legendText: "Yangiariq" }
-            { y: 9.53, legendText: "Yangibozor" }
-          ]
+          indexLabel: "{name} {cnt}/{y}%"
+          dataPoints: districts
         }
       ]
     })
@@ -171,8 +157,6 @@ $ ->
     })
     chart.render()
 
-  loadRegionsChart()
-  loadDistricsChart()
-  loadPatientsStatsChart()
+  loadAllRegions()
 
   ko.applyBindings {vm}
