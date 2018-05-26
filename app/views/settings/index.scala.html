@@ -24,6 +24,12 @@
               <span class="badge badge-danger">1</span>
             </a>
           </li>
+          <li>
+            <a data-toggle="tab" href="#icds">
+              <i class="green ace-icon fa fa-upload bigger-150"></i>
+              MKB
+            </a>
+          </li>
         </ul>
         <div class="tab-content" style="padding: 15px 0px 0px 0px!important;">
           <div id="departments" class="tab-pane fade in active">
@@ -36,10 +42,14 @@
             @settings.users()
             </div>
           </div>
+          <div id="icds" class="tab-pane">
+            <div class="scrollable" data-size="800">
+            @settings.icds()
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
 
 }

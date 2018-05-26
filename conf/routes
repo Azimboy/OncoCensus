@@ -39,10 +39,10 @@ GET     /settings/departments                               @controllers.Setting
 POST    /settings/department                                @controllers.SettingsController.createDepartment
 PUT     /settings/department/:id                            @controllers.SettingsController.updateDepartment(id: Int)
 DELETE  /settings/department/:id                            @controllers.SettingsController.deleteDepartment(id: Int)
-
 GET     /settings/users                                     @controllers.SettingsController.getUsers
 POST    /settings/user                                      @controllers.SettingsController.modifyUser
 GET     /settings/roles                                     @controllers.SettingsController.getRoles
+POST    /settings/upload-icds                                @controllers.SettingsController.uploadIcds
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               @controllers.Assets.versioned(path="/public", file: Asset)

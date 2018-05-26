@@ -94,7 +94,6 @@ class EncryptionManager @Inject() (configuration: Configuration)
 	}
 
 	def receiveAfterInit: Receive = {
-
 		case EncryptText(text) =>
 			sender() ! encryptText(text)
 

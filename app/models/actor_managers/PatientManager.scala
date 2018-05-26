@@ -59,6 +59,9 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 
 		case CreatePatients(patients) =>
 			createPatients(patients).pipeTo(sender())
+
+		case CreateIcds(icds) =>
+			createIcds(icds).pipeTo(sender())
 	}
 
 	def getAllPatients(patientsFilter: PatientsFilter, pageReq: PageReq): Future[PageRes[Patient]] = {
@@ -139,6 +142,10 @@ class PatientManager  @Inject()(@Named("encryption-manager") encryptionManager: 
 
 	def createPatients(patients: List[Patient]) = {
 		Future.sequence(patients.map(p => modifyPatient(p)))
+	}
+
+	def createIcds(icds: List[Icd]) = {
+		Future.sequence(icds.map(icd => icdsDao.create(icd)))
 	}
 
 }

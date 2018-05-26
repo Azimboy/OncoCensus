@@ -9,16 +9,19 @@ import com.typesafe.scalalogging.LazyLogging
 import controllers.SettingsController._
 import javax.inject.{Inject, Named, Singleton}
 import models.AppProtocol.{CreateDepartment, DeleteDepartment, Department, GetDepartmentsReport, UpdateDepartment}
+import models.PatientProtocol.{CreateIcds, Icd}
 import models.SimpleAuth
 import models.UserProtocol.{GetAllUsers, ModifyUser, User, roles}
+import models.utils.FileUtils.{SpreadsheetException, parseSpreadsheet}
 import models.utils.StringUtils.createHash
 import org.webjars.play.WebJarsUtil
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.mvc.{BaseController, ControllerComponents}
 import views.html.settings
+import models.utils.StringUtils.cyril2Latin
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.DurationInt
 
 object SettingsController {
@@ -50,6 +53,7 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
                                    val configuration: Configuration,
                                    @Named("user-manager") val userManager: ActorRef,
                                    @Named("department-manager") val departmentManager: ActorRef,
+																	 @Named("patient-manager") val patientManager: ActorRef,
 																	 implicit val actorSystem: ActorSystem,
 																	 implicit val webJarsUtil: WebJarsUtil)
 																	(implicit val ec: ExecutionContext)
@@ -133,4 +137,65 @@ class SettingsController @Inject()(val controllerComponents: ControllerComponent
 	def getRoles() = Action { implicit request => auth {
 		Ok(Json.toJson(roles))
 	}}
+
+	def uploadIcds = Action.async(parse.multipartFormData) { implicit request => asyncAuth {
+		//    val dataPart = request.body.asFormUrlEncoded
+		request.body.file("file").map { filePart =>
+			parseSpreadsheet(filePart.ref.path.toFile) match {
+				case Right(rows) => createIcds(rows)
+				case Left(failReason) => Future.successful(BadRequest(failReason))
+			}
+		}.getOrElse {
+			Future { Ok("File topilmadi.") }
+		}
+	}}
+
+	private def createIcds(rows: List[List[String]]) = {
+		try {
+			val icds = validateIcds(rows)
+			(patientManager ? CreateIcds(icds)).mapTo[List[Int]].map { ids =>
+				logger.info(s"All ICDs imported from file. Count: $ids")
+				Ok("OK")
+			}.recover { case error =>
+				logger.error(s"Creating patients error", error)
+				InternalServerError
+			}
+		} catch {
+			case error: SpreadsheetException =>
+				logger.warn(s"SpreadsheetException: ", error)
+				Future { BadRequest(error.errorText) }
+			case error: Throwable =>
+				logger.error(s"Validate Patients from spreadsheet Error: ", error)
+				Future { InternalServerError }
+		}
+	}
+
+	private def validateIcds(rows: List[List[String]]) = {
+		rows.zipWithIndex.map { case (cyrillicRow, i) =>
+			val index = i + 1
+			val cells = cyrillicRow.map(cyril2Latin)
+			logger.info(s"ROW $index | $cells")
+
+			val throwError = (ind: Int) => throw SpreadsheetException(s"Xatolik aniqlandi. Qator raqami: $index")
+			val getRequired = (ind: Int) =>
+				if (cells(ind).isEmpty) {
+					throwError(ind)
+				} else {
+					cells(ind)
+				}
+
+			val getOptional = (value: String) =>
+				if (value.isEmpty) {
+					None
+				} else {
+					Some(value)
+				}
+
+			Icd(
+				code = getRequired(0),
+				name = getOptional(cells(1))
+			)
+		}
+	}
+
 }

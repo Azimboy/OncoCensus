@@ -37,6 +37,34 @@ $ ->
 
   $addDepartmentModal = $('#add-department-modal')
   $editDepartmentModal = $('#edit-department-modal')
+  $icdsFileModal = $('#icds-file-upload-modal')
+
+  icdsFileData = null
+  $icdsFileForm = $('#icds-file-upload-form')
+  $icdsFileForm.fileupload
+    dataType: 'text'
+    autoUpload: no
+    singleFileUploads: true
+    multipart: true
+    add: (e, data) ->
+      icdsFileData = data
+      progress = parseInt(data.loaded / data.total * 100, 10)
+      $('#progress .bar').css('width', progress + '%')
+    progressall: (e, data) ->
+      progress = parseInt(data.loaded / data.total * 100, 10)
+      $('#progress .bar').css('width', progress + '%')
+    fail: (e, data) ->
+      $('#progress').hide()
+      handleError(data.jqXHR)
+    done: (e, data) ->
+      $('#progress').hide()
+      result = data.result
+      if result is 'OK'
+        toastr.success('Fayl muvaffaqiyatli yuklandi.')
+        $icdsFileModal.modal('hide')
+        vm.icdsFileUploadInfo('')
+      else
+        alert(result or 'Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
   defaultDepartment =
     regionId: ''
@@ -67,6 +95,7 @@ $ ->
       department: defaultDepartment
       districts: []
     isLoading: no
+    icdsFileName: ''
 
   notvalid = (str) ->
     !$.trim(str)
@@ -267,6 +296,28 @@ $ ->
   loadAllDistricts()
   loadAllDepartments()
   loadAllRoles()
+
+  #  Icds File Uploading
+  vm.onClickUploadIcd = ->
+    $icdsFileModal.modal('show')
+
+  vm.onIcdsFileSelected = (v, event) ->
+    vm.icdsFileName(event.target.files[0].name)
+
+  vm.onSubmitIcdsFile = ->
+    if !(/\.(xls|xlsx)$/.test(vm.icdsFileName()))
+      icdsFileData = null
+      toastr.warning("Faqat XLS yoki XLSX formatdagi faylni yuklashingiz mumkin!")
+    else
+      if icdsFileData
+        icdsFileData.submit()
+        $('#progress .bar').css('width', 0)
+        $('#progress').show()
+      else
+        toastr.warning('Iltimos faylni tanlang.')
+
+  vm.onCancelIcdsFile = ->
+    vm.icdsFileName('')
 
   Glob.vm = vm
 

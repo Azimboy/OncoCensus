@@ -1,9 +1,9 @@
 package models.daos
 
 import javax.inject.{Inject, Singleton}
-
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
+import models.CheckUpProtocol.CheckUp
 import models.PatientProtocol.Icd
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
@@ -16,15 +16,16 @@ trait IcdsComponent
 	import dbConfig.profile.api._
 
 	class Icds(tag: Tag) extends Table[Icd](tag, "icds") {
-		def name = column[String]("name", O.PrimaryKey)
-		def code = column[String]("code")
-		def * = (code.?, name.?) <>
+		def code = column[String]("code", O.PrimaryKey)
+		def name = column[String]("name")
+		def * = (code, name.?) <>
 			(Icd.tupled, Icd.unapply _)
 	}
 }
 
 @ImplementedBy(classOf[IcdsDaoImpl])
 trait IcdsDao {
+	def create(icd: Icd): Future[String]
 	def findByCode(code: String): Future[Option[Icd]]
 	def getAllIcds(): Future[Seq[Icd]]
 }
@@ -39,6 +40,12 @@ class IcdsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
 	import dbConfig.profile.api._
 
 	val icds = TableQuery[Icds]
+
+	override def create(icd: Icd): Future[String] = {
+		db.run {
+			(icds returning icds.map(_.code)) += icd
+		}
+	}
 
 	override def findByCode(code: String) = {
 		db.run {

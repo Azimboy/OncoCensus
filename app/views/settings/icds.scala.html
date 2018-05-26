@@ -1,0 +1,75 @@
+@()
+<div class="pull-left tableTools-container">
+  <div class="dt-buttons btn-overlap btn-group">
+    <a data-bind="click: vm.onClickUploadIcd" class="dt-button buttons-collection buttons-colvis btn btn-white btn-primary btn-bold" aria-controls="dynamic-table" data-original-title title>
+      <span>
+        <i class="fa fa-plus"></i>
+        <span>MKB faylini yuklash</span>
+      </span>
+    </a>
+  </div>
+</div>
+
+<div class="clearfix"></div>
+@*
+<div>
+  <table class="table table-bordered table-hover no-margin-bottom">
+    <thead>
+      <tr>
+        <th width="15%">Kodi</th>
+        <th width="85%">Nomi</th>
+        <th width="85%"></th>
+      </tr>
+    </thead>
+    <tbody data-bind="foreach: $data.icds">
+      <tr>
+        <td data-bind="text: $data.code"></td>
+        <td data-bind="text: $data.name"></td>
+        <td class="nowrap column-action">
+          <button type="button" data-bind="click: $root.vm.onClickEdit" class="btn btn-white btn-warning btn-bold btn-sm" title="Tahrirlash">
+            <span class="fa fa-edit bigger-120 orange"></span>
+          </button>
+          <button type="button" data-bind="click: $root.vm.delete" class="btn btn-white btn-danger btn-bold btn-sm" title="O'chirish">
+            <span class="fa fa-trash-o bigger-120 red"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+  *@
+
+
+  @* Icds document upload *@
+<div id="icds-file-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="docUpload" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Chiqish"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">MKB ma'lumotlarini fayldan yuklash</h4>
+      </div>
+      <div class="modal-body">
+        <form action="@controllers.routes.SettingsController.uploadIcds()" id="icds-file-upload-form" enctype="multipart/form-data" method="post" role="document">
+          <div class="form-group">
+            <div class="input-group">
+              <label class="input-group-btn">
+                <span type="button" class="btn btn-warning btn-white">
+                    Faylni tanlang <input type="file" name="file" data-bind="event:{ change: vm.onIcdsFileSelected }" style="display: none;">
+                  </span>
+              </label>
+              <input type="text" class="form-control" data-bind="value: vm.icdsFileName()" readonly>
+            </div>
+            <span class="text-warning">NOTE: Faylini XLCX formatda yuklang.</span>
+          </div>
+          <div id="progress">
+            <div class="bar" style="width: 0%;"></div>
+          </div>
+          <div>
+            <button type="submit" data-bind="click: vm.onSubmitIcdsFile" class="btn btn-white btn-bold btn-warning">Yuklash</button>
+            <button type="reset" data-bind="click: vm.onCancelIcdsFile" class="btn btn-white btn-bold btn-default pull-right" data-dismiss="modal">Bekor qilish</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

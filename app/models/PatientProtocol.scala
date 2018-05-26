@@ -53,7 +53,7 @@ object PatientProtocol {
   )
 
   case class Icd(
-    code: Option[String] = None,
+    code: String,
     name: Option[String] = None
   )
 
@@ -150,4 +150,5 @@ object PatientProtocol {
   case class PatientSupervisedOut(patientId: Int, supervisedOut: SupervisedOut)
 
   case class CreatePatients(patients: List[Patient])
+  case class CreateIcds(icds: List[Icd])
 }
