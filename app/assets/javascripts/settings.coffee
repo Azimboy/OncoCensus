@@ -7,6 +7,7 @@ $ ->
     users: '/settings/users'
     regions: '/home/regions'
     districts: '/home/districts'
+    icds: '/home/icds'
     departments: '/settings/departments'
     department: '/settings/department'
     roles: '/settings/roles'
@@ -18,7 +19,7 @@ $ ->
     else if error.status is 200 or error.status is 400 and error.responseText
       alert(error.responseText)
     else
-      alert('Something went wrong! Please try again.')
+      alert('Tizimda xatolik! Iltimos qaytadan urinib ko\'ring.')
 
 #  $('.multiselect').multiselect(
 #    nonSelectedText: 'Role tanlang'
@@ -90,6 +91,7 @@ $ ->
     districts: []
     departments: []
     roles: []
+    icds: []
     selected:
       user: defaultUser
       department: defaultDepartment
@@ -291,11 +293,15 @@ $ ->
     .done (roles) ->
       vm.roles roles
 
+  loadAllIcds = ->
+    $.get(apiUrl.icds).fail(handleError).done(vm.icds)
+
   loadAllUsers()
   loadAllRegions()
   loadAllDistricts()
   loadAllDepartments()
   loadAllRoles()
+  loadAllIcds()
 
   #  Icds File Uploading
   vm.onClickUploadIcd = ->

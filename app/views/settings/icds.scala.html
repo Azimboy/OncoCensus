@@ -11,17 +11,17 @@
 </div>
 
 <div class="clearfix"></div>
-@*
+
 <div>
   <table class="table table-bordered table-hover no-margin-bottom">
     <thead>
       <tr>
-        <th width="15%">Kodi</th>
-        <th width="85%">Nomi</th>
-        <th width="85%"></th>
+        <th>MKB</th>
+        <th>Nomi</th>
+        <th></th>
       </tr>
     </thead>
-    <tbody data-bind="foreach: $data.icds">
+    <tbody data-bind="foreach: vm.icds">
       <tr>
         <td data-bind="text: $data.code"></td>
         <td data-bind="text: $data.name"></td>
@@ -37,8 +37,6 @@
     </tbody>
   </table>
 </div>
-  *@
-
 
   @* Icds document upload *@
 <div id="icds-file-upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="docUpload" data-backdrop="static">

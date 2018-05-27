@@ -25,8 +25,8 @@ CREATE TABLE "departments" (
 );
 
 CREATE TABLE "icds" (
-  "name" VARCHAR NOT NULL PRIMARY KEY,
-  "code" VARCHAR NOT NULL
+  "code" VARCHAR NOT NULL PRIMARY KEY,
+  "name" VARCHAR NOT NULL
 );
 
 CREATE TABLE "users" (

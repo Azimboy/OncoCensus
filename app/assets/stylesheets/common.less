@@ -1,14 +1,30 @@
 .busy-loader {
-	display: none;
-	width: 32px;
-	height: 32px;
-	background: url("../images/ajax-loader.gif") no-repeat center center;
+  display: none;
+  width: 32px;
+  height: 32px;
+  background: url("../images/ajax-loader.gif") no-repeat center center;
 }
 
 .items-list {
-	tbody>tr>td, tbody>tr>th, tfoot>tr>td, tfoot>tr>th, thead>tr>td, thead>tr>th {
-		padding: 5px!important;
-		border: 0px!important;
-	}
+  tbody>tr>td, tbody>tr>th, tfoot>tr>td, tfoot>tr>th, thead>tr>td, thead>tr>th {
+    padding: 5px!important;
+    border: 0px!important;
+  }
+}
 
+
+#progress {
+  display: none;
+  .bar {
+    height: 3px;
+    margin-bottom: 3px;
+    background-color: #f6ba52;
+    background: repeating-linear-gradient(
+      to right,
+      #f6ba52,
+      #f6ba52 5px,
+      #ffd180 5px,
+	  #ffd180 10px
+    );
+  }
 }
