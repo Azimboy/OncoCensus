@@ -72,6 +72,17 @@ $ ->
       district.from18 = Math.floor(Math.random() * 100)
       loadDistricsChart(districts)
 
+  getTooltipContent = ->
+    "{name}: <strong>{y}%</strong><br>
+      Jami: <b>{cnt}</b><br>
+      Absolyut soni: <b>{abs}</b><br>
+      Shundan:
+      <ul>
+        <li>0 - 14: <b>{from0to14}</b></li>
+        <li>15 - 17: <b>{from15to17}</b></li>
+        <li>18 - va undan kattalar: <b>{from18}</b></li>
+    </ul>"
+
   loadRegionsChart = ->
     chart = new CanvasJS.Chart("regionsChart", {
       animationEnabled: true
@@ -82,15 +93,7 @@ $ ->
         {
           type: "pie"
           showInLegend: true
-          toolTipContent: "{name}: <strong>{y}%</strong><br>
-                           Jami: <b>{cnt}</b><br>
-                           Absolyut soni: <b>{abs}</b><br>
-                           Shundan:
-                           <ul>
-                             <li>0 - 14: <b>{from0to14}</b></li>
-                             <li>15 - 17: <b>{from15to17}</b></li>
-                             <li>18 - va undan kattalar: <b>{from18}</b></li>
-                           </ul>"
+          toolTipContent: getTooltipContent()
           indexLabel: "{name} {cnt}/{y}"
           dataPoints: vm.regions()
         }
@@ -106,15 +109,7 @@ $ ->
         {
           type: "doughnut"
           showInLegend: true
-          toolTipContent: "{name}: <strong>{y}%</strong><br>
-                           Jami: <b>{cnt}</b><br>
-                           Absolyut soni: <b>{abs}</b><br>
-                           Shundan:
-                           <ul>
-                             <li>0 - 14: <b>{from0to14}</b></li>
-                             <li>15 - 17: <b>{from15to17}</b></li>
-                             <li>18 - va undan kattalar: <b>{from18}</b></li>
-                           </ul>"
+          toolTipContent: getTooltipContent()
           indexLabel: "{name} {cnt}/{y}%"
           dataPoints: districts
         }
