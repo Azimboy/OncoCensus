@@ -35,7 +35,7 @@ $ ->
       next: 'Keyingi'
       last: ''
       onPageClick: (event, page) ->
-        getReport(null, page)
+        loadAllPatients(null, page)
     )
     $pagination = $paginationEl.data('twbsPagination')
 

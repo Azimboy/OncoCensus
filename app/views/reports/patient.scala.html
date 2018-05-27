@@ -183,11 +183,11 @@
           <td data-bind="text: $data.supervisedOutAt"></td>
           <td data-bind="text: $data.lastName + ' ' + $data.firstName + ' ' + $data.middleName"></td>
           <td data-bind="text: $root.vm.formatDate($data.birthDate, 'DD.MM.YYYY')"></td>
-          <td data-bind="text: $data.icd.code"></td>
+          <td data-bind="text: $data.icd"></td>
           <td>0</td>
           <td>0</td>
           <td>
-            <span data-bind="text: $data.district.name"></span> tumani,
+            <span data-bind="text: $data.village.name"></span> tumani,
             <span data-bind="text: $data.patientDataJson.province"></span> mahallasi,
             <span data-bind="text: $data.patientDataJson.street"></span> ko'chasi,
             <span data-bind="text: $data.patientDataJson.home"></span> - uy
