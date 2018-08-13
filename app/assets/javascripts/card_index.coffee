@@ -237,8 +237,9 @@ $ ->
       moment().diff(date, 'years')
 
   vm.onClosePatientInfoPage = ->
-    ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
-    vm.rightPage('summary')
+    #    ko.mapping.fromJS(defaultPatient, {}, vm.selected.patient)
+    vm.rightPage(PageName.Summary)
+    console.log(vm.rightPage())
 
   notvalid = (str) ->
     !$.trim(str)
@@ -290,6 +291,7 @@ $ ->
     ko.mapping.fromJS(patient, {}, vm.selected.patient)
     vm.selected.patient.birthDate(vm.formatDate(patient.birthDate, 'DD.MM.YYYY'))
     vm.rightPage(PageName.CardIndex)
+    console.log(vm.rightPage())
     getPatientsCheckUps(patient.id)
 
   vm.onClickAddPatient = ->
