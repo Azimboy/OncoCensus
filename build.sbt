@@ -14,34 +14,18 @@ includeFilter in (Assets, LessKeys.less) := "*.less"
 excludeFilter in (Assets, LessKeys.less) := "_*.less"
 
 val playVersion = "2.6.8"
-val akkaVersion = "2.5.8"
-val silhouetteVersion = "5.0.1"
+val akkaVersion = "2.5.13"
+val slickVersion = "3.2.3"
 
 val play: Seq[ModuleID] = Seq(
 	"com.typesafe.play" %% "play-json" % playVersion,
-//	"com.typesafe.play" %% "play-test" % playVersion % "test",
-	"com.typesafe.play" %% "play-slick" % "3.0.3",
-	"com.typesafe.play" %% "play-slick" % "3.0.3",
-	"com.typesafe.play" %% "play-slick-evolutions" % "3.0.3"
 )
 
 val akka: Seq[ModuleID] = Seq(
 	"com.typesafe.akka" %% "akka-actor" % akkaVersion,
-	"com.typesafe.akka" %% "akka-remote" % akkaVersion,
 	"com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-	//	"com.typesafe.akka" %% "akka-cluster" % akkaVersion
-	//	"com.typesafe.akka" %% "akka-cluster-metrics" % akkaVersion
-	//	"com.typesafe.akka" %% "akka-cluster-tools" % version
 	"com.typesafe.akka" %% "akka-testkit" % akkaVersion % "test"
 )
-
-//val auth: Seq[ModuleID] = Seq(
-//	"com.mohiva" %% "play-silhouette" % silhouetteVersion,
-//	"com.mohiva" %% "play-silhouette-password-bcrypt" % silhouetteVersion,
-//	"com.mohiva" %% "play-silhouette-persistence" % silhouetteVersion,
-//	"com.mohiva" %% "play-silhouette-crypto-jca" % silhouetteVersion
-////	"com.mohiva" %% "play-silhouette-testkit"
-//)
 
 val tools: Seq[ModuleID] = Seq(
 	"org.apache.poi" % "poi" % "3.13",
@@ -50,11 +34,21 @@ val tools: Seq[ModuleID] = Seq(
 )
 
 val database: Seq[ModuleID] = Seq(
-	"org.postgresql" % "postgresql" % "42.0.0",
-	"com.typesafe.slick" %% "slick" % "3.2.1",
-	"com.github.tminglei" %% "slick-pg" % "0.15.1",
-	"com.github.tminglei" %% "slick-pg_play-json" % "0.15.1",
-	"com.h2database" % "h2" % "1.4.194"
+	// SQL generator
+	"com.typesafe.slick" %% "slick" % slickVersion,
+
+	// Postgres driver
+	"org.postgresql" % "postgresql" % "42.1.4",
+
+	// Migration for SQL databases
+	"org.flywaydb" % "flyway-core" % "5.0.7",
+
+	// Play modules for Flyway
+	"org.flywaydb" %% "flyway-play" % "5.0.0",
+
+
+// Connection pool for database
+	"com.zaxxer" % "HikariCP" % "2.7.0",
 )
 
 val loggingLibs: Seq[ModuleID] = Seq(

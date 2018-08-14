@@ -1,6 +1,8 @@
 package models.daos
 
 import javax.inject.{Inject, Singleton}
+import DatabaseConnector
+
 
 import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
@@ -10,9 +12,9 @@ import slick.jdbc.JdbcProfile
 
 import scala.concurrent.Future
 
-trait RegionsComponent
-{ self: HasDatabaseConfigProvider[JdbcProfile] =>
+trait RegionsTableData {
 
+	protected val databaseConnector: DatabaseConnector
 	import dbConfig.profile.api._
 
 	class Regions(tag: Tag) extends Table[Region](tag, "regions") {
