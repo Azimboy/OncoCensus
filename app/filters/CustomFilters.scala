@@ -8,8 +8,7 @@ import play.api.http.HttpFilters
 class CustomFilters @Inject() (configuration: Configuration,
                                secureFlashFilter: SecureFlashFilter,
 //                               securityHeadersFilter: SecurityHeadersFilter
-                               securityHeadersFilter: CustomSecurityHeadersFilter
-                               )
+                               securityHeadersFilter: CustomSecurityHeadersFilter)
   extends HttpFilters
 {
   private val conf = configuration.get[Configuration]("app")

@@ -1,21 +1,13 @@
 package models.daos
 
-import javax.inject.{Inject, Singleton}
-import DatabaseConnector
-
-
-import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.Region
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.JdbcProfile
+import models.utils.db.DatabaseConnector
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait RegionsTableData {
-
-	protected val databaseConnector: DatabaseConnector
-	import dbConfig.profile.api._
+trait RegionsComponent {
+	import models.utils.PostgresDriver.api._
 
 	class Regions(tag: Tag) extends Table[Region](tag, "regions") {
 		def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -26,20 +18,19 @@ trait RegionsTableData {
 	}
 }
 
-@ImplementedBy(classOf[RegionsDaoImpl])
-trait RegionsDao {
+sealed trait RegionsDao {
 	def findById(id: Int): Future[Option[Region]]
 	def findAll(): Future[Seq[Region]]
 }
 
-@Singleton
-class RegionsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-	extends RegionsDao
-		with RegionsComponent
-		with HasDatabaseConfigProvider[JdbcProfile]
+class RegionsDaoImpl(val databaseConnector: DatabaseConnector)
+										(implicit executionContext: ExecutionContext)
+	extends RegionsComponent
+		with RegionsDao
 		with LazyLogging {
 
-	import dbConfig.profile.api._
+	import databaseConnector._
+	import databaseConnector.profile.api._
 
 	val regions = TableQuery[Regions]
 

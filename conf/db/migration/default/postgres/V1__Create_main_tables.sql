@@ -1,5 +1,3 @@
-# --- !Ups
-
 CREATE TABLE "regions" (
   "id"   SERIAL PRIMARY KEY,
   "name" VARCHAR NOT NULL
@@ -46,12 +44,3 @@ CREATE TABLE "users" (
   "failed_attempts_count" INT       NOT NULL DEFAULT 0,
   "blocked_at"            TIMESTAMP NULL
 );
-
-# --- !Downs
-
-DROP TABLE "regions";
-DROP TABLE "districts";
-DROP TABLE "villages";
-DROP TABLE "departments";
-DROP TABLE "icds";
-DROP TABLE "users";

@@ -1,26 +1,18 @@
 package models.daos
 
 import java.util.Date
-import javax.inject.{Inject, Singleton}
 
-import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
 import models.AppProtocol.ReportData
 import models.CheckUpProtocol.CheckUp
 import models.utils.Date2SqlDate
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import models.utils.db.DatabaseConnector
 import play.api.libs.json.JsValue
-import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait CheckUpsComponent
-	extends PatientsComponent
-	with UsersComponent
-	with Date2SqlDate
-{ self: HasDatabaseConfigProvider[JdbcProfile] =>
-
-	import models.utils.PostgresDriver.api._
+trait CheckUpsComponent extends PatientsComponent with UsersComponent with Date2SqlDate {
+  import models.utils.PostgresDriver.api._
 
 	class CheckUps(tag: Tag) extends Table[CheckUp](tag, "check_ups") {
 		val patients = TableQuery[Patients]
@@ -58,8 +50,7 @@ trait CheckUpsComponent
 	}
 }
 
-@ImplementedBy(classOf[CheckUpsDaoImpl])
-trait CheckUpsDao {
+sealed trait CheckUpsDao {
 	def create(checkUp: CheckUp): Future[Int]
 	def update(checkUp: CheckUp): Future[Int]
 	def findByPatientId(patientId: Int): Future[Seq[CheckUp]]
@@ -67,16 +58,15 @@ trait CheckUpsDao {
 	def getAllCheckUps(reportData: ReportData): Future[Seq[CheckUp]]
 }
 
-@Singleton
-class CheckUpsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-                               (implicit val ec: ExecutionContext)
+class CheckUpsDaoImpl(val databaseConnector: DatabaseConnector)
+                     (implicit val ec: ExecutionContext)
 	extends CheckUpsDao
 		with CheckUpsComponent
 		with PatientsComponent
 		with UsersComponent
-		with HasDatabaseConfigProvider[JdbcProfile]
 		with LazyLogging {
 
+  import databaseConnector._
 	import models.utils.PostgresDriver.api._
 
 	val checkUps = TableQuery[CheckUps]

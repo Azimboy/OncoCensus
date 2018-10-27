@@ -1,7 +1,7 @@
 import sbt.ModuleID
 
 name := "OncoCensus"
- 
+
 version := "1.0" 
       
 lazy val `oncocensus` = (project in file(".")).enablePlugins(PlayScala)
@@ -46,9 +46,11 @@ val database: Seq[ModuleID] = Seq(
 	// Play modules for Flyway
 	"org.flywaydb" %% "flyway-play" % "5.0.0",
 
-
 // Connection pool for database
 	"com.zaxxer" % "HikariCP" % "2.7.0",
+//	JSONB supporting on postgres
+	"com.github.tminglei" %% "slick-pg" % "0.15.1",
+	"com.github.tminglei" %% "slick-pg_play-json" % "0.15.1"
 )
 
 val loggingLibs: Seq[ModuleID] = Seq(
@@ -79,4 +81,4 @@ val webJars: Seq[ModuleID] = Seq(
 )
 
 libraryDependencies ++= play ++ akka ++ tools ++ database ++ webJars ++ loggingLibs ++
-	Seq(ws, specs2 % Test, guice)
+	Seq(ws, specs2 % Test, guice, filters)

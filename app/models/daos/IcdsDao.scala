@@ -1,19 +1,13 @@
 package models.daos
 
-import javax.inject.{Inject, Singleton}
-import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import models.CheckUpProtocol.CheckUp
 import models.PatientProtocol.Icd
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.JdbcProfile
+import models.utils.db.DatabaseConnector
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait IcdsComponent
-{ self: HasDatabaseConfigProvider[JdbcProfile] =>
-
-	import dbConfig.profile.api._
+trait IcdsComponent {
+  import models.utils.PostgresDriver.api._
 
 	class Icds(tag: Tag) extends Table[Icd](tag, "icds") {
 		def code = column[String]("code", O.PrimaryKey)
@@ -23,21 +17,20 @@ trait IcdsComponent
 	}
 }
 
-@ImplementedBy(classOf[IcdsDaoImpl])
-trait IcdsDao {
+sealed trait IcdsDao {
 	def create(icd: Icd): Future[String]
 	def findByCode(code: String): Future[Option[Icd]]
 	def getAllIcds(): Future[Seq[Icd]]
 }
 
-@Singleton
-class IcdsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+class IcdsDaoImpl(val databaseConnector: DatabaseConnector)
+                 (implicit executionContext: ExecutionContext)
 	extends IcdsDao
 		with IcdsComponent
-		with HasDatabaseConfigProvider[JdbcProfile]
 		with LazyLogging {
 
-	import dbConfig.profile.api._
+  import databaseConnector._
+  import databaseConnector.profile.api._
 
 	val icds = TableQuery[Icds]
 

@@ -1,18 +1,13 @@
 package models.daos
 
-import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import javax.inject.{Inject, Singleton}
-import models.AppProtocol.{District, Village}
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.JdbcProfile
+import models.AppProtocol.Village
+import models.utils.db.DatabaseConnector
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait VillagesComponent extends DistrictsComponent
-{ self: HasDatabaseConfigProvider[JdbcProfile] =>
-
-	import dbConfig.profile.api._
+trait VillagesComponent extends DistrictsComponent {
+	import models.utils.PostgresDriver.api._
 
 	class Villages(tag: Tag) extends Table[Village](tag, "villages") {
 		val districts = TableQuery[Districts]
@@ -28,20 +23,19 @@ trait VillagesComponent extends DistrictsComponent
 	}
 }
 
-@ImplementedBy(classOf[VillagesDaoImpl])
-trait VillagesDao {
+sealed trait VillagesDao {
 	def findById(id: Int): Future[Option[Village]]
 	def findAll(): Future[Seq[Village]]
 }
 
-@Singleton
-class VillagesDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+class VillagesDaoImpl(val databaseConnector: DatabaseConnector)
+										 (implicit executionContext: ExecutionContext)
 	extends VillagesDao
 		with VillagesComponent
-		with HasDatabaseConfigProvider[JdbcProfile]
 		with LazyLogging {
 
-	import dbConfig.profile.api._
+	import databaseConnector._
+	import databaseConnector.profile.api._
 
 	val villages = TableQuery[Villages]
 

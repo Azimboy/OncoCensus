@@ -2,20 +2,15 @@ package models.daos
 
 import java.util.Date
 
-import javax.inject.{Inject, Singleton}
-import models.utils.Date2SqlDate
-import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import models.AppProtocol.{CreateDepartment, Department}
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import slick.jdbc.JdbcProfile
+import models.AppProtocol.Department
+import models.utils.Date2SqlDate
+import models.utils.db.DatabaseConnector
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait DepartmentsComponent extends DistrictsComponent
-{ self: HasDatabaseConfigProvider[JdbcProfile] =>
-
-	import dbConfig.profile.api._
+trait DepartmentsComponent extends DistrictsComponent {
+	import models.utils.PostgresDriver.api._
 
 	class Departments(tag: Tag) extends Table[Department](tag, "departments") with Date2SqlDate {
 		val districts = TableQuery[Districts]
@@ -41,8 +36,7 @@ trait DepartmentsComponent extends DistrictsComponent
 	}
 }
 
-@ImplementedBy(classOf[DepartmentsDaoImpl])
-trait DepartmentsDao {
+sealed trait DepartmentsDao {
 	def create(department: Department): Future[Int]
 	def update(department: Department): Future[Int]
 	def delete(id: Int): Future[Int]
@@ -51,15 +45,14 @@ trait DepartmentsDao {
 	def getDepartmentsByDistrictId(districtId: Int): Future[Seq[Department]]
 }
 
-@Singleton
-class DepartmentsDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+class DepartmentsDaoImpl(val databaseConnector: DatabaseConnector)
+												(implicit executionContext: ExecutionContext)
 	extends DepartmentsDao
 		with DepartmentsComponent
-		with HasDatabaseConfigProvider[JdbcProfile]
 		with LazyLogging {
 
-	import dbConfig.profile.api._
-	import scala.concurrent.ExecutionContext.Implicits.global
+	import databaseConnector._
+	import databaseConnector.profile.api._
 
 	val regions = TableQuery[Regions]
 	val districts = TableQuery[Districts]

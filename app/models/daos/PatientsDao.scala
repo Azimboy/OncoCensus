@@ -2,20 +2,15 @@ package models.daos
 
 import java.util.Date
 
-import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
-import javax.inject.{Inject, Singleton}
 import models.PatientProtocol.{ClientGroup, Gender, Patient, PatientsFilter}
+import models.utils.db.DatabaseConnector
 import models.utils.{Date2SqlDate, DateUtils}
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.libs.json.JsValue
-import slick.jdbc.JdbcProfile
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PatientsComponent extends VillagesComponent with IcdsComponent
-  { self: HasDatabaseConfigProvider[JdbcProfile] =>
-
+trait PatientsComponent extends VillagesComponent with IcdsComponent {
   import models.utils.PostgresDriver.api._
 
   class Patients(tag: Tag) extends Table[Patient](tag, "patients") with Date2SqlDate {
@@ -55,8 +50,7 @@ trait PatientsComponent extends VillagesComponent with IcdsComponent
   }
 }
 
-@ImplementedBy(classOf[PatientsImpl])
-trait PatientsDao {
+sealed trait PatientsDao {
   def create(patient: Patient): Future[Int]
   def update(patient: Patient): Future[Int]
   def delete(patientId: Int): Future[Int]
@@ -64,15 +58,14 @@ trait PatientsDao {
   def findById(patientId: Int): Future[Option[Patient]]
 }
 
-@Singleton
-class PatientsImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
-                                (implicit val ec: ExecutionContext)
+class PatientsImpl(val databaseConnector: DatabaseConnector)
+                  (implicit val ec: ExecutionContext)
   extends PatientsDao
   with PatientsComponent
-  with HasDatabaseConfigProvider[JdbcProfile]
   with Date2SqlDate
   with LazyLogging {
 
+  import databaseConnector._
   import models.utils.PostgresDriver.api._
 
   val patients = TableQuery[Patients]
