@@ -15,10 +15,11 @@ excludeFilter in (Assets, LessKeys.less) := "_*.less"
 
 val playVersion = "2.6.8"
 val akkaVersion = "2.5.13"
-val slickVersion = "3.2.3"
+val slickVersion = "3.2.1"
 
 val play: Seq[ModuleID] = Seq(
 	"com.typesafe.play" %% "play-json" % playVersion,
+	"com.typesafe.play" %% "play-slick" % "3.0.3"
 )
 
 val akka: Seq[ModuleID] = Seq(
@@ -47,10 +48,11 @@ val database: Seq[ModuleID] = Seq(
 	"org.flywaydb" %% "flyway-play" % "5.0.0",
 
 // Connection pool for database
-	"com.zaxxer" % "HikariCP" % "2.7.0",
+//	"com.zaxxer" % "HikariCP" % "2.7.0",
+
 //	JSONB supporting on postgres
 	"com.github.tminglei" %% "slick-pg" % "0.15.1",
-	"com.github.tminglei" %% "slick-pg_play-json" % "0.15.1"
+	"com.github.tminglei" %% "slick-pg_play-json" % "0.15.1",
 )
 
 val loggingLibs: Seq[ModuleID] = Seq(

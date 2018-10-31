@@ -1,4 +1,21 @@
-# --- !Ups
+CREATE TABLE "patients" (
+  "id"                  SERIAL PRIMARY KEY,
+  "created_at"          TIMESTAMP NOT NULL,
+  "deleted_at"          TIMESTAMP NULL,
+  "first_name_encr"     VARCHAR   NULL,
+  "last_name_encr"      VARCHAR   NULL,
+  "middle_name_encr"    VARCHAR   NULL,
+  "passport_id"         VARCHAR   NOT NULL,
+  "gender"              INTEGER   NOT NULL,
+  "birth_date"          TIMESTAMP NOT NULL,
+  "village_id"          INTEGER   NOT NULL CONSTRAINT "patients_fk_village_id" REFERENCES "villages" ON UPDATE CASCADE ON DELETE SET NULL,
+  "avatar_id"           VARCHAR   NULL,
+  "icd"                 VARCHAR   NOT NULL,
+  "client_group"        VARCHAR   NOT NULL,
+  "patient_data_json"   JSONB     NULL,
+  "supervised_out_json" JSONB     NULL,
+  UNIQUE ("passport_id")
+);
 
 CREATE TABLE "check_ups" (
   "id"                SERIAL PRIMARY KEY,
@@ -27,8 +44,3 @@ CREATE TABLE "check_up_files" (
   "diagnose"           VARCHAR   NOT NULL,
   "recommendation"     VARCHAR   NOT NULL
 );
-
-# --- !Downs
-
-DROP TABLE "check_up_files";
-DROP TABLE "check_ups";

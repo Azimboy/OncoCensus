@@ -2,15 +2,19 @@ package models.daos
 
 import java.util.Date
 
+import com.google.inject.ImplementedBy
 import com.typesafe.scalalogging.LazyLogging
+import javax.inject.{Inject, Singleton}
 import models.CheckUpProtocol.CheckUpFile
 import models.utils.Date2SqlDate
-import models.utils.db.DatabaseConnector
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.jdbc.JdbcProfile
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-trait CheckUpFilesComponent extends CheckUpsComponent with Date2SqlDate {
-
+trait CheckUpFilesComponent
+  extends CheckUpsComponent
+    with Date2SqlDate { self: HasDatabaseConfigProvider[JdbcProfile] =>
 	import models.utils.PostgresDriver.api._
 
 	class CheckUpFiles(tag: Tag) extends Table[CheckUpFile](tag, "check_up_files") {
@@ -29,19 +33,20 @@ trait CheckUpFilesComponent extends CheckUpsComponent with Date2SqlDate {
 	}
 }
 
-sealed trait CheckUpFilesDao {
+@ImplementedBy(classOf[CheckUpFilesDaoImpl])
+trait CheckUpFilesDao {
 	def create(checkUpFile: CheckUpFile): Future[Int]
 }
 
-class CheckUpFilesDaoImpl(val databaseConnector: DatabaseConnector)
-												 (implicit executionContext: ExecutionContext)
+@Singleton
+class CheckUpFilesDaoImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 	extends CheckUpFilesDao
 		with CheckUpFilesComponent
 		with CheckUpsComponent
+		with HasDatabaseConfigProvider[JdbcProfile]
 		with LazyLogging {
 
-	import databaseConnector._
-	import databaseConnector.profile.api._
+	import dbConfig.profile.api._
 
 	val checkUps = TableQuery[CheckUps]
 	val checkUpFiles = TableQuery[CheckUpFiles]

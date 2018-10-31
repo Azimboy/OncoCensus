@@ -61,7 +61,7 @@ class UserManager @Inject()(@Named("encryption-manager") encryptionManager: Acto
 		)
 		val admin = User(
 			createdAt = Some(new Date),
-			login = "adminbek",
+			login = "admin",
 			passwordHash = createHash("123"),
 			firstName = Some("Adminbek"),
 			lastName = Some("Adminov"),

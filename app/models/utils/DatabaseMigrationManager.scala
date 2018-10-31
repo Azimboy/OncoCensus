@@ -1,4 +1,4 @@
-package models.utils.db
+package models.utils
 
 import org.flywaydb.core.Flyway
 

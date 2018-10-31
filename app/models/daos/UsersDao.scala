@@ -2,13 +2,17 @@ package models.daos
 
 import java.util.Date
 
+import com.google.inject.ImplementedBy
+import javax.inject.{Inject, Singleton}
 import models.UserProtocol._
 import models.utils.Date2SqlDate
-import models.utils.db.DatabaseConnector
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.jdbc.JdbcProfile
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-trait UsersComponent extends DepartmentsComponent {
+trait UsersComponent
+  extends DepartmentsComponent { self: HasDatabaseConfigProvider[JdbcProfile] =>
   import models.utils.PostgresDriver.api._
 
   class Users(tag: Tag) extends Table[User](tag, "users") with Date2SqlDate {
@@ -47,7 +51,8 @@ trait UsersComponent extends DepartmentsComponent {
   }
 }
 
-sealed trait UsersDao {
+@ImplementedBy(classOf[UsersImpl])
+trait UsersDao {
   def usersCount(): Future[Int]
   //  def findById(id: Int): Future[Option[User]]
   def findByLogin(loginEncr: String): Future[Option[User]]
@@ -62,14 +67,16 @@ sealed trait UsersDao {
   def updateFailedAttemptsCountByLogin(loginEncr: String, failedAttemptsCount: Int): Future[Int]
 }
 
-class UsersImpl(val databaseConnector: DatabaseConnector)
-               (implicit executionContext: ExecutionContext)
+@Singleton
+class UsersImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   extends UsersDao
-  with UsersComponent
-  with Date2SqlDate {
+    with UsersComponent
+    with HasDatabaseConfigProvider[JdbcProfile]
+    with Date2SqlDate {
 
-  import databaseConnector._
-  import databaseConnector.profile.api._
+  import dbConfig.profile.api._
+
+  import scala.concurrent.ExecutionContext.Implicits.global
 
   val users = TableQuery[Users]
   val departments = TableQuery[Departments]
