@@ -31,7 +31,8 @@ val akka: Seq[ModuleID] = Seq(
 val tools: Seq[ModuleID] = Seq(
 	"org.apache.poi" % "poi" % "3.13",
 	"org.apache.poi" % "poi-ooxml" % "3.13",
-	"org.apache.commons" % "commons-text" % "1.1"
+	"org.apache.commons" % "commons-text" % "1.1",
+	"org.scalaz" %% "scalaz-core" % "7.3.0-M25"
 )
 
 val database: Seq[ModuleID] = Seq(
